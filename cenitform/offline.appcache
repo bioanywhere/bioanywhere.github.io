@@ -1,0 +1,15 @@
+﻿CACHE MANIFEST
+#created : 5/30/2017 4:03:34 PM
+
+#Explicitly cached entries
+CACHE:
+assets/css/app.min.css
+assets/js/app.min.js
+assets/fonts/glyphicons-halflings-regular.svg
+assets/fonts/glyphicons-halflings-regular.ttf
+assets/fonts/glyphicons-halflings-regular.woff
+
+
+#All Other resources (e.g. sites) require the user to be online
+NETWORK:
+*
