@@ -1,0 +1,13 @@
+{
+  "port": 3000,
+  "lcu": "agarcia@g-forward.com",
+  "source": "bioanywhere",
+  "page": {
+    "description": "",
+    "error": "",
+    "username": "",
+    "password": "",
+    "login": "",
+    "message": ""
+  }
+}
