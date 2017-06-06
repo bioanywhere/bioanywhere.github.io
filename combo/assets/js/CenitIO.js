@@ -3,10 +3,10 @@
     var CenitIO = {
 
         baseApiUrl: "https://cenit.io/api/v2",
-        dataTypeName: "combobox_test",
+        dataTypeName: "form_bets",
         dataTypeNamespace: "Services",
-        userAccessKey: "A631419843",
-        userAccessToken: "w3dvVV_c96GNYuk-HfsM",
+        userAccessKey: "A822525662",
+        userAccessToken: "2t-CvzfHUpbTyysU__vi",
 
         /**
          * Init process to send form data to CenitIO platform.
