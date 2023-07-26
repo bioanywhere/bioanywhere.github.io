@@ -17,13 +17,22 @@
   <canvas id="pieChart" width="400" height="400"></canvas>
   <script>
     grist.ready();
+
+    // Store a reference to the chart instance
+    let pieChartInstance;
+
     grist.onRecord(function(record) {
       // Instead of updating the readout element, you can remove this line or keep it for debugging purposes.
       // document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
-      drawPieChart(record);
+      updatePieChart(record);
     });
 
-    function drawPieChart(record) {
+    function updatePieChart(record) {
+      if (pieChartInstance) {
+        // Destroy the previous chart instance
+        pieChartInstance.destroy();
+      }
+
       const data = {
         labels: ['Gross Profit', 'Revenue'],
         datasets: [{
@@ -38,7 +47,7 @@
       };
 
       const ctx = document.getElementById('pieChart').getContext('2d');
-      const pieChart = new Chart(ctx, {
+      pieChartInstance = new Chart(ctx, {
         type: 'pie',
         data: data,
         options: options
