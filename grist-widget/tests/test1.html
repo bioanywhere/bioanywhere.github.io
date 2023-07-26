@@ -2,34 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Chart Widget</title>
+    <title>onRecord</title>
     <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <canvas id="chart" width="400" height="200"></canvas>
+    <canvas id="pieChart" width="400" height="400"></canvas>
     <script>
       grist.ready();
       grist.onRecord(function(record) {
-        // Create a bar chart with Gross Profit and Revenue information from the selected row
-        const ctx = document.getElementById('chart').getContext('2d');
-        new Chart(ctx, {
-          type: 'bar',
+        var grossProfit = record.Gross_Profit || 0;
+        var revenue = record.Revenue || 0;
+
+        var pieChartCanvas = document.getElementById('pieChart');
+        var ctx = pieChartCanvas.getContext('2d');
+        var myPieChart = new Chart(ctx, {
+          type: 'pie',
           data: {
             labels: ['Gross Profit', 'Revenue'],
             datasets: [{
-              label: 'Amount',
-              data: [record.Gross_Profit, record.Revenue],
-              backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)'],
-              borderColor: ['rgba(75, 192, 192, 1)', 'rgba(54, 162, 235, 1)'],
-              borderWidth: 1
+              data: [grossProfit, revenue],
+              backgroundColor: ['#36A2EB', '#FF6384'],
+              hoverBackgroundColor: ['#36A2EB', '#FF6384'],
             }]
           },
           options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
+            responsive: true,
+            legend: {
+              position: 'bottom',
             }
           }
         });
