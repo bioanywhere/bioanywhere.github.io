@@ -14,7 +14,9 @@
 </head>
 <body>
   <pre id="readout">Waiting for data...</pre>
-  <canvas id="pieChart" width="400" height="400"></canvas>
+  <div id="chartContainer">
+    <canvas id="pieChart" width="400" height="400"></canvas>
+  </div>
   <script>
     grist.ready();
 
@@ -32,6 +34,10 @@
         // Destroy the previous chart instance
         pieChartInstance.destroy();
       }
+
+      // Remove the old canvas element
+      const chartContainer = document.getElementById('chartContainer');
+      chartContainer.innerHTML = '<canvas id="pieChart" width="400" height="400"></canvas>';
 
       const data = {
         labels: ['Gross Profit', 'Revenue'],
