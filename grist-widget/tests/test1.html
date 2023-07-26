@@ -10,13 +10,21 @@
     <canvas id="pieChart" width="400" height="400"></canvas>
     <script>
       grist.ready();
+
+      var myPieChart; // Store the chart instance in a variable.
+
       grist.onRecord(function(record) {
         var grossProfit = record.Gross_Profit || 0;
         var revenue = record.Revenue || 0;
 
+        // Clear previous chart before creating a new one.
+        if (myPieChart) {
+          myPieChart.destroy();
+        }
+
         var pieChartCanvas = document.getElementById('pieChart');
         var ctx = pieChartCanvas.getContext('2d');
-        var myPieChart = new Chart(ctx, {
+        myPieChart = new Chart(ctx, {
           type: 'pie',
           data: {
             labels: ['Gross Profit', 'Revenue'],
