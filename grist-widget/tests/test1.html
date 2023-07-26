@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Chart Widget</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <canvas id="chart" width="400" height="200"></canvas>
+    <script>
+      grist.ready();
+      grist.onRecord(function(record) {
+        // Sample JSON data for reference
+        const data = {
+          "id": 1,
+          "Name": "Forward",
+          "Date_Founded": 2007,
+          "Address": "Calle 10 Norte 14 27",
+          "Phone_Number": 3008156298,
+          "Website": "www.g-forward.com",
+          "Sector": null,
+          "Description": null,
+          "Gross_Profit": 400,
+          "Revenue": 200,
+          "Gross_Profit_Margin": 200,
+          "Full_Time_Employees": 80,
+          "Part_Time_Employees": 20,
+          "Part_Time_Employee_Composition": 0.2,
+          "Number_of_Owners": 30,
+          "Women_Owners": 3,
+          "Women_Owners_Ratio": 0.1,
+          "Indigenous_Owners": 20,
+          "Indigenous_Owners_Ratio": 0.6666666666666666,
+          "Contact_Information": "Pepe Mujica",
+          "Full_Time_Employee_Composition": 0.8
+        };
+
+        // Create a bar chart with Gross Profit and Revenue information
+        const ctx = document.getElementById('chart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Gross Profit', 'Revenue'],
+            datasets: [{
+              label: 'Amount',
+              data: [data.Gross_Profit, data.Revenue],
+              backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+              borderColor: ['rgba(75, 192, 192, 1)', 'rgba(54, 162, 235, 1)'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
