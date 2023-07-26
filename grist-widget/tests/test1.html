@@ -5,9 +5,17 @@
   <title>onRecord</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  <style>
+    /* Define a class to hide the JSON output */
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <pre id="readout">Waiting for data...</pre>
+  <!-- Add a button to toggle the JSON output visibility -->
+  <button onclick="toggleJson()">Toggle JSON</button>
+  <pre id="readout" class="hidden">Waiting for data...</pre>
   <canvas id="pieChart" width="400" height="400"></canvas>
   <script>
     grist.ready();
@@ -36,6 +44,18 @@
         data: data,
         options: options
       });
+    }
+
+    function toggleJson() {
+      // Get the 'readout' element
+      const readoutElement = document.getElementById('readout');
+
+      // Toggle the 'hidden' class on the 'readout' element
+      if (readoutElement.classList.contains('hidden')) {
+        readoutElement.classList.remove('hidden');
+      } else {
+        readoutElement.classList.add('hidden');
+      }
     }
   </script>
 </body>
