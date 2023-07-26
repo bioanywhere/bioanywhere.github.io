@@ -1,58 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>onRecord</title>
-    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <pre id="readout">Waiting for data...</pre>
-    <canvas id="pieChart" width="400" height="400"></canvas>
-    <script>
-      grist.ready();
+<head>
+  <meta charset="utf-8">
+  <title>onRecord</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+</head>
+<body>
+  <pre id="readout">Waiting for data...</pre>
+  <canvas id="pieChart" width="400" height="400"></canvas>
+  <script>
+    grist.ready();
+    grist.onRecord(function(record) {
+      document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
+      drawPieChart(record);
+    });
 
-      var myPieChart; // Store the chart instance in a variable.
+    function drawPieChart(record) {
+      const data = {
+        labels: ['Gross Profit', 'Revenue', 'Gross Profit Margin'],
+        datasets: [{
+          data: [record.Gross_Profit, record.Revenue, record.Gross_Profit_Margin],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+          hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }]
+      };
 
-      // Function to draw the pie chart.
-      function drawPieChart(record) {
-        var grossProfit = record.Gross_Profit || 0;
-        var revenue = record.Revenue || 0;
+      const options = {
+        responsive: false
+      };
 
-        var pieChartCanvas = document.getElementById('pieChart');
-        var ctx = pieChartCanvas.getContext('2d');
-
-        // Clear previous chart before creating a new one.
-        if (myPieChart) {
-          myPieChart.destroy();
-        }
-
-        myPieChart = new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels: ['Gross Profit', 'Revenue'],
-            datasets: [{
-              data: [grossProfit, revenue],
-              backgroundColor: ['#36A2EB', '#FF6384'],
-              hoverBackgroundColor: ['#36A2EB', '#FF6384'],
-            }]
-          },
-          options: {
-            responsive: true,
-            legend: {
-              position: 'bottom',
-            }
-          }
-        });
-      }
-
-      grist.onRecord(function(record) {
-        // Update the JSON display.
-        document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
-
-        // Update the pie chart.
-        drawPieChart(record);
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      const pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: options
       });
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
