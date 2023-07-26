@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>onRecord</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <button id="sendToGoogleDocs">Send to Google Docs</button>
+    <script>
+      grist.ready();
+      grist.onRecord(function(record) {
+        // Store the JSON record in a variable
+        var jsonRecord = JSON.stringify(record);
+
+        // Add event listener to the button
+        document.getElementById('sendToGoogleDocs').addEventListener('click', function() {
+          // Send the JSON record to Google Docs using AJAX
+          $.ajax({
+            url: 'https://script.google.com/macros/s/YourGoogleScriptURL/exec',
+            type: 'POST',
+            data: {
+              record: jsonRecord
+            },
+            success: function(response) {
+              console.log('JSON record sent to Google Docs successfully.');
+            },
+            error: function(xhr, status, error) {
+              console.error('Error sending JSON record to Google Docs:', error);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
