@@ -7,23 +7,26 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
+    <pre id="readout">Waiting for data...</pre>
     <canvas id="pieChart" width="400" height="400"></canvas>
     <script>
       grist.ready();
 
       var myPieChart; // Store the chart instance in a variable.
 
-      grist.onRecord(function(record) {
+      // Function to draw the pie chart.
+      function drawPieChart(record) {
         var grossProfit = record.Gross_Profit || 0;
         var revenue = record.Revenue || 0;
+
+        var pieChartCanvas = document.getElementById('pieChart');
+        var ctx = pieChartCanvas.getContext('2d');
 
         // Clear previous chart before creating a new one.
         if (myPieChart) {
           myPieChart.destroy();
         }
 
-        var pieChartCanvas = document.getElementById('pieChart');
-        var ctx = pieChartCanvas.getContext('2d');
         myPieChart = new Chart(ctx, {
           type: 'pie',
           data: {
@@ -41,6 +44,14 @@
             }
           }
         });
+      }
+
+      grist.onRecord(function(record) {
+        // Update the JSON display.
+        document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
+
+        // Update the pie chart.
+        drawPieChart(record);
       });
     </script>
   </body>
