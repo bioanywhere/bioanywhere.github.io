@@ -18,11 +18,11 @@
 
     function drawPieChart(record) {
       const data = {
-        labels: ['Gross Profit', 'Revenue'],
+        labels: ['Gross Profit', 'Revenue', 'Gross Profit Margin'],
         datasets: [{
-          data: [record.Gross_Profit, record.Revenue],
-          backgroundColor: ['#FF6384', '#36A2EB'],
-          hoverBackgroundColor: ['#FF6384', '#36A2EB']
+          data: [record.Gross_Profit, record.Revenue, record.Gross_Profit_Margin],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+          hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
         }]
       };
 
