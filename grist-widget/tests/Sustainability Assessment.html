@@ -17,13 +17,13 @@
 
       // Function to send JSON to the Google Apps Script API URL
       function sendJSONToScript() {
-        fetch('https://script.google.com/macros/s/AKfycbwEzJ5TFowXRVHZktuUFOft-M4SU8FJ7YHFluFDThp1ZwWfxZ79ErJAObKgOK7qXYYpWQ/exec', {
-          redirect: "follow",
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: jsonData
+        const queryParams = new URLSearchParams({
+          data: jsonData
+        });
+
+        fetch(`https://script.google.com/macros/s/AKfycbzWgmXP2CjIp_mx43fEpcBJmRXe-FgPdcmdSLvxEFxeQCVXYahZ4Kw4Nk_kIja6OGui/exec?${queryParams}`, {
+          method: 'GET',
+          mode: 'cors'
         })
         .then(response => response.json())
         .then(data => {
@@ -40,5 +40,3 @@
   </script>
 </body>
 </html>
-
-
