@@ -7,7 +7,7 @@
 </head>
 <body>
   <pre id="readout">Waiting for data...</pre>
-  <button id="saveButton">Save JSON</button>
+  <button id="saveButton">Send JSON to API</button>
 
   <script>
     grist.ready();
@@ -15,22 +15,33 @@
       const jsonData = JSON.stringify(record, null, 2);
       document.getElementById('readout').innerHTML = jsonData;
 
-      // Function to save JSON as a file
-      function saveJSONFile() {
-        const blob = new Blob([jsonData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'selected_record.json';
-        a.click();
-        URL.revokeObjectURL(url);
+      // Function to send JSON to the API
+      function sendJSONToAPI() {
+        const url = 'https://script.google.com/macros/s/AKfycbztdvZ9qEbyziOtA7_yOlg9K8voX7yTn3mcTFTCdvWk9hWSmHE6Z8IKrOeDdNkW4Mvf/exec';
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: jsonData
+        };
 
-        // Confirmation message
-        console.log('JSON data has been saved as "selected_record.json".');
+        fetch(url, options)
+          .then(response => response.text())
+          .then(responseData => {
+            // Confirmation message with request and response data
+            const confirmationMessage = `
+              JSON data sent to API URL: ${url}
+              Request data: ${JSON.stringify(options, null, 2)}
+              Response data: ${responseData}
+            `;
+            console.log(confirmationMessage);
+          })
+          .catch(error => console.error('Error:', error));
       }
 
       // Attach event listener to the button
-      document.getElementById('saveButton').addEventListener('click', saveJSONFile);
+      document.getElementById('saveButton').addEventListener('click', sendJSONToAPI);
     });
   </script>
 </body>
