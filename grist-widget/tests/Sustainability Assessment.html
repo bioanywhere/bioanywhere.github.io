@@ -24,7 +24,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: jsonData
+          body: JSON.stringify(jsonData),
         };
 
         fetch(url, options)
