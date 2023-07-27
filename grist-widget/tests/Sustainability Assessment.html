@@ -15,13 +15,13 @@
       const jsonData = JSON.stringify(record, null, 2);
       document.getElementById('readout').innerHTML = jsonData;
 
-      // Function to send JSON to the Google Apps Script API URL
-      function sendJSONToScript() {
+      // Function to send JSON to the proxy Web App
+      function sendJSONToProxy() {
         const queryParams = new URLSearchParams({
           data: jsonData
         });
 
-        fetch(`https://script.google.com/macros/s/AKfycbzWgmXP2CjIp_mx43fEpcBJmRXe-FgPdcmdSLvxEFxeQCVXYahZ4Kw4Nk_kIja6OGui/exec?${queryParams}`, {
+        fetch(`https://script.google.com/macros/s/AKfycbxZ7KL82uoGxLi0gZY2fz-bhZwYKp6zXLfMLKAGEPi_jBffABnJL5_sqydcRoBVnVr7Qg/exec?${queryParams}`, {
           method: 'GET',
           mode: 'cors'
         })
@@ -35,7 +35,7 @@
       }
 
       // Attach event listener to the button
-      document.getElementById('sendButton').addEventListener('click', sendJSONToScript);
+      document.getElementById('sendButton').addEventListener('click', sendJSONToProxy);
     });
   </script>
 </body>
