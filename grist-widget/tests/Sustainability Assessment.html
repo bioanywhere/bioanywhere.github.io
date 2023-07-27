@@ -7,7 +7,7 @@
 </head>
 <body>
   <pre id="readout">Waiting for data...</pre>
-  <button id="saveButton">Send JSON to API</button>
+  <button id="sendButton">Send JSON to Google Apps Script</button>
 
   <script>
     grist.ready();
@@ -15,34 +15,26 @@
       const jsonData = JSON.stringify(record, null, 2);
       document.getElementById('readout').innerHTML = jsonData;
 
-      // Function to send JSON to the API
-      function sendJSONToAPI() {
-        const url = 'https://script.google.com/macros/s/AKfycbztdvZ9qEbyziOtA7_yOlg9K8voX7yTn3mcTFTCdvWk9hWSmHE6Z8IKrOeDdNkW4Mvf/exec';
-        const options = {
+      // Function to send JSON to the Google Apps Script API URL
+      function sendJSONToScript() {
+        fetch('https://script.google.com/macros/s/AKfycbwjrt6CpjEyHRIzpXr9-LS95dynbt3Xk_TuUgKxQ5YnXUZaBAfUKKk8MQFrunSNpoQqtQ/exec', {
           method: 'POST',
-          mode: 'cors',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(jsonData),
-        };
-
-        fetch(url, options)
-          .then(response => response.text())
-          .then(responseData => {
-            // Confirmation message with request and response data
-            const confirmationMessage = `
-              JSON data sent to API URL: ${url}
-              Request data: ${JSON.stringify(options, null, 2)}
-              Response data: ${responseData}
-            `;
-            console.log(confirmationMessage);
-          })
-          .catch(error => console.error('Error:', error));
+          body: jsonData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Response from Google Apps Script:', data);
+          // Display a confirmation message on the webpage
+          document.getElementById('readout').innerHTML = JSON.stringify(data, null, 2);
+        })
+        .catch(error => console.error('Error sending JSON:', error));
       }
 
       // Attach event listener to the button
-      document.getElementById('saveButton').addEventListener('click', sendJSONToAPI);
+      document.getElementById('sendButton').addEventListener('click', sendJSONToScript);
     });
   </script>
 </body>
