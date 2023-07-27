@@ -7,42 +7,11 @@
   </head>
   <body>
     <pre id="readout">Waiting for data...</pre>
-    <button id="sendButton">Send JSON to API</button>
     <script>
-      let jsonData = null; // Variable to store the JSON data
-
       grist.ready();
       grist.onRecord(function(record) {
-        jsonData = record; // Store the JSON data in the variable
         document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
       });
-
-      document.getElementById('sendButton').addEventListener('click', function() {
-        if (jsonData) {
-          sendDataToAPI(jsonData);
-        } else {
-          console.error('No JSON data available to send.');
-        }
-      });
-
-      function sendDataToAPI(jsonData) {
-        // Sending JSON data to the specified API using fetch
-        fetch('https://script.google.com/macros/s/AKfycbztdvZ9qEbyziOtA7_yOlg9K8voX7yTn3mcTFTCdvWk9hWSmHE6Z8IKrOeDdNkW4Mvf/exec', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(jsonData)
-        })
-        .then(response => {
-          // Handle the API response here if needed
-          console.log('API Response:', response);
-        })
-        .catch(error => {
-          // Handle any errors that occur during the API call
-          console.error('Error sending data:', error);
-        });
-      }
     </script>
   </body>
 </html>
