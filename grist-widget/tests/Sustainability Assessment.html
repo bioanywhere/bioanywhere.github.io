@@ -1,82 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>onRecord</title>
-    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
-  </head>
-  <body>
-    <pre id="readout">Waiting for data...</pre>
-    <button id="generateDocument">Generate Document</button> <!-- New button element -->
-    <script>
-      grist.ready();
-      grist.onRecord(function(record) {
-        document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
-        const generateDocumentButton = document.getElementById('generateDocument');
-        generateDocumentButton.addEventListener('click', function() {
-          generateDocument(record);
-        });
+<body>
+  <pre id="readout">Waiting for data...</pre>
+  <button id="sendButton">Send JSON to API</button>
+  <script>
+    // Your existing JavaScript code
+    grist.ready();
+    grist.onRecord(function(record) {
+      document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
+    });
+
+    // New JavaScript code to send JSON to API
+    document.getElementById('sendButton').addEventListener('click', function() {
+      const jsonData = JSON.stringify(record); // Assuming 'record' holds the JSON data
+      sendDataToAPI(jsonData);
+    });
+
+    function sendDataToAPI(jsonData) {
+      // Sending JSON data to the specified API using fetch
+      fetch('https://script.google.com/macros/s/AKfycbztdvZ9qEbyziOtA7_yOlg9K8voX7yTn3mcTFTCdvWk9hWSmHE6Z8IKrOeDdNkW4Mvf/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: jsonData
+      })
+      .then(response => {
+        // Handle the API response here if needed
+        console.log('API Response:', response);
+      })
+      .catch(error => {
+        // Handle any errors that occur during the API call
+        console.error('Error sending data:', error);
       });
-
-      // Function to generate the document and send JSON data to Google Docs template
-      function generateDocument(record) {
-        // Replace the following URL with your Google Docs template URL
-        const templateURL = 'https://docs.google.com/document/d/1-BaXP-wa003ifu1191GeyyzfwwzzH438a1HBsMx7AXI/edit';
-        // Replace the variable placeholders in the template with corresponding JSON values
-        const replacedDocument = templateURL.replace('{{Company_ID}}', record.id)
-                                            .replace('{{Company_Name}}', record.Company.Name)
-                                            .replace('{{Date_Founded}}', record.Company.Date_Founded)
-                                            .replace('{{Address}}', record.Company.Address)
-                                            .replace('{{Phone_Number}}', record.Company.Phone_Number)
-                                            .replace('{{Website}}', record.Company.Website)
-                                            .replace('{{Sector}}', record.Company.Sector)
-                                            .replace('{{Description}}', record.Company.Description)
-                                            .replace('{{Gross_Profit}}', record.Company.Gross_Profit)
-                                            .replace('{{Revenue}}', record.Company.Revenue)
-                                            .replace('{{Gross_Profit_Margin}}', record.Company.Gross_Profit_Margin)
-                                            .replace('{{Full_Time_Employees}}', record.Company.Full_Time_Employees)
-                                            .replace('{{Part_Time_Employees}}', record.Company.Part_Time_Employees)
-                                            .replace('{{Part_Time_Employee_Composition}}', record.Company.Part_Time_Employee_Composition)
-                                            .replace('{{Number_of_Owners}}', record.Company.Number_of_Owners)
-                                            .replace('{{Women_Owners}}', record.Company.Women_Owners)
-                                            .replace('{{Women_Owners_Ratio}}', record.Company.Women_Owners_Ratio)
-                                            .replace('{{Indigenous_Owners}}', record.Company.Indigenous_Owners)
-                                            .replace('{{Indigenous_Owners_Ratio}}', record.Company.Indigenous_Owners_Ratio)
-                                            .replace('{{Contact_Information}}', record.Company.Contact_Information)
-                                            .replace('{{Full_Time_Employee_Composition}}', record.Company.Full_Time_Employee_Composition)
-                                            .replace('{{Governance_ID}}', record.Governance[0].id)
-                                            .replace('{{Purpose}}', record.Governance[0].Purpose)
-                                            .replace('{{Executive_Responsibilities}}', record.Governance[0].Executive_Responsibilities)
-                                            .replace('{{Stakeholder_Engagement}}', record.Governance[0].Stakeholder_Engagement)
-                                            .replace('{{Strategic_Planning}}', record.Governance[0].Strategic_Planning)
-                                            .replace('{{Risk_Management_Process}}', record.Governance[0].Risk_Management_Process)
-                                            .replace('{{Disclosures_Reports}}', record.Governance[0].Disclosures_Reports)
-                                            .replace('{{Decision_Making}}', record.Governance[0].Decision_Making)
-                                            .replace('{{Research_and_Development}}', record.Governance[0].Research_and_Development)
-                                            .replace('{{Competency_Maps}}', record.Governance[0].Competency_Maps)
-                                            .replace('{{Executive_Compensation}}', record.Governance[0].Executive_Compensation)
-                                            .replace('{{Company_Governance}}', record.Governance[0].Company)
-                                            .replace('{{Governance_Description}}', record.Governance[0].Description)
-                                            .replace('{{Sum_No}}', record.Governance[0].Sum_No)
-                                            .replace('{{Sum_Partially}}', record.Governance[0].Sum_Partially)
-                                            .replace('{{Sum_Yes}}', record.Governance[0].Sum_Yes)
-                                            .replace('{{Overall_Score}}', record.Governance[0].Overall_Score)
-                                            .replace('{{Weight_No}}', record.Governance[0].Weight_No)
-                                            .replace('{{Weight_Yes}}', record.Governance[0].Weight_Yes)
-                                            .replace('{{Weight_Partially}}', record.Governance[0].Weight_Partially)
-                                            .replace('{{Business_Model_ID}}', record.Business_Model[0].id)
-                                            .replace('{{Traditional_Flows}}', record.Business_Model[0].Traditional_Flows)
-                                            .replace('{{Nested_Interdependencies}}', record.Business_Model[0].Nested_Interdependencies)
-                                            .replace('{{Impact_Points}}', record.Business_Model[0].Impact_Points)
-                                            .replace('{{Value}}', record.Business_Model[0].Value)
-                                            .replace('{{Risks}}', record.Business_Model[0].Risks)
-                                            .replace('{{Reputation}}', record.Business_Model[0].Reputation)
-                                            .replace('{{Business_Model_Company}}', record.Business_Model[0].Company)
-                                            .replace('{{Business_Model_Score}}', record.Business_Model[0].Score);
-
-        // Open the generated document in a new tab
-        window.open(replacedDocument, '_blank');
-      }
-    </script>
-  </body>
-</html>
+    }
+  </script>
+</body>
