@@ -8,7 +8,7 @@ let button = document.getElementById("logout");
 
 console.log(params);
 
-utils.saveOAuth2Info(params, "/grist-widget/google/profile.html", "info");
+utils.saveOAuth2Info(params, "profile.html", "info");
 
 let info = JSON.parse(localStorage.getItem("info"));
 ACCESS_TOKEN = info.access_token
