@@ -92,5 +92,5 @@ document.getElementById('Report').addEventListener('click', async () => {
   } else {
     alert('Failed to create the report. Please try again later.');
   }
-}
+});
 
