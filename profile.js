@@ -1,3 +1,28 @@
+// profile.js
+import utils from "./utils.js";
+
+let params = utils.getParamsFromURL(location.href);
+let redirect_url = "";
+
+console.log("params:", params);
+
+utils.saveOAuth2Info(params, "profile.html", "info");
+
+fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+  headers: {
+    Authorization: `Bearer ${params.access_token}`,
+  },
+})
+  .then((data) => data.json())
+  .then((info) => {
+    console.log("User Info:", info);
+    document.getElementById("name").innerHTML += info.name;
+    document.getElementById("image").setAttribute("src", info.picture);
+  })
+  .catch((error) => {
+    console.error("Error fetching user info:", error);
+  });
+
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
   // Retrieve the access_token and json_data from the local storage
@@ -16,11 +41,13 @@ document.getElementById('Report').addEventListener('click', async () => {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
+
+      data = {
+          "name": "Impact Report",
+          "mimeType": "application/vnd.google-apps.document",
+      },
+
       body: JSON.stringify(json_data),
-      data: {  // Add the data object with name and mimeType
-        "name": "Impact Report",
-        "mimeType": "application/vnd.google-apps.document"
-      }
     });
 
     const responseData = await createFileResponse.json();
