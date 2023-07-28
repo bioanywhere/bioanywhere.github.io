@@ -2,7 +2,6 @@
 import utils from "./utils.js";
 
 let params = utils.getParamsFromURL(location.href);
-let ACCESS_TOKEN = "";
 let redirect_url = "";
 
 console.log("params:", params);
@@ -20,20 +19,31 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     document.getElementById("name").innerHTML += info.name;
     document.getElementById("image").setAttribute("src", info.picture);
 
-    // Move the ACCESS_TOKEN assignment here
-    ACCESS_TOKEN = params.access_token;
-    console.log("ACCESS_TOKEN:", ACCESS_TOKEN);
+    // Proceed with the "Create Report" button event handling
+    let button = document.getElementById("Report");
+    button.onclick = async () => {
+      // Retrieve the access_token and json_data from the local storage
+      const access_token = JSON.parse(localStorage.getItem("info")).access_token;
+      const json_data = JSON.parse(localStorage.getItem("json_data"));
+
+      console.log("Access Token:", access_token);
+      console.log("JSON Data:", json_data);
+
+      // Call the report function with the provided access_token and json_data
+      const documentUrl = await report(access_token, json_data);
+
+      // Step 4: Redirect the user to the new document after clicking on the "Create Report" button
+      if (documentUrl) {
+        console.log("Step 4: Redirecting to the new document:", documentUrl);
+        window.location.href = documentUrl;
+      } else {
+        alert('Failed to create the report. Please try again later.');
+      }
+    };
   })
   .catch((error) => {
     console.error("Error fetching user info:", error);
   });
-
-let button = document.getElementById("logout");
-button.onclick = logout;
-
-function logout() {
-  utils.logout(ACCESS_TOKEN, redirect_url);
-}
 
 // Function to create a new document in Google Docs and insert json_data
 async function report(access_token, json_data) {
@@ -108,24 +118,3 @@ async function report(access_token, json_data) {
     return null;
   }
 }
-
-// Event listener for the "Create Report" button
-document.getElementById('Report').addEventListener('click', async () => {
-  // Retrieve the access_token and json_data from the local storage
-  const access_token = localStorage.getItem('access_token');
-  const json_data = JSON.parse(localStorage.getItem('json_data'));
-
-  console.log("Access Token:", access_token);
-  console.log("JSON Data:", json_data);
-
-  // Call the report function with the provided access_token and json_data
-  const documentUrl = await report(access_token, json_data);
-
-  // Step 4: Redirect the user to the new document after clicking on the "Create Report" button
-  if (documentUrl) {
-    console.log("Step 4: Redirecting to the new document:", documentUrl);
-    window.location.href = documentUrl;
-  } else {
-    alert('Failed to create the report. Please try again later.');
-  }
-});
