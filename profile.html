@@ -16,6 +16,8 @@
       grist.ready();
       grist.onRecord(function(record) {
         document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
+        // Save the JSON data to the local storage
+        localStorage.setItem('json_data', JSON.stringify(record));
       });
     </script>
 
