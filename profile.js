@@ -6,8 +6,6 @@ let redirect_url = "";
 
 console.log("params:", params);
 
-utils.saveOAuth2Info(params, "profile.html", "info");
-
 fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
   headers: {
     Authorization: `Bearer ${params.access_token}`,
@@ -49,7 +47,7 @@ async function createGoogleDocWithJSON(access_token, json_data) {
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
   // Retrieve the access_token and json_data from the local storage
-  const access_token = JSON.parse(localStorage.getItem("info")).access_token;
+  const access_token = params.access_token; // Access token directly from the params object
   const json_data = JSON.parse(localStorage.getItem("json_data"));
 
   console.log("Access Token:", access_token);
