@@ -23,17 +23,9 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
-// Event listener for the "Create Report" button
-document.getElementById('Report').addEventListener('click', async () => {
-  // Retrieve the access_token and json_data from the local storage
-  const access_token = JSON.parse(localStorage.getItem("info")).access_token;
-  const json_data = JSON.parse(localStorage.getItem("json_data"));
-
-  console.log("Access Token:", access_token);
-  console.log("JSON Data:", json_data);
-
+// Function to create a new Google Docs document with JSON content
+async function createGoogleDocWithJSON(access_token, json_data) {
   try {
-    // Step 1: Create a new Google Docs document with JSON content
     console.log("Step 1: Creating a new Google Docs document...");
     const createFileResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
       method: 'POST',
@@ -47,8 +39,27 @@ document.getElementById('Report').addEventListener('click', async () => {
     const responseData = await createFileResponse.json();
     console.log("Step 1: Response data:", responseData);
 
-    // Step 2: Return the URL of the new document just created
-    const documentUrl = `https://docs.google.com/document/d/${responseData.id}`;
+    return responseData.id; // Return the document ID
+  } catch (error) {
+    console.error('Error creating the Google Docs document:', error);
+    throw error;
+  }
+}
+
+// Event listener for the "Create Report" button
+document.getElementById('Report').addEventListener('click', async () => {
+  // Retrieve the access_token and json_data from the local storage
+  const access_token = JSON.parse(localStorage.getItem("info")).access_token;
+  const json_data = JSON.parse(localStorage.getItem("json_data"));
+
+  console.log("Access Token:", access_token);
+  console.log("JSON Data:", json_data);
+
+  try {
+    const documentId = await createGoogleDocWithJSON(access_token, json_data);
+
+    // Step 2: Return the URL of the new document just created and redirect to edit mode
+    const documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
     console.log("Step 2: Document URL:", documentUrl);
     window.location.href = documentUrl;
   } catch (error) {
