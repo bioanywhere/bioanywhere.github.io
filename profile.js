@@ -9,14 +9,9 @@ console.log("params:", params);
 
 utils.saveOAuth2Info(params, "profile.html", "info");
 
-let info = JSON.parse(localStorage.getItem("info"));
-ACCESS_TOKEN = info.access_token;
-
-console.log("info:", info);
-
 fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
   headers: {
-    Authorization: `Bearer ${ACCESS_TOKEN}`,
+    Authorization: `Bearer ${params.access_token}`,
   },
 })
   .then((data) => data.json())
@@ -24,6 +19,10 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.log("User Info:", info);
     document.getElementById("name").innerHTML += info.name;
     document.getElementById("image").setAttribute("src", info.picture);
+
+    // Move the ACCESS_TOKEN assignment here
+    ACCESS_TOKEN = params.access_token;
+    console.log("ACCESS_TOKEN:", ACCESS_TOKEN);
   })
   .catch((error) => {
     console.error("Error fetching user info:", error);
