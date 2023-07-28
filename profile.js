@@ -35,17 +35,33 @@ document.getElementById('Report').addEventListener('click', async () => {
   try {
     // Step 1: Create a new document in Google Docs with JSON content
     console.log("Step 1: Creating a new document in Google Docs...");
-    const createFileResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
+
+    // Generate the multipart request body
+    const boundary = '-------boundary_' + Date.now();
+    const delimiter = "\r\n--" + boundary + "\r\n";
+    const closeDelimiter = "\r\n--" + boundary + "--";
+  
+    const metadata = {
+      name: "Impact Report",
+      mimeType: "application/vnd.google-apps.document",
+    };
+  
+    const multipartRequestBody =
+      delimiter +
+      'Content-Type: application/json\r\n\r\n' +
+      JSON.stringify(metadata) +
+      delimiter +
+      'Content-Type: application/json\r\n\r\n' +
+      JSON.stringify(json_data) +
+      closeDelimiter;
+  
+    const createFileResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/related; boundary=' + boundary,
       },
-      body: JSON.stringify({
-        ...json_data,
-        name: "Impact Report",
-        mimeType: "application/vnd.google-apps.document",
-      }),
+      body: multipartRequestBody,
     });
 
     const responseData = await createFileResponse.json();
