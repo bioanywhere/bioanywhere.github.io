@@ -41,12 +41,6 @@ document.getElementById('Report').addEventListener('click', async () => {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
-
-      data = {
-          "name": "Impact Report",
-          "mimeType": "application/vnd.google-apps.document",
-      },
-
       body: JSON.stringify(json_data),
     });
 
