@@ -33,13 +33,13 @@ document.getElementById('Report').addEventListener('click', async () => {
   console.log("JSON Data:", json_data);
 
   try {
-    // Step 1: Create a new document in Google Docs with JSON content
-    console.log("Step 1: Creating a new document in Google Docs...");
+    // Step 1: Create a new Google Docs document with JSON content
+    console.log("Step 1: Creating a new Google Docs document...");
     const createFileResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/vnd.google-apps.document', // Set the MIME type to Google Docs
       },
       body: JSON.stringify(json_data),
     });
