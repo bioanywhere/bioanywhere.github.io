@@ -2,42 +2,12 @@
 <html>
 <head>
     <title>Google Docs OAuth and Create Document</title>
-    <!-- Include Grist library -->
-    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
     <!-- Include Google Sign-In library -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <!-- Include Google Docs API client library -->
     <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-
-    <pre id="readout">Waiting for data...</pre>
-    <button id="saveButton">Save JSON</button>
-    <script>
-    grist.ready();
-    grist.onRecord(function(record) {
-      const jsonData = JSON.stringify(record, null, 2);
-      document.getElementById('readout').innerHTML = jsonData;
-
-      // Function to save JSON as a file
-      function saveJSONFile() {
-        const blob = new Blob([jsonData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'selected_record.json';
-        a.click();
-        URL.revokeObjectURL(url);
-
-        // Confirmation message
-        console.log('JSON data has been saved as "selected_record.json".');
-      }
-
-      // Attach event listener to the button
-      document.getElementById('saveButton').addEventListener('click', saveJSONFile);
-    });
-  </script>
-  
     <!-- Google Sign-In button -->
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
