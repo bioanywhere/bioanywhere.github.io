@@ -1,66 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8">
-  <title>onRecord</title>
-  <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
-  <!-- Include Google Sign-In library -->
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <!-- Include Google Docs API client library -->
-  <script src="https://apis.google.com/js/api.js"></script>
+    <title>Google Docs OAuth and Create Document</title>
+    <!-- Include Google Sign-In library -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- Include Google Docs API client library -->
+    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-  <pre id="readout">Waiting for data...</pre>
-  <!-- Google Sign-In button -->
-  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <!-- Google Sign-In button -->
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-  <script>
-    grist.ready();
-    grist.onRecord(function(record) {
-      const jsonData = JSON.stringify(record, null, 2);
-      document.getElementById('readout').innerHTML = jsonData;
+    <script>
+        // Google Sign-In callback function
+        function onSignIn(googleUser) {
+            // Retrieve the Google User ID token
+            const idToken = googleUser.getAuthResponse().id_token;
 
-      // Google Sign-In callback function
-      function onSignIn(googleUser) {
-        // Retrieve the Google User ID token
-        const idToken = googleUser.getAuthResponse().id_token;
+            // Initialize the Google Docs API client
+            gapi.client.init({
+                apiKey: 'AIzaSyDnJfRgswbYdziSgwttsXmPTtCqfTi4ZvQ',
+                clientId: '200624216191-au85bp336m9kj1vpfqajhogl0addg5he.apps.googleusercontent.com',
+                discoveryDocs: ["https://docs.googleapis.com/$discovery/rest?version=v1"],
+                scope: 'https://www.googleapis.com/auth/documents'
+            }).then(function () {
+                // Google Docs API is initialized and ready to use
+                createNewDocument();
+            }).catch(function (error) {
+                console.log('Error initializing Google Docs API:', error);
+            });
+        }
 
-        // Initialize the Google Docs API client
-        gapi.client.init({
-          apiKey: 'AIzaSyDnJfRgswbYdziSgwttsXmPTtCqfTi4ZvQ',
-          clientId: '200624216191-au85bp336m9kj1vpfqajhogl0addg5he.apps.googleusercontent.com',
-          discoveryDocs: ["https://docs.googleapis.com/$discovery/rest?version=v1"],
-          scope: 'https://www.googleapis.com/auth/documents'
-        }).then(function () {
-          // Google Docs API is initialized and ready to use
-          createNewDocument(jsonData);
-        }).catch(function (error) {
-          console.log('Error initializing Google Docs API:', error);
-        });
-      }
+        // Function to create a new Google Docs document
+        function createNewDocument() {
+            // Define the document content
+            const documentContent = {
+                title: 'New Document from Web App',
+                body: {
+                    content: 'Hello, this is a new document created from the web app!'
+                }
+            };
 
-      // Function to create a new Google Docs document and insert JSON data
-      function createNewDocument(jsonData) {
-        // Define the document content with JSON data
-        const documentContent = {
-          title: 'New Document with JSON Data',
-          body: {
-            content: jsonData
-          }
-        };
-
-        // Create the new document
-        gapi.client.docs.documents.create({
-          resource: documentContent
-        }).then(function (response) {
-          const documentId = response.result.documentId;
-          // Redirect to the created document URL
-          window.location.href = `https://docs.google.com/document/d/${documentId}/edit`;
-        }).catch(function (error) {
-          console.log('Error creating the document:', error);
-        });
-      }
-    });
-  </script>
+            // Create the new document
+            gapi.client.docs.documents.create({
+                resource: documentContent
+            }).then(function (response) {
+                const documentId = response.result.documentId;
+                // Redirect to the created document URL
+                window.location.href = `https://docs.google.com/document/d/${documentId}/edit`;
+            }).catch(function (error) {
+                console.log('Error creating the document:', error);
+            });
+        }
+    </script>
 </body>
 </html>
