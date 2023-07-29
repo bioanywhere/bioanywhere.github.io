@@ -111,7 +111,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 3: Reading the content of the duplicated document as text...");
     const contentText = await contentBlob.text();
 
-    // Step 4: Replace the variables in the content with JSON data
+     // Step 4: Replace the variables in the content with JSON data
     console.log("Step 4: Replacing variables in the document content...");
 
     // Function to replace variables in the content using the provided JSON data
@@ -126,15 +126,18 @@ document.getElementById('Report').addEventListener('click', async () => {
       return value !== undefined ? value : `{{${variableName}}}`; // Fallback to the original placeholder if key not found
     }
 
-
     // Use a regular expression to find and replace all variables in the content
     const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
+
+    // Append the JSON data to the end of the document
+    const finalContent = `${replacedContent}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
 
     console.log("Step 4: Variables replaced in the document content.");
 
     // Step 5: Upload the modified content back to the document
     console.log("Step 5: Uploading the modified content to the document...");
-    const updatedContentBlob = new Blob([replacedContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
 
     try {
       // Send the PATCH request to update the file content
