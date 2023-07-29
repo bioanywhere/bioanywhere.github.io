@@ -33,9 +33,9 @@ document.getElementById('Report').addEventListener('click', async () => {
   console.log("JSON Data:", json_data);
 
   try {
-    // Step 1: Create a new Google Docs document
-    console.log("Step 1: Creating a new Google Docs document...");
-    const createFileResponse = await fetch('https://www.googleapis.com/drive/v3/files', {
+    // Step 1: Create a new document in Google Docs with JSON content
+    console.log("Step 1: Creating a new document in Google Docs...");
+    const createFileResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -50,22 +50,9 @@ document.getElementById('Report').addEventListener('click', async () => {
     const responseData = await createFileResponse.json();
     console.log("Step 1: Response data:", responseData);
 
-    // Step 2: Populate the Google Docs document with JSON content
-    console.log("Step 2: Populating the Google Docs document with JSON content...");
-    const populateFileResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${responseData.id}/content?uploadType=media`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(json_data),
-    });
-
-    console.log("Step 2: Populated Google Docs response:", populateFileResponse);
-
-    // Step 3: Return the URL of the new document just created
+    // Step 2: Return the URL of the new document just created
     const documentUrl = `https://docs.google.com/document/d/${responseData.id}`;
-    console.log("Step 3: Document URL:", documentUrl);
+    console.log("Step 2: Document URL:", documentUrl);
     window.location.href = documentUrl;
   } catch (error) {
     console.error('Error creating the report:', error);
