@@ -80,8 +80,14 @@ if (!json_data) {
   console.log("JSON data*:", json_data);
 }
 
-  // Retrieve the template document ID from the local storage
-  const templateDocumentId = localStorage.getItem("templateDocumentId");
+// Function to store the template document ID in the local storage
+function setTemplateDocumentId(templateDocumentId) {
+  localStorage.setItem("templateDocumentId", templateDocumentId);
+}
+
+const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
+setTemplateDocumentId(templateDocumentId);
+
 
   console.log("Access Token:", access_token);
   console.log("JSON Data**:", json_data);

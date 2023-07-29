@@ -62,16 +62,6 @@ function saveOAuth2Info(data, path, name) {
 
 }
 
-// Function to store the template document ID in the local storage
-function setTemplateDocumentId(templateDocumentId) {
-  localStorage.setItem("templateDocumentId", templateDocumentId);
-}
-
-// Example usage:
-const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
-setTemplateDocumentId(templateDocumentId);
-
-
 export default{
     signIn,
     logout,
