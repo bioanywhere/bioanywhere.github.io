@@ -53,12 +53,20 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
+
   // Retrieve the access_token and json_data from the local storage
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
   const json_data = JSON.parse(localStorage.getItem("json_data"));
 
+  // Retrieve the template document ID from the local storage
+  const templateDocumentId = localStorage.getItem("templateDocumentId");
+
+
   console.log("Access Token:", access_token);
   console.log("JSON Data:", json_data);
+
+  console.log("Template Document ID:", templateDocumentId);
+
 
   try {
     // Step 1: Duplicate the template document
