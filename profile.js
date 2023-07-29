@@ -101,28 +101,25 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 3: Reading the content of the duplicated document as text...");
     const contentText = await contentBlob.text();
 
- // Step 4: Replace the variables in the content with JSON data
+// Step 4: Replace the variables in the content with JSON data
 console.log("Step 4: Replacing variables in the document content...");
 
-// Function to recursively replace variables in the content using the provided JSON data
+// Utility function to get nested property safely
+function getNestedProperty(obj, path) {
+  const keys = path.split('.');
+  return keys.reduce((value, key) => (value && value.hasOwnProperty(key) ? value[key] : undefined), obj);
+}
+
+// Function to replace variables in the content using the provided JSON data
 function replaceVariables(match, variableName) {
-  const keys = variableName.split('.');
-  let value = json_data;
-  for (const key of keys) {
-    if (value.hasOwnProperty(key)) {
-      value = value[key];
-    } else {
-      value = `{{${variableName}}}`; // Fallback to the original placeholder if key not found
-      break;
-    }
-  }
+  const value = getNestedProperty(json_data, variableName);
 
   // Handle special case where value is an object, array, or null
   if (typeof value === "object" || value === null) {
-    value = JSON.stringify(value);
+    return JSON.stringify(value);
   }
 
-  return value;
+  return value !== undefined ? value : `{{${variableName}}}`; // Fallback to the original placeholder if key not found
 }
 
 // Use a regular expression to find and replace all variables in the content
@@ -130,24 +127,24 @@ const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
 
 console.log("Step 4: Variables replaced in the document content.");
 
-    // Step 5: Upload the modified content back to the document
-    console.log("Step 5: Uploading the modified content to the document...");
-    const updatedContentBlob = new Blob([replacedContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-    const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      },
-      body: updatedContentBlob,
-    });
+// Step 5: Upload the modified content back to the document
+console.log("Step 5: Uploading the modified content to the document...");
+const updatedContentBlob = new Blob([replacedContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
+  method: 'PATCH',
+  headers: {
+    Authorization: `Bearer ${access_token}`,
+    'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  },
+  body: updatedContentBlob,
+});
 
-    console.log("Step 5: Document content updated successfully.");
+console.log("Step 5: Document content updated successfully.");
 
-    // Step 6: Return the URL of the modified document
-    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-    console.log("Step 6: Document URL:", documentUrl);
-    window.location.href = documentUrl;
+// Step 6: Return the URL of the modified document
+const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+console.log("Step 6: Document URL:", documentUrl);
+window.location.href = documentUrl;
   } catch (error) {
     console.error('Error creating the report:', error);
     alert('Failed to create the report. Please try again later.');
