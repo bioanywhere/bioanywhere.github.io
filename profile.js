@@ -93,6 +93,9 @@ setTemplateDocumentId(templateDocumentId);
   console.log("JSON Data**:", json_data);
   console.log("Template Document ID:", templateDocumentId);
 
+// Insert the debugger statement to stop the code execution
+debugger;
+
   try {
     // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
