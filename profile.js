@@ -66,10 +66,19 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
-
-  // Retrieve the access_token and json_data from the local storage
+  // Retrieve the access_token from the local storage
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
-  const json_data = JSON.parse(localStorage.getItem("json_data"));
+
+  // Retrieve the JSON data from the local storage
+const json_data = JSON.parse(localStorage.getItem("json_data"));
+
+// Check if json_data exists
+if (!json_data) {
+  console.error("JSON data not found in local storage.");
+} else {
+  // Print the JSON data in the console
+  console.log("JSON data:", json_data);
+}
 
   // Retrieve the template document ID from the local storage
   const templateDocumentId = localStorage.getItem("templateDocumentId");
