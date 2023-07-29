@@ -1,5 +1,4 @@
 import utils from "./utils.js";
-
 // Function to get nested properties from an object based on a dot-separated string
 function getNestedProperty(obj, propString) {
   const props = propString.split('.');
@@ -112,11 +111,11 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 3: Reading the content of the duplicated document as text...");
     const contentText = await contentBlob.text();
 
-    // Step 4: Replace the variables in the content with JSON data
+     // Step 4: Replace the variables in the content with JSON data
     console.log("Step 4: Replacing variables in the document content...");
 
-    // Construct the new document content by replacing variables in the template
-    const newContent = contentText.replace(/\{\{(.+?)\}\}/g, (match, variableName) => {
+    // Function to replace variables in the content using the provided JSON data
+    function replaceVariables(match, variableName) {
       const value = getNestedProperty(json_data, variableName);
 
       // Handle special case where value is an object, array, or null
@@ -125,22 +124,30 @@ document.getElementById('Report').addEventListener('click', async () => {
       }
 
       return value !== undefined ? value : `{{${variableName}}}`; // Fallback to the original placeholder if key not found
-    });
+    }
+
+    // Use a regular expression to find and replace all variables in the content
+    const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
+
+    // Append the JSON data to the end of the document
+    const finalContent = `${replacedContent}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
 
     console.log("Step 4: Variables replaced in the document content.");
 
     // Step 5: Upload the modified content back to the document
     console.log("Step 5: Uploading the modified content to the document...");
+    const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
 
     try {
-      // Send the PUT request to update the file content
+      // Send the PATCH request to update the file content
       const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           Authorization: `Bearer ${access_token}`,
           'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         },
-        body: newContent,
+        body: updatedContentBlob,
       });
 
       console.log("Step 5: Document content updated successfully.");
@@ -153,8 +160,9 @@ document.getElementById('Report').addEventListener('click', async () => {
       console.error('Error updating the document content:', error);
       alert('Failed to update the document content. Please try again later.');
     }
+
   } catch (error) {
-    console.error('Error duplicating the template document:', error);
-    alert('Failed to duplicate the template document. Please try again later.');
+    console.error('Error creating the report:', error);
+    alert('Failed to create the report. Please try again later.');
   }
 });
