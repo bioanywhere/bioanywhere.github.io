@@ -1,56 +1,16 @@
-// Import utils.js
 import utils from "./utils.js";
-
-// Function to get the nested properties of the JSON data
-function getNestedProperty(obj, path) {
-  const keys = path.split('.');
+// Function to get nested properties from an object based on a dot-separated string
+function getNestedProperty(obj, propString) {
+  const props = propString.split('.');
   let value = obj;
-
-  for (const key of keys) {
-    if (value && value.hasOwnProperty(key)) {
-      value = value[key];
+  for (const prop of props) {
+    if (value.hasOwnProperty(prop)) {
+      value = value[prop];
     } else {
-      value = undefined;
-      break;
+      return undefined; // Return undefined if the property doesn't exist
     }
   }
-
   return value;
-}
-
-// Function to replace variables in the content using the provided JSON data
-function replaceVariables(jsonData, documentId) {
-  const requests = [];
-  const keys = Object.keys(jsonData);
-
-  for (const key of keys) {
-    const value = getNestedProperty(jsonData, key);
-    requests.push({
-      replaceAllText: {
-        containsText: {
-          text: `{{${key}}}`,
-          matchCase: false,
-        },
-        replaceText: value !== undefined ? value.toString() : "",
-      },
-    });
-  }
-
-  return {
-    requests: requests,
-  };
-}
-
-// Function to update the content of the Google Docs document
-async function updateDocumentContent(documentId, accessToken, content) {
-  await fetch(`https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(content),
-  });
 }
 
 // Function to create the multipart request body with metadata and JSON content
@@ -82,7 +42,6 @@ utils.createMultipartRequestBody = (json_data) => {
   return requestBody;
 };
 
-// Fetch user info
 let params = utils.getParamsFromURL(location.href);
 let redirect_url = "";
 
@@ -107,80 +66,125 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
-  // Retrieve the access_token and json_data from the local storage
+  // Retrieve the access_token from the local storage
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
-  const json_data = JSON.parse(localStorage.getItem("json_data"));
 
-  // Retrieve the template document ID from the local storage
-  const templateDocumentId = localStorage.getItem("templateDocumentId");
+  // Retrieve the JSON data from the local storage
+const json_data = JSON.parse(localStorage.getItem("json_data"));
 
-  console.log("Access Token:", access_token);
-  console.log("JSON Data:", json_data);
-  console.log("Template Document ID:", templateDocumentId);
-
-  // ...
-  // Add the code from the previous snippets here to complete the functionality
-  // ...
-
-});
-
-// ...
-// Add the code from the previous snippets here to complete the functionality
-// ...
-
-try {
-  // Step 1: Duplicate the template document
-  console.log("Step 1: Duplicating the template document...");
-  const duplicateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: "My Report", // The name of the duplicated file
-    }),
-  });
-
-  const duplicateData = await duplicateResponse.json();
-  console.log("Step 1: Duplicated document ID:", duplicateData.id);
-
-  // Step 2: Retrieve the content of the duplicated document
-  console.log("Step 2: Retrieving the content of the duplicated document...");
-  const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/export?mimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  });
-
-  const contentBlob = await contentResponse.blob();
-  console.log("Step 2: Retrieved document content.");
-
-  // Step 3: Read the content of the duplicated document as text
-  console.log("Step 3: Reading the content of the duplicated document as text...");
-  const contentText = await contentBlob.text();
-
-  // Step 4: Replace the variables in the content with JSON data
-  console.log("Step 4: Replacing variables in the document content...");
-  const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, (match, variableName) => replaceVariables(json_data, variableName));
-
-  console.log("Step 4: Variables replaced in the document content.");
-
-  // Step 5: Upload the modified content back to the document
-  console.log("Step 5: Uploading the modified content to the document...");
-  const updatedContentBlob = new Blob([replacedContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-
-  // Send the PATCH request to update the file content
-  await updateDocumentContent(duplicateData.id, access_token, { requests: [{ replaceAllText: { containsText: { text: `{{Company.Name}}`, matchCase: false }, replaceText: 'Replaced Company Name' } }] });
-
-  console.log("Step 5: Document content updated successfully.");
-
-  // Step 6: Return the URL of the modified document
-  const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-  console.log("Step 6: Document URL:", documentUrl);
-  window.location.href = documentUrl;
-} catch (error) {
-  console.error('Error creating the report:', error);
-  alert('Failed to create the report. Please try again later.');
+// Check if json_data exists
+if (!json_data) {
+  console.error("JSON data not found in local storage.");
+} else {
+  // Print the JSON data in the console
+  console.log("JSON data*:", json_data);
 }
 
+// Function to store the template document ID in the local storage
+function setTemplateDocumentId(templateDocumentId) {
+  localStorage.setItem("templateDocumentId", templateDocumentId);
+}
+
+const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
+setTemplateDocumentId(templateDocumentId);
+
+
+  console.log("Access Token:", access_token);
+  console.log("JSON Data**:", json_data);
+  console.log("Template Document ID:", templateDocumentId);
+
+// Insert the debugger statement to stop the code execution
+
+  try {
+    // Step 1: Duplicate the template document
+    console.log("Step 1: Duplicating the template document...");
+    const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0'; // Replace this with your actual Google Docs template document ID
+    const duplicateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: "My Report", // The name of the duplicated file
+      }),
+    });
+
+    const duplicateData = await duplicateResponse.json();
+    console.log("Step 1: Duplicated document ID:", duplicateData.id);
+
+    // Step 2: Retrieve the content of the duplicated document
+    console.log("Step 2: Retrieving the content of the duplicated document...");
+    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/export?mimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+
+
+    const contentBlob = await contentResponse.blob();
+    console.log("Step 2: Retrieved document content.");
+
+    // Step 3: Read the content of the duplicated document as text
+    console.log("Step 3: Reading the content of the duplicated document as text...");
+    const contentText = await contentBlob.text();
+
+
+
+     // Step 4: Replace the variables in the content with JSON data
+    console.log("Step 4: Replacing variables in the document content...");
+
+    // Function to replace variables in the content using the provided JSON data
+    function replaceVariables(match, variableName) {
+      const value = getNestedProperty(json_data, variableName);
+
+      // Handle special case where value is an object, array, or null
+      if (typeof value === "object" || value === null) {
+        return JSON.stringify(value);
+      }
+
+      return value !== undefined ? value : `{{${variableName}}}`; // Fallback to the original placeholder if key not found
+    }
+
+    debugger;
+
+    // Use a regular expression to find and replace all variables in the content
+    const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
+
+    // Append the JSON data to the end of the document
+    const finalContent = `${replacedContent}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
+
+    console.log("Step 4: Variables replaced in the document content.");
+
+    // Step 5: Upload the modified content back to the document
+    console.log("Step 5: Uploading the modified content to the document...");
+    const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+
+    try {
+      // Send the PATCH request to update the file content
+      const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        },
+        body: updatedContentBlob,
+      });
+
+      console.log("Step 5: Document content updated successfully.");
+
+      // Step 6: Return the URL of the modified document
+      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+      console.log("Step 6: Document URL:", documentUrl);
+      window.location.href = documentUrl;
+    } catch (error) {
+      console.error('Error updating the document content:', error);
+      alert('Failed to update the document content. Please try again later.');
+    }
+
+  } catch (error) {
+    console.error('Error creating the report:', error);
+    alert('Failed to create the report. Please try again later.');
+  }
+});
