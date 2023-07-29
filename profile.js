@@ -136,7 +136,12 @@ console.log("Step 4: Variables replaced in the document content.");
 
     console.log("Step 5: Document content updated successfully.");
 
-// Step 6: Return the URL of the modified document
-const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-console.log("Step 6: Document URL:", documentUrl);
-window.location.href = documentUrl;
+    // Step 6: Return the URL of the modified document
+    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+    console.log("Step 6: Document URL:", documentUrl);
+    window.location.href = documentUrl;
+  } catch (error) {
+    console.error('Error creating the report:', error);
+    alert('Failed to create the report. Please try again later.');
+  }
+});
