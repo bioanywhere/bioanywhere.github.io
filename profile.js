@@ -129,7 +129,7 @@ setTemplateDocumentId(templateDocumentId);
     console.log("Step 3: Reading the content of the duplicated document as text...");
     const contentText = await contentBlob.text();
 
-    debugger;
+
 
      // Step 4: Replace the variables in the content with JSON data
     console.log("Step 4: Replacing variables in the document content...");
@@ -145,6 +145,8 @@ setTemplateDocumentId(templateDocumentId);
 
       return value !== undefined ? value : `{{${variableName}}}`; // Fallback to the original placeholder if key not found
     }
+
+    debugger;
 
     // Use a regular expression to find and replace all variables in the content
     const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
