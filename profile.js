@@ -126,6 +126,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       return value !== undefined ? value : `{{${variableName}}}`; // Fallback to the original placeholder if key not found
     }
 
+
     // Use a regular expression to find and replace all variables in the content
     const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
 
