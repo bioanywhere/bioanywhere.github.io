@@ -1,4 +1,4 @@
-// profile.js
+
 import utils from "./utils.js";
 
 // Function to create the multipart request body with metadata and JSON content
