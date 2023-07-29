@@ -164,24 +164,40 @@ console.log("Step 4: Variables replaced in the document content.");
 
 // Step 5: Upload the modified content back to the document
 console.log("Step 5: Uploading the modified content to the document...");
+
+// Create the metadata for the updated file content
+const metadata = {
+  name: "My Modified Report", // The name of the updated file
+};
+
+// Convert the content to a Blob
 const updatedContentBlob = new Blob([replacedContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
-  method: 'PATCH',
-  headers: {
-    Authorization: `Bearer ${access_token}`,
-    'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  },
-  body: updatedContentBlob,
-});
 
-console.log("Step 5: Document content updated successfully.");
+// Create a multipart request body for updating the file content
+const requestBody = new FormData();
+requestBody.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+requestBody.append('file', updatedContentBlob);
 
-// Step 6: Return the URL of the modified document
-const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-console.log("Step 6: Document URL:", documentUrl);
-window.location.href = documentUrl;
-  } catch (error) {
-    console.error('Error creating the report:', error);
-    alert('Failed to create the report. Please try again later.');
+try {
+  // Send the PATCH request to update the file content
+  const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: requestBody,
+  });
+
+  console.log("Step 5: Document content updated successfully.");
+
+  // Step 6: Return the URL of the modified document
+  const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+  console.log("Step 6: Document URL:", documentUrl);
+  window.location.href = documentUrl;
+} catch (error) {
+  console.error('Error updating the document content:', error);
+  alert('Failed to update the document content. Please try again later.');
+}
+
   }
 });
