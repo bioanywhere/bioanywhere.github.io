@@ -104,9 +104,8 @@ document.getElementById('Report').addEventListener('click', async () => {
  // Step 4: Replace the variables in the content with JSON data
 console.log("Step 4: Replacing variables in the document content...");
 
-// Replace the variables in the content with corresponding JSON values
-const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, (match, variableName) => {
-  // Traverse the JSON data dynamically using the variable name
+// Function to recursively replace variables in the content using the provided JSON data
+function replaceVariables(match, variableName) {
   const keys = variableName.split('.');
   let value = json_data;
   for (const key of keys) {
@@ -117,8 +116,17 @@ const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, (match, variableNa
       break;
     }
   }
+
+  // Handle special case where value is an object, array, or null
+  if (typeof value === "object" || value === null) {
+    value = JSON.stringify(value);
+  }
+
   return value;
-});
+}
+
+// Use a regular expression to find and replace all variables in the content
+const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
 
 console.log("Step 4: Variables replaced in the document content.");
 
