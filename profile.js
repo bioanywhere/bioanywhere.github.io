@@ -63,7 +63,7 @@ document.getElementById('Report').addEventListener('click', async () => {
   try {
     // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
-    const templateDocumentId = 'YOUR_TEMPLATE_DOCUMENT_ID'; // Replace this with your actual Google Docs template document ID
+    const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0'; // Replace this with your actual Google Docs template document ID
     const duplicateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
       headers: {
