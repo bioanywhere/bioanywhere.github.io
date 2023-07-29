@@ -39,12 +39,9 @@ document.getElementById('Report').addEventListener('click', async () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/vnd.google-apps.document',
       },
-      body: JSON.stringify({
-        name: "Impact Report",
-        mimeType: "application/vnd.google-apps.document",
-      }),
+      body: JSON.stringify(json_data),
     });
 
     const responseData = await createFileResponse.json();
