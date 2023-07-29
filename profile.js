@@ -77,14 +77,14 @@ if (!json_data) {
   console.error("JSON data not found in local storage.");
 } else {
   // Print the JSON data in the console
-  console.log("JSON data:", json_data);
+  console.log("JSON data*:", json_data);
 }
 
   // Retrieve the template document ID from the local storage
   const templateDocumentId = localStorage.getItem("templateDocumentId");
 
   console.log("Access Token:", access_token);
-  console.log("JSON Data:", json_data);
+  console.log("JSON Data**:", json_data);
   console.log("Template Document ID:", templateDocumentId);
 
   try {
