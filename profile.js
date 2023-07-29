@@ -104,40 +104,23 @@ document.getElementById('Report').addEventListener('click', async () => {
  // Step 4: Replace the variables in the content with JSON data
 console.log("Step 4: Replacing variables in the document content...");
 
-// Function to replace variables in the content using the provided JSON data
-function replaceVariables(match, variableName) {
+// Replace the variables in the content with corresponding JSON values
+const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, (match, variableName) => {
   // Traverse the JSON data dynamically using the variable name
   const keys = variableName.split('.');
   let value = json_data;
   for (const key of keys) {
-    // Handle special cases for JSON keys that contain [index]
-    const indexStart = key.indexOf('[');
-    if (indexStart !== -1) {
-      const indexEnd = key.indexOf(']', indexStart);
-      if (indexEnd !== -1) {
-        const arrayKey = key.slice(0, indexStart);
-        const arrayIndex = parseInt(key.slice(indexStart + 1, indexEnd));
-        if (Array.isArray(value[arrayKey])) {
-          value = value[arrayKey][arrayIndex];
-        } else {
-          value = value[key]; // Fallback to the original key
-        }
-      } else {
-        value = value[key]; // Fallback to the original key
-      }
-    } else {
+    if (value.hasOwnProperty(key)) {
       value = value[key];
+    } else {
+      value = `{{${variableName}}}`; // Fallback to the original placeholder if key not found
+      break;
     }
   }
-  // Return the value to be replaced in the template
   return value;
-}
-
-// Use a regular expression to find and replace all variables in the content
-const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
+});
 
 console.log("Step 4: Variables replaced in the document content.");
-
 
     // Step 5: Upload the modified content back to the document
     console.log("Step 5: Uploading the modified content to the document...");
