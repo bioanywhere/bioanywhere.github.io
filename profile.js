@@ -119,12 +119,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     // Use a regular expression to find and replace all variables in the content
     const replacedContent = contentText.replace(/\{\{(.+?)\}\}/g, replaceVariables);
 
-
-  } catch (error) {
-    console.error('Error creating the report:', error);
-    alert('Failed to create the report. Please try again later.');
-  }
-});
+    console.log("Step 4: Variables replaced in the document content.");
 
 
     // Step 5: Upload the modified content back to the document
