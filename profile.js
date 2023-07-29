@@ -94,7 +94,6 @@ setTemplateDocumentId(templateDocumentId);
   console.log("Template Document ID:", templateDocumentId);
 
 // Insert the debugger statement to stop the code execution
-debugger;
 
   try {
     // Step 1: Duplicate the template document
@@ -121,6 +120,7 @@ debugger;
         Authorization: `Bearer ${access_token}`,
       },
     });
+debugger;
 
     const contentBlob = await contentResponse.blob();
     console.log("Step 2: Retrieved document content.");
