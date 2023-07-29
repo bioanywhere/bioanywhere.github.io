@@ -39,8 +39,12 @@ document.getElementById('Report').addEventListener('click', async () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/vnd.google-apps.document',
+        'Content-Type': 'application/json',
       },
+
+      
+
+
       body: JSON.stringify(json_data),
     });
 
