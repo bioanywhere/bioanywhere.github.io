@@ -1,4 +1,4 @@
-// profile.js
+/ profile.js
 import utils from "./utils.js";
 
 let params = utils.getParamsFromURL(location.href);
@@ -41,9 +41,6 @@ document.getElementById('Report').addEventListener('click', async () => {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
-
-      
-
 
       body: JSON.stringify(json_data),
     });
