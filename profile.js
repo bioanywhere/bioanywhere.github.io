@@ -120,7 +120,7 @@ setTemplateDocumentId(templateDocumentId);
         Authorization: `Bearer ${access_token}`,
       },
     });
-debugger;
+
 
     const contentBlob = await contentResponse.blob();
     console.log("Step 2: Retrieved document content.");
@@ -128,6 +128,8 @@ debugger;
     // Step 3: Read the content of the duplicated document as text
     console.log("Step 3: Reading the content of the duplicated document as text...");
     const contentText = await contentBlob.text();
+
+    debugger;
 
      // Step 4: Replace the variables in the content with JSON data
     console.log("Step 4: Replacing variables in the document content...");
