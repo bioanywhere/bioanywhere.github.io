@@ -67,6 +67,8 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 // ... (previous code)
 
+// ... (Rest of the code)
+
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
   console.log("Button clicked.");
@@ -80,7 +82,6 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Check if json_data exists
   if (!json_data) {
     console.error("JSON data not found in local storage.");
-    return;
   } else {
     // Print the JSON data in the console
     console.log("JSON data*:", json_data);
@@ -112,73 +113,48 @@ document.getElementById('Report').addEventListener('click', async () => {
     const duplicateData = await duplicateResponse.json();
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
 
-    // Step 2: Retrieve the content of the duplicated document as a Google Docs document
-    console.log("Step 2: Retrieving the content of the duplicated document...");
-    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}?alt=media`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
+    console.log("Step 2: Document content duplicated successfully.");
+
+    // Step 3: Use the Google Docs API to insert additional text
+    console.log("Step 3: Inserting additional text into the document...");
+    const additionalText = "This is the additional text you want to add.";
+
+    const insertTextRequest = {
+      insertText: {
+        location: {
+          index: 1, // Index where you want to insert the text. 1 represents right after the title of the document.
+        },
+        text: additionalText,
       },
-    });
+    };
 
-    const content = await contentResponse.text();
-    console.log("Step 2: Retrieved document content.");
-
-    // Step 3: Use the content directly as Google Docs document
-    console.log("Step 3: Using the content of the duplicated document...");
-
-    // Append the JSON data to the end of the document
-    const finalContent = `${content}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
-    console.log("Step 4: JSON Data appended to the document content.");
-
-    // Step 5: Upload the modified content back to the document as a new revision
-    console.log("Step 5: Uploading the modified content to the document...");
-    const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.google-apps.document' });
+    const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
+    const googleDocsApiHeaders = {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    };
 
     try {
-      // Send the PUT request to update the file content
-      console.log("Sending PUT request to update file content...");
+      const insertTextResponse = await fetch(googleDocsApiUrl, {
+        method: 'POST',
+        headers: googleDocsApiHeaders,
+        body: JSON.stringify({
+          requests: [insertTextRequest],
+        }),
+      });
 
-      const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}?uploadType=media`;
-      const updateContentHeaders = {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/vnd.google-apps.document',
-      };
+      const insertTextResponseData = await insertTextResponse.json();
+      console.log("Step 3: Additional text inserted into the document.");
+      console.log("Insert Text Response Data:", insertTextResponseData);
 
-      console.log("PUT Request URL:", updateContentUrl);
-      console.log("PUT Request Headers:", updateContentHeaders);
-      console.log("PUT Request Body (updatedContentBlob):", updatedContentBlob);
-
-      try {
-        const updateContentResponse = await fetch(updateContentUrl, {
-          method: 'PUT',
-          headers: updateContentHeaders,
-          body: updatedContentBlob,
-        });
-
-        console.log("PUT Request Sent.");
-
-        // Read the response as JSON
-        const updateContentResponseData = await updateContentResponse.clone().json();
-
-        console.log("PUT Response Data:", updateContentResponseData);
-
-        // Handle the response as needed
-        // ...
-      } catch (error) {
-        console.error('Error sending the PUT request:', error);
-        alert('Failed to update the file content. Please try again later.');
-      };
-
-      console.log("Step 5: Document content updated successfully.");
-      debugger;
-      // Step 6: Return the URL of the modified document
+      // Step 4: Return the URL of the modified document
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-      console.log("Step 6: Document URL:", documentUrl);
+      console.log("Step 4: Document URL:", documentUrl);
       debugger;
       window.location.href = documentUrl;
     } catch (error) {
-      console.error('Error updating the document content:', error);
-      alert('Failed to update the document content. Please try again later.');
+      console.error('Error inserting additional text:', error);
+      alert('Failed to insert additional text. Please try again later.');
     }
 
   } catch (error) {
