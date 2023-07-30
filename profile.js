@@ -91,16 +91,15 @@ function fixJsonData(jsonData) {
   return jsonData;
 }
 
-// Function to convert JSON data to a DataFrame-like array of objects
 function convertJsonToDataFrame(jsonData) {
-  // Fix the JSON data
-  jsonData = fixJsonData(jsonData);
-
-  // Parse the JSON into an object
-  const data = JSON.parse(jsonData);
+  // Check if jsonData is a string (already stored as a string in localStorage)
+  if (typeof jsonData === 'string') {
+    // Parse the JSON into an object
+    jsonData = JSON.parse(jsonData);
+  }
 
   // Extract the 'Report' value
-  let reportData = JSON.parse(data['Report']);
+  let reportData = jsonData['Report'];
 
   // Flatten the 'Report' object using the custom recursive function
   reportData = flattenJson(reportData);
@@ -108,6 +107,7 @@ function convertJsonToDataFrame(jsonData) {
   // Return the DataFrame-like array of objects
   return reportData;
 }
+
   // Example usage with the JSON data from localStorage
   const json_data = JSON.parse(localStorage.getItem("json_data"));
   console.log("Original JSON data:");
