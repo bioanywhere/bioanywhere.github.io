@@ -135,16 +135,23 @@ document.getElementById('Report').addEventListener('click', async () => {
     const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
 
     try {
-      // Send the PATCH request to update the file content
-      const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
-        method: 'PATCH',
-        headers: {
+    // Send the PATCH request to update the file content
+        const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
+        const updateContentHeaders = {
           Authorization: `Bearer ${access_token}`,
           'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        },
-        body: updatedContentBlob,
-      });
+        };
+        console.log("Step 5: Sending PATCH request:", updateContentUrl, updateContentHeaders, updatedContentBlob);
 
+        try {
+          const updateContentResponse = await fetch(updateContentUrl, {
+            method: 'PATCH',
+            headers: updateContentHeaders,
+            body: updatedContentBlob,
+          });
+
+          const updateContentResponseData = await updateContentResponse.clone().json();
+          console.log("Step 5: Received response:", updateContentResponseData);
       console.log("Step 5: Document content updated successfully.");
       debugger;
       // Step 6: Return the URL of the modified document
