@@ -43,6 +43,21 @@ utils.createMultipartRequestBody = (json_data) => {
   return requestBody;
 };
 
+// Function to make a fetch request and log the request and response
+async function makeFetchRequest(url, options) {
+  console.log("Making request:", url);
+  console.log("Request Options:", options);
+
+  try {
+    const response = await fetch(url, options);
+    console.log("Response:", response);
+    return response;
+  } catch (error) {
+    console.error('Error making the request:', error);
+    throw error;
+  }
+}
+
 let params = utils.getParamsFromURL(location.href);
 let redirect_url = "";
 
@@ -68,6 +83,7 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 
 // ... (Rest of the code)
+
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
@@ -115,7 +131,7 @@ document.getElementById('Report').addEventListener('click', async () => {
   try {
     // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
-    const duplicateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
+    const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -153,7 +169,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     };
 
     try {
-      const batchUpdateResponse = await fetch(googleDocsApiUrl, {
+      const batchUpdateResponse = await makeFetchRequest(googleDocsApiUrl, {
         method: 'POST',
         headers: googleDocsApiHeaders,
         body: JSON.stringify({
