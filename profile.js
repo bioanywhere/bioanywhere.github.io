@@ -1,5 +1,5 @@
 import utils from "./utils.js";
-import dataframe from "./dataframe.min.js";
+import dataframe from "./dataframe.js";
 
 
 // Function to get nested properties from an object based on a dot-separated string
