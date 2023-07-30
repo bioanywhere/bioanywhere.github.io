@@ -85,6 +85,24 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 // ... (Rest of the code)
 
 
+// Helper function to convert the value to a string and handle special characters
+function convertValueToString(value) {
+  if (typeof value === "string") {
+    // If the value is already a string, return it as is
+    return value;
+  } else if (typeof value === "number") {
+    // If the value is a number, convert it to a string
+    return value.toString();
+  } else {
+    // For other data types (e.g., boolean, null), handle them accordingly
+    return value ? "true" : "false"; // Convert boolean to "true" or "false"
+    // Handle null or other data types as needed
+  }
+}
+
+
+
+
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
   console.log("Button clicked.");
@@ -157,7 +175,7 @@ document.getElementById('Report').addEventListener('click', async () => {
             text: item.Placeholder,
             matchCase: true,
           },
-          replaceText: item.Value,
+          replaceText: convertValueToString(item.Value), // Ensure that the value is a string
         },
       };
     });
