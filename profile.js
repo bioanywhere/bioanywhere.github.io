@@ -85,10 +85,21 @@ function flattenJson(data, prefix = '', result = []) {
 function convertJsonToDataFrame(jsonData) {
   // Check if jsonData is a string (already stored as a string in localStorage)
   if (typeof jsonData === 'string') {
-    // Fix the Report key, removing single quotes and adding escaped double quotes
-    jsonData = jsonData.replace(/'/g, '"');
-    // Parse the JSON into an object
-    jsonData = JSON.parse(jsonData);
+    try {
+      // Fix the Report key, removing single quotes and adding escaped double quotes
+      jsonData = jsonData.replace(/'/g, '"');
+      // Parse the JSON into an object
+      jsonData = JSON.parse(jsonData);
+    } catch (error) {
+      console.error('Error parsing JSON data:', error);
+      return null;
+    }
+  }
+
+  // Check if 'Report' key exists in the JSON data
+  if (!jsonData.hasOwnProperty('Report')) {
+    console.error('JSON data does not contain "Report" key.');
+    return null;
   }
 
   // Extract the 'Report' value
@@ -101,15 +112,10 @@ function convertJsonToDataFrame(jsonData) {
   return reportData;
 }
 
-// Example usage with the JSON data from localStorage
-const json_data = JSON.parse(localStorage.getItem("json_data"));
-const dataFrame = convertJsonToDataFrame(json_data);
-console.log(dataFrame);
+  // Event listener for the "Create Report" button
+  document.getElementById('Report').addEventListener('click', async () => {
+    console.log("Button clicked.");
 
-
-// Event listener for the "Create Report" button
-document.getElementById('Report').addEventListener('click', async () => {
-  console.log("Button clicked.");
   // Retrieve the access_token from the local storage
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
   console.log("Access Token:", access_token);
