@@ -68,9 +68,18 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 // ... (Rest of the code)
 
-// Function to convert JSON data to a DataFrame-like array of objects
 function flattenJson(data, prefix = '', result = []) {
-  // ... (Rest of the function remains the same)
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const newKey = prefix ? `${prefix}.${key}` : key;
+      if (typeof data[key] === 'object' && data[key] !== null) {
+        flattenJson(data[key], newKey, result);
+      } else {
+        result.push({ Field: newKey, Value: data[key], Placeholder: `{{${newKey}}}` });
+      }
+    }
+  }
+  return result;
 }
 
 function convertJsonToDataFrame(jsonData) {
