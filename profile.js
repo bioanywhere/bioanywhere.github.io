@@ -1,70 +1,3 @@
-import utils from "./utils.js";
-
-// Function to get nested properties from an object based on a dot-separated string
-function getNestedProperty(obj, propString) {
-  const props = propString.split('.');
-  let value = obj;
-  for (const prop of props) {
-    if (value.hasOwnProperty(prop)) {
-      value = value[prop];
-    } else {
-      return undefined; // Return undefined if the property doesn't exist
-    }
-  }
-  return value;
-}
-
-// Function to create the multipart request body with metadata and JSON content
-utils.createMultipartRequestBody = (json_data) => {
-  // Define the metadata for the file (change as needed)
-  const metadata = {
-    name: "My Report", // The name of the file
-    mimeType: "application/vnd.google-apps.document", // MIME type for Google Docs document
-  };
-
-  // Create the multipart request body
-  const boundary = "-------" + Date.now();
-  const delimiter = `\r\n--${boundary}\r\n`;
-  const closeDelimiter = `\r\n--${boundary}--`;
-
-  // Construct the metadata part of the request
-  let requestBody = delimiter;
-  requestBody += `Content-Type: application/json; charset=UTF-8\r\n\r\n`;
-  requestBody += JSON.stringify(metadata);
-
-  // Add the JSON content part of the request
-  requestBody += delimiter;
-  requestBody += `Content-Type: application/json\r\n\r\n`;
-  requestBody += JSON.stringify(json_data);
-
-  // Add the closing boundary
-  requestBody += closeDelimiter;
-
-  return requestBody;
-};
-
-let params = utils.getParamsFromURL(location.href);
-let redirect_url = "";
-
-console.log("params:", params);
-
-utils.saveOAuth2Info(params, "profile.html", "info");
-
-fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-  headers: {
-    Authorization: `Bearer ${params.access_token}`,
-  },
-})
-  .then((data) => data.json())
-  .then((info) => {
-    console.log("User Info:", info);
-    document.getElementById("name").innerHTML += info.name;
-    document.getElementById("image").setAttribute("src", info.picture);
-  })
-  .catch((error) => {
-    console.error("Error fetching user info:", error);
-  });
-
 // ... (previous code)
 
 // Event listener for the "Create Report" button
@@ -130,42 +63,42 @@ document.getElementById('Report').addEventListener('click', async () => {
     const finalContent = `${content}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
     console.log("Step 4: JSON Data appended to the document content.");
 
-    // Step 5: Upload the modified content back to the document
+    // Step 5: Upload the modified content back to the document as a new revision
     console.log("Step 5: Uploading the modified content to the document...");
     const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.google-apps.document' });
 
     try {
-      // Send the PATCH request to update the file content
-      console.log("Sending PATCH request to update file content...");
+      // Send the PUT request to update the file content
+      console.log("Sending PUT request to update file content...");
 
-      const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
+      const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}?uploadType=media`;
       const updateContentHeaders = {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/vnd.google-apps.document',
       };
 
-      console.log("PATCH Request URL:", updateContentUrl);
-      console.log("PATCH Request Headers:", updateContentHeaders);
-      console.log("PATCH Request Body (updatedContentBlob):", updatedContentBlob);
+      console.log("PUT Request URL:", updateContentUrl);
+      console.log("PUT Request Headers:", updateContentHeaders);
+      console.log("PUT Request Body (updatedContentBlob):", updatedContentBlob);
 
       try {
         const updateContentResponse = await fetch(updateContentUrl, {
-          method: 'PATCH',
+          method: 'PUT',
           headers: updateContentHeaders,
           body: updatedContentBlob,
         });
 
-        console.log("PATCH Request Sent.");
+        console.log("PUT Request Sent.");
 
         // Read the response as JSON
         const updateContentResponseData = await updateContentResponse.clone().json();
 
-        console.log("PATCH Response Data:", updateContentResponseData);
+        console.log("PUT Response Data:", updateContentResponseData);
 
         // Handle the response as needed
         // ...
       } catch (error) {
-        console.error('Error sending the PATCH request:', error);
+        console.error('Error sending the PUT request:', error);
         alert('Failed to update the file content. Please try again later.');
       };
 
