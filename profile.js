@@ -121,22 +121,16 @@ document.getElementById('Report').addEventListener('click', async () => {
     const content = contentData.body;
     console.log("Step 2: Retrieved document content.");
 
-
-    // Step 3: Read the content of the duplicated document as text
-    console.log("Step 3: Reading the content of the duplicated document as text...");
-    const contentText = await contentBlob.text();
+    // Step 3: Use the content directly as Google Docs document
+    console.log("Step 3: Using the content of the duplicated document...");
 
     // Append the JSON data to the end of the document
-    const finalContent = `${contentText}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
+    const finalContent = `${content}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
     console.log("Step 4: JSON Data appended to the document content.");
 
     // Step 5: Upload the modified content back to the document
     console.log("Step 5: Uploading the modified content to the document...");
-
-    // Create a FormData object and append the content with the correct MIME type
-    const formData = new FormData();
-    formData.append('data', new Blob([finalContent], { type: 'text/plain' }));
-    formData.append('mimeType', 'application/vnd.google-apps.document');
+    const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.google-apps.document' });
 
     try {
       // Send the PATCH request to update the file content
@@ -145,17 +139,18 @@ document.getElementById('Report').addEventListener('click', async () => {
       const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
       const updateContentHeaders = {
         Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/vnd.google-apps.document',
       };
 
       console.log("PATCH Request URL:", updateContentUrl);
       console.log("PATCH Request Headers:", updateContentHeaders);
-      console.log("PATCH Request Body (formData):", formData);
+      console.log("PATCH Request Body (updatedContentBlob):", updatedContentBlob);
 
       try {
         const updateContentResponse = await fetch(updateContentUrl, {
           method: 'PATCH',
           headers: updateContentHeaders,
-          body: formData,
+          body: updatedContentBlob,
         });
 
         console.log("PATCH Request Sent.");
