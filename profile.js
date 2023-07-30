@@ -82,28 +82,25 @@ function flattenJson(data, prefix = '', result = []) {
   return result;
 }
 
-function convertJsonToDataFrame(jsonData) {
-  // Check if jsonData is a string (already stored as a string in localStorage)
-  if (typeof jsonData === 'string') {
-    try {
-      // Fix the Report key, removing single quotes and adding escaped double quotes
-      jsonData = jsonData.replace(/'/g, '"');
-      // Parse the JSON into an object
-      jsonData = JSON.parse(jsonData);
-    } catch (error) {
-      console.error('Error parsing JSON data:', error);
-      return null;
-    }
-  }
+// Function to fix the JSON data
+function fixJsonData(jsonData) {
+  // Replace single quotes with double quotes for the inner JSON object
+  jsonData = jsonData.replace(/'([^']+)'/g, '"$1"');
+  // Escape double quotes inside the inner JSON object
+  jsonData = jsonData.replace(/"([^"]+)":/g, '\\"$1":');
+  return jsonData;
+}
 
-  // Check if 'Report' key exists in the JSON data
-  if (!jsonData.hasOwnProperty('Report')) {
-    console.error('JSON data does not contain "Report" key.');
-    return null;
-  }
+// Function to convert JSON data to a DataFrame-like array of objects
+function convertJsonToDataFrame(jsonData) {
+  // Fix the JSON data
+  jsonData = fixJsonData(jsonData);
+
+  // Parse the JSON into an object
+  const data = JSON.parse(jsonData);
 
   // Extract the 'Report' value
-  let reportData = JSON.parse(jsonData['Report']);
+  let reportData = JSON.parse(data['Report']);
 
   // Flatten the 'Report' object using the custom recursive function
   reportData = flattenJson(reportData);
