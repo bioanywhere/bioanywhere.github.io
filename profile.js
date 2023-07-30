@@ -114,7 +114,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     // Step 2: Retrieve the content of the duplicated document as a Google Docs document
     console.log("Step 2: Retrieving the content of the duplicated document...");
-    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}?alt=media`, {
+    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/export?mimeType=application/vnd.google-apps.document`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
