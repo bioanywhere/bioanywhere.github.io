@@ -109,16 +109,18 @@ document.getElementById('Report').addEventListener('click', async () => {
     const duplicateData = await duplicateResponse.json();
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
 
-    // Step 2: Retrieve the content of the duplicated document
+    // Step 2: Retrieve the content of the duplicated document as a Google Docs document
     console.log("Step 2: Retrieving the content of the duplicated document...");
-    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/export?mimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document`, {
+    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     });
 
-    const contentBlob = await contentResponse.blob();
+    const contentData = await contentResponse.json();
+    const content = contentData.body;
     console.log("Step 2: Retrieved document content.");
+
 
     // Step 3: Read the content of the duplicated document as text
     console.log("Step 3: Reading the content of the duplicated document as text...");
