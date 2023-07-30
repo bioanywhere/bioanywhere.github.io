@@ -78,6 +78,7 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Check if json_data exists
   if (!json_data) {
     console.error("JSON data not found in local storage.");
+    return;
   } else {
     // Print the JSON data in the console
     console.log("JSON data*:", json_data);
@@ -118,7 +119,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     });
 
     const contentData = await contentResponse.json();
-    const content = contentData.body;
+    const content = contentData.content;
     console.log("Step 2: Retrieved document content.");
 
     // Step 3: Use the content directly as Google Docs document
