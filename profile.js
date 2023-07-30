@@ -31,8 +31,21 @@ utils.createMultipartRequestBody = (json_data) => {
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
+  console.log("Button clicked.");
   // Retrieve the access_token from the local storage
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
+  console.log("Access Token:", access_token);
+
+  // Retrieve the JSON data from the local storage
+  const json_data = JSON.parse(localStorage.getItem("json_data"));
+
+  // Check if json_data exists
+  if (!json_data) {
+    console.error("JSON data not found in local storage.");
+  } else {
+    // Print the JSON data in the console
+    console.log("JSON data*:", json_data);
+  }
 
   // Function to store the template document ID in the local storage
   function setTemplateDocumentId(templateDocumentId) {
@@ -41,9 +54,11 @@ document.getElementById('Report').addEventListener('click', async () => {
 
   const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
   setTemplateDocumentId(templateDocumentId);
+  console.log("Template Document ID:", templateDocumentId);
 
   try {
     // Step 1: Duplicate the template document
+    console.log("Step 1: Duplicating the template document...");
     const duplicateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
       headers: {
@@ -59,6 +74,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
 
     // Step 2: Retrieve the content of the duplicated document
+    console.log("Step 2: Retrieving the content of the duplicated document...");
     const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/export?mimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -69,32 +85,40 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 2: Retrieved document content.");
 
     // Step 3: Read the content of the duplicated document as text
+    console.log("Step 3: Reading the content of the duplicated document as text...");
     const contentText = await contentBlob.text();
 
     // Append the JSON data to the end of the document
     const finalContent = `${contentText}\n\nJSON Data:\n${JSON.stringify(json_data, null, 2)}`;
-
     console.log("Step 4: JSON Data appended to the document content.");
 
     // Step 5: Upload the modified content back to the document
+    console.log("Step 5: Uploading the modified content to the document...");
     const updatedContentBlob = new Blob([finalContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
 
     try {
       // Send the PATCH request to update the file content
-      const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
+      const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
+      const updateContentHeaders = {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      };
+      console.log("Step 5: Sending PATCH request:", updateContentUrl, updateContentHeaders, updatedContentBlob);
+
+      const updateContentResponse = await fetch(updateContentUrl, {
         method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        },
+        headers: updateContentHeaders,
         body: updatedContentBlob,
       });
+
+      console.log("Step 5: Received response:", updateContentResponse);
 
       console.log("Step 5: Document content updated successfully.");
 
       // Step 6: Return the URL of the modified document
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
       console.log("Step 6: Document URL:", documentUrl);
+      debugger
       window.location.href = documentUrl;
     } catch (error) {
       console.error('Error updating the document content:', error);
