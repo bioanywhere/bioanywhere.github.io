@@ -70,28 +70,20 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 // Function to convert JSON data to a DataFrame-like array of objects
 function flattenJson(data, prefix = '', result = []) {
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const newKey = prefix ? `${prefix}.${key}` : key;
-      if (typeof data[key] === 'object' && data[key] !== null) {
-        flattenJson(data[key], newKey, result);
-      } else {
-        result.push({ Field: newKey, Value: data[key], Placeholder: `{{${newKey}}}` });
-      }
-    }
-  }
-  return result;
+  // ... (Rest of the function remains the same)
 }
 
 function convertJsonToDataFrame(jsonData) {
-  // Fix the Report key, removing single quotes and adding escaped double quotes
-  jsonData = jsonData.replace(/'/g, '"');
-
-  // Parse the JSON into an object
-  const data = JSON.parse(jsonData);
+  // Check if jsonData is a string (already stored as a string in localStorage)
+  if (typeof jsonData === 'string') {
+    // Fix the Report key, removing single quotes and adding escaped double quotes
+    jsonData = jsonData.replace(/'/g, '"');
+    // Parse the JSON into an object
+    jsonData = JSON.parse(jsonData);
+  }
 
   // Extract the 'Report' value
-  let reportData = JSON.parse(data['Report']);
+  let reportData = JSON.parse(jsonData['Report']);
 
   // Flatten the 'Report' object using the custom recursive function
   reportData = flattenJson(reportData);
@@ -99,6 +91,12 @@ function convertJsonToDataFrame(jsonData) {
   // Return the DataFrame-like array of objects
   return reportData;
 }
+
+// Example usage with the JSON data from localStorage
+const json_data = JSON.parse(localStorage.getItem("json_data"));
+const dataFrame = convertJsonToDataFrame(json_data);
+console.log(dataFrame);
+
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
