@@ -1,4 +1,5 @@
 import utils from "./utils.js";
+
 // Function to get nested properties from an object based on a dot-separated string
 function getNestedProperty(obj, propString) {
   const props = propString.split('.');
@@ -132,56 +133,57 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     // Create a FormData object and append the content with the correct MIME type
     const formData = new FormData();
-    formData.append('file', new Blob([finalContent], { type: 'application/vnd.google-apps.document' }));
-
-    // Send the PATCH request to update the file content
-    console.log("Sending PATCH request to update file content...");
-
-    const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
-    const updateContentHeaders = {
-      Authorization: `Bearer ${access_token}`,
-    };
-
-    console.log("PATCH Request URL:", updateContentUrl);
-    console.log("PATCH Request Headers:", updateContentHeaders);
-    console.log("PATCH Request Body (formData):", formData);
+    formData.append('data', new Blob([finalContent], { type: 'text/plain' }));
+    formData.append('mimeType', 'application/vnd.google-apps.document');
 
     try {
-      const updateContentResponse = await fetch(updateContentUrl, {
-        method: 'PATCH',
-        headers: updateContentHeaders,
-        body: formData,
-      });
+      // Send the PATCH request to update the file content
+      console.log("Sending PATCH request to update file content...");
 
-      // ... (rest of the code)
+      const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
+      const updateContentHeaders = {
+        Authorization: `Bearer ${access_token}`,
+      };
 
-      console.log("PATCH Request Sent.");
+      console.log("PATCH Request URL:", updateContentUrl);
+      console.log("PATCH Request Headers:", updateContentHeaders);
+      console.log("PATCH Request Body (formData):", formData);
 
-      // Read the response as JSON
-      const updateContentResponseData = await updateContentResponse.clone().json();
+      try {
+        const updateContentResponse = await fetch(updateContentUrl, {
+          method: 'PATCH',
+          headers: updateContentHeaders,
+          body: formData,
+        });
 
-      console.log("PATCH Response Data:", updateContentResponseData);
+        console.log("PATCH Request Sent.");
 
-      // Handle the response as needed
-      // ...
+        // Read the response as JSON
+        const updateContentResponseData = await updateContentResponse.clone().json();
+
+        console.log("PATCH Response Data:", updateContentResponseData);
+
+        // Handle the response as needed
+        // ...
+      } catch (error) {
+        console.error('Error sending the PATCH request:', error);
+        alert('Failed to update the file content. Please try again later.');
+      };
+
+      console.log("Step 5: Document content updated successfully.");
+      debugger;
+      // Step 6: Return the URL of the modified document
+      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+      console.log("Step 6: Document URL:", documentUrl);
+      debugger;
+      window.location.href = documentUrl;
     } catch (error) {
-      console.error('Error sending the PATCH request:', error);
-      alert('Failed to update the file content. Please try again later.');
-    };
+      console.error('Error updating the document content:', error);
+      alert('Failed to update the document content. Please try again later.');
+    }
 
-    console.log("Step 5: Document content updated successfully.");
-    debugger;
-    // Step 6: Return the URL of the modified document
-    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-    console.log("Step 6: Document URL:", documentUrl);
-    debugger;
-    window.location.href = documentUrl;
   } catch (error) {
-    console.error('Error updating the document content:', error);
-    alert('Failed to update the document content. Please try again later.');
+    console.error('Error creating the report:', error);
+    alert('Failed to create the report. Please try again later.');
   }
-
-} catch (error) {
-  console.error('Error creating the report:', error);
-  alert('Failed to create the report. Please try again later.');
-  });
+});
