@@ -150,6 +150,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       // Step 6: Return the URL of the modified document
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
       console.log("Step 6: Document URL:", documentUrl);
+      debugger;
       window.location.href = documentUrl;
     } catch (error) {
       console.error('Error updating the document content:', error);
