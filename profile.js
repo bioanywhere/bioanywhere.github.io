@@ -56,6 +56,8 @@ document.getElementById('Report').addEventListener('click', async () => {
   setTemplateDocumentId(templateDocumentId);
   console.log("Template Document ID:", templateDocumentId);
 
+  // Insert the debugger statement to stop the code execution
+
   try {
     // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
@@ -98,20 +100,14 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     try {
       // Send the PATCH request to update the file content
-      const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
-      const updateContentHeaders = {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      };
-      console.log("Step 5: Sending PATCH request:", updateContentUrl, updateContentHeaders, updatedContentBlob);
-
-      const updateContentResponse = await fetch(updateContentUrl, {
+      const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
         method: 'PATCH',
-        headers: updateContentHeaders,
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        },
         body: updatedContentBlob,
       });
-
-      console.log("Step 5: Received response:", updateContentResponse);
 
       console.log("Step 5: Document content updated successfully.");
       debugger;
