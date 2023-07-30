@@ -65,6 +65,8 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
+// ... (previous code)
+
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
   console.log("Button clicked.");
@@ -112,14 +114,13 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     // Step 2: Retrieve the content of the duplicated document as a Google Docs document
     console.log("Step 2: Retrieving the content of the duplicated document...");
-    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}`, {
+    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}?alt=media`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     });
 
-    const contentData = await contentResponse.json();
-    const content = contentData.content;
+    const content = await contentResponse.text();
     console.log("Step 2: Retrieved document content.");
 
     // Step 3: Use the content directly as Google Docs document
