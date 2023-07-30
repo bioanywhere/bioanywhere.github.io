@@ -111,6 +111,14 @@ function convertJsonToDataFrame(jsonData) {
   // Return the DataFrame-like array of objects
   return reportData;
 }
+  // Example usage with the JSON data from localStorage
+  const json_data = JSON.parse(localStorage.getItem("json_data"));
+  console.log("Original JSON data:");
+  console.log(json_data);
+
+  const dataFrame = convertJsonToDataFrame(json_data);
+  console.log("DataFrame:");
+  console.log(dataFrame);
 
   // Event listener for the "Create Report" button
   document.getElementById('Report').addEventListener('click', async () => {
