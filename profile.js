@@ -184,4 +184,4 @@ document.getElementById('Report').addEventListener('click', async () => {
 } catch (error) {
   console.error('Error creating the report:', error);
   alert('Failed to create the report. Please try again later.');
-};
+  });
