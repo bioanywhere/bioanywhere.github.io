@@ -82,6 +82,7 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Check if json_data exists
   if (!json_data) {
     console.error("JSON data not found in local storage.");
+    return;
   } else {
     // Print the JSON data in the console
     console.log("JSON data*:", json_data);
@@ -115,46 +116,59 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     console.log("Step 2: Document content duplicated successfully.");
 
-    // Step 3: Use the Google Docs API to insert additional text
-    console.log("Step 3: Inserting additional text into the document...");
-    const additionalText = "This is the additional text you want to add.";
+    // Step 3: Use the Google Docs API to replace placeholders
+    const placeholders = findPlaceholders(duplicateData.id);
 
-    const insertTextRequest = {
-      insertText: {
-        location: {
-          index: 1, // Index where you want to insert the text. 1 represents right after the title of the document.
-        },
-        text: additionalText,
-      },
-    };
+    if (placeholders && placeholders.length > 0) {
+      console.log("Step 3: Replacing placeholders...");
 
-    const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
-    const googleDocsApiHeaders = {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    };
-
-    try {
-      const insertTextResponse = await fetch(googleDocsApiUrl, {
-        method: 'POST',
-        headers: googleDocsApiHeaders,
-        body: JSON.stringify({
-          requests: [insertTextRequest],
-        }),
+      const replaceRequests = placeholders.map((placeholder) => {
+        return {
+          replaceAllText: {
+            containsText: {
+              text: `{{${placeholder}}}`,
+              matchCase: false,
+            },
+            replaceText: json_data[placeholder] || '',
+          },
+        };
       });
 
-      const insertTextResponseData = await insertTextResponse.json();
-      console.log("Step 3: Additional text inserted into the document.");
-      console.log("Insert Text Response Data:", insertTextResponseData);
+      const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
+      const googleDocsApiHeaders = {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      };
 
-      // Step 4: Return the URL of the modified document
+      try {
+        const replaceResponse = await fetch(googleDocsApiUrl, {
+          method: 'POST',
+          headers: googleDocsApiHeaders,
+          body: JSON.stringify({
+            requests: replaceRequests,
+          }),
+        });
+
+        const replaceResponseData = await replaceResponse.json();
+        console.log("Step 3: Placeholders replaced.");
+        console.log("Replace Response Data:", replaceResponseData);
+
+        // Step 4: Return the URL of the modified document
+        const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+        console.log("Step 4: Document URL:", documentUrl);
+        debugger;
+        window.location.href = documentUrl;
+      } catch (error) {
+        console.error('Error replacing placeholders:', error);
+        alert('Failed to replace placeholders. Please try again later.');
+      }
+    } else {
+      console.log("Step 3: No placeholders found in the document.");
+      // Step 4: Return the URL of the duplicated document without any replacements
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
       console.log("Step 4: Document URL:", documentUrl);
       debugger;
       window.location.href = documentUrl;
-    } catch (error) {
-      console.error('Error inserting additional text:', error);
-      alert('Failed to insert additional text. Please try again later.');
     }
 
   } catch (error) {
@@ -162,3 +176,61 @@ document.getElementById('Report').addEventListener('click', async () => {
     alert('Failed to create the report. Please try again later.');
   }
 });
+
+// Function to find placeholders in the document content
+async function findPlaceholders(documentId) {
+  const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${documentId}`;
+  const googleDocsApiHeaders = {
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    const documentResponse = await fetch(googleDocsApiUrl, {
+      headers: googleDocsApiHeaders,
+    });
+
+    const documentData = await documentResponse.json();
+    const documentContent = documentData.body.content;
+    const placeholders = [];
+
+    if (documentContent) {
+      processContent(documentContent, placeholders);
+      return placeholders;
+    } else {
+      console.error("Document content not found.");
+      return null;
+    }
+  } catch (error) {
+    console.error('Error retrieving the document:', error);
+    return null;
+  }
+}
+
+// Function to recursively process document content and find placeholders
+function processContent(content, placeholders) {
+  for (const element of content) {
+    if (element.hasOwnProperty('paragraph')) {
+      // Process paragraphs
+      for (const paragraphElement of element.paragraph.elements) {
+        processContent(paragraphElement, placeholders);
+      }
+    } else if (element.hasOwnProperty('textRun')) {
+      // Process textRuns
+      if (element.textRun.hasOwnProperty('content')) {
+        const text = element.textRun.content;
+        if (text.includes('{{') && text.includes('}}')) {
+          // Extract and store placeholders from the text
+          const placeholderKeys = text.match(/{{(.*?)}}/g);
+          if (placeholderKeys) {
+            for (const placeholderKey of placeholderKeys) {
+              const placeholderName = placeholderKey.replace(/[{}]/g, '');
+              if (!placeholders.includes(placeholderName)) {
+                placeholders.push(placeholderName);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
