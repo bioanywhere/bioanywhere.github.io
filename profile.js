@@ -77,7 +77,17 @@ document.getElementById('Report').addEventListener('click', async () => {
   console.log("Access Token:", access_token);
 
   // Retrieve the JSON data from the local storage
-  const json_data = JSON.parse(localStorage.getItem("json_data"));
+  //const json_data = JSON.parse(localStorage.getItem("json_data"));
+
+    const json_data = {
+    "id": 2,
+    "Company": "Forward",
+    "Report": "{\"id\": 2, \"Company\": {\"id\": 1, \"Name\": \"Forward\", \"Date_Founded\": 2007.0, \"Address\": \"\", \"Phone_Number\": 3008156298.0, \"Website\": \"www.g-forward.com\", \"Sector\": null, \"Description\": \"Software Development\", \"Gross_Profit\": 20.0, \"Revenue\": 70.0, \"Gross_Profit_Margin\": 28.57142857142857, \"Full_Time_Employees\": 80.0, \"Part_Time_Employees\": 20.0, \"Part_Time_Employee_Composition\": 0.2, \"Number_of_Owners\": 30.0, \"Women_Owners\": 3.0, \"Women_Owners_Ratio\": 0.1, \"Indigenous_Owners\": 20.0, \"Indigenous_Owners_Ratio\": 0.6666666666666666, \"Contact_Information\": \"Pepe Mujica\", \"Full_Time_Employee_Composition\": 0.8, \"Governance\": {\"tableId\":\"Governance\",\"rowIds\":[2]}, \"References\": null, \"Business_Model\": {\"tableId\":\"Business_Model\",\"rowIds\":[1]}}, \"Governance\": [{\"id\": 1, \"Purpose\": \"No\", \"Executive_Responsibilities\": \"No\", \"Stakeholder_Engagement\": \"Partially\", \"Strategic_Planning\": \"Yes\", \"Risk_Management_Process\": \"Partially\", \"Disclosures_Reports\": \"Partially\", \"Decision_Making\": \"Yes\", \"Research_and_Development\": \"Partially\", \"Competency_Maps\": \"Yes\", \"Executive_Compensation\": \"No\", \"Company\": {\"tableId\":\"Companies\",\"rowIds\":[2]}, \"Description\": \"Consumer Insights\", \"Sum_No\": 3, \"Sum_Partially\": 4, \"Sum_Yes\": 3, \"Overall_Score\": 0.5, \"Weight_No\": 0, \"Weight_Yes\": 10, \"Weight_Partially\": 5}], \"Business_Model\": [{\"id\": 2, \"Traditional_Flows\": true, \"Nested_Interdependencies\": false, \"Impact_Points\": false, \"Value\": false, \"Risks\": true, \"Reputation\": true, \"Company\": {\"tableId\":\"Companies\",\"rowIds\":[2]}, \"Score\": 0.5}], \"Send_JSON\": null, \"Transaction\": null}",
+    "Governance": {"tableId":"Governance","rowIds":[1]},
+    "Business_Model": {"tableId":"Business_Model","rowIds":[2]},
+    "Send_JSON":null,
+    "Transaction":null
+  };
 
   // Check if json_data exists
   if (!json_data) {
