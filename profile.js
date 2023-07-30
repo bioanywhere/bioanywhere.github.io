@@ -1,6 +1,4 @@
 import utils from "./utils.js";
-import dataframe from "./dataframe.min.js";
-
 
 // Function to get nested properties from an object based on a dot-separated string
 function getNestedProperty(obj, propString) {
@@ -69,39 +67,54 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 
 
+// ... (Rest of the code)
 
-
-// new aprroach
-
-
-
-// Function to flatten the nested JSON data into an array of objects
-function flattenJson(data, prefix = "") {
-  let items = [];
-  for (const key in data) {
-    if (Object.prototype.hasOwnProperty.call(data, key)) {
-      const newKey = prefix ? `${prefix}.${key}` : key;
-      const value = data[key];
-      if (typeof value === "object" && value !== null) {
-        items = items.concat(flattenJson(value, newKey));
-      } else {
-        items.push({ Field: newKey, Value: value });
-      }
-    }
-  }
-  return items;
-}
-
-// Function to update the Google Docs document with DataFrame values
-async function updateGoogleDocs(df) {
+// Event listener for the "Create Report" button
+document.getElementById('Report').addEventListener('click', async () => {
+  console.log("Button clicked.");
   // Retrieve the access_token from the local storage
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
+  console.log("Access Token:", access_token);
 
-  // Step 1: Duplicate the template document
-  console.log("Step 1: Duplicating the template document...");
+  // Retrieve the JSON data from the local storage
+  const jsonData = JSON.parse(localStorage.getItem("json_data"));
+
+  // Helper function to flatten the nested JSON
+  function flattenJson(data, prefix = '') {
+    let items = [];
+    for (let key in data) {
+      if (typeof data[key] === 'object' && data[key] !== null) {
+        items = items.concat(flattenJson(data[key], prefix ? prefix + '.' + key : key));
+      } else {
+        items.push([prefix ? prefix + '.' + key : key, data[key]]);
+      }
+    }
+    return items;
+  }
+
+  // Flatten the JSON
+  const flattenedData = flattenJson(jsonData);
+
+  // Convert flattened data to DataFrame format
+  const df = flattenedData.map(item => {
+    return { 'Field': item[0], 'Value': item[1], 'Placeholder': `{{${item[0]}}}` };
+  });
+
+  // Display the DataFrame
+  console.log(df);
+
+  // Function to store the template document ID in the local storage
+  function setTemplateDocumentId(templateDocumentId) {
+    localStorage.setItem("templateDocumentId", templateDocumentId);
+  }
+
   const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
+  setTemplateDocumentId(templateDocumentId);
+  console.log("Template Document ID:", templateDocumentId);
 
   try {
+    // Step 1: Duplicate the template document
+    console.log("Step 1: Duplicating the template document...");
     const duplicateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
       headers: {
@@ -116,70 +129,54 @@ async function updateGoogleDocs(df) {
     const duplicateData = await duplicateResponse.json();
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
 
-    // Step 2: Retrieve the content of the duplicated document
-    console.log("Step 2: Retrieving the content of the duplicated document...");
-    const contentResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}?alt=media`, {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
+    console.log("Step 2: Document content duplicated successfully.");
+
+    // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
+    console.log("Step 3: Replacing placeholders with DataFrame values...");
+
+    const batchUpdateRequests = df.map(item => {
+      return {
+        replaceAllText: {
+          containsText: {
+            text: item.Placeholder,
+            matchCase: true,
+          },
+          replaceText: item.Value,
+        },
+      };
     });
 
-    const contentText = await contentResponse.text();
-    console.log("Step 2: Retrieved document content.");
-
-    // Step 3: Replace the placeholders with DataFrame values
-    let updatedContentText = contentText;
-    df.toArray().forEach((row) => {
-      const placeholder = `{{${row.Field}}}`;
-      updatedContentText = updatedContentText.replace(new RegExp(placeholder, 'g'), row.Value);
-    });
-
-    // Step 4: Upload the modified content back to the document
-    console.log("Step 4: Uploading the modified content to the document...");
-    const updatedContentBlob = new Blob([updatedContentText], { type: 'application/vnd.google-apps.document' });
+    const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
+    const googleDocsApiHeaders = {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    };
 
     try {
-      const updateContentResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/vnd.google-apps.document',
-        },
-        body: updatedContentBlob,
+      const batchUpdateResponse = await fetch(googleDocsApiUrl, {
+        method: 'POST',
+        headers: googleDocsApiHeaders,
+        body: JSON.stringify({
+          requests: batchUpdateRequests,
+        }),
       });
 
-      console.log("Step 4: Document content updated successfully.");
-      // Step 5: Return the URL of the modified document
+      const batchUpdateResponseData = await batchUpdateResponse.json();
+      console.log("Step 3: Placeholders replaced with DataFrame values.");
+      console.log("Batch Update Response Data:", batchUpdateResponseData);
+
+      // Step 4: Return the URL of the modified document
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-      console.log("Step 5: Document URL:", documentUrl);
-    debugger;
+      console.log("Step 4: Document URL:", documentUrl);
+      debugger;
       window.location.href = documentUrl;
     } catch (error) {
-      console.error('Error updating the document content:', error);
-      alert('Failed to update the document content. Please try again later.');
+      console.error('Error replacing placeholders:', error);
+      alert('Failed to replace placeholders. Please try again later.');
     }
+
   } catch (error) {
     console.error('Error creating the report:', error);
     alert('Failed to create the report. Please try again later.');
   }
-}
-
-// Read JSON data from localStorage
-const jsonData = JSON.parse(localStorage.getItem("json_data"));
-
-// Flatten the 'Report' object from jsonData
-const reportData = jsonData.Report;
-const flattenedData = flattenJson(reportData);
-
-// Convert flattened data to a DataFrame
-const df = new dataframe.DataFrame(flattenedData); // Use the imported dataframe object
-
-
-// Add the 'Placeholder' column with placeholders in the format {{Field}}
-df.withColumn("Placeholder", (row) => `{{${row.Field}}}`);
-
-// Displaying the final DataFrame with three columns: 'Field', 'Value', and 'Placeholder'
-console.log(df.toString());
-
-// Call the function to update the Google Docs document with the DataFrame values
-updateGoogleDocs(df);
+});
