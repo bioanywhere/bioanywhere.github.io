@@ -6330,9 +6330,7 @@ var dfjs = (function (exports) {
 
 	var tsv = dsv("\t");
 
-
 	var FILE_PATTERN = /^(?:[/]|[./]|(?:[a-zA-z]:\/)).*$/;
-
 
 	function saveFile(path, content) {
 	  try {
@@ -7979,7 +7977,6 @@ var dfjs = (function (exports) {
 	    /**
 	     * Modify a Row a the given index.
 	     * @param {Number} [index=0] The index to select the row.
-	     * @param {Row => Row} [func=0] The function to modify the row.
 	     * @returns {DataFrame} A new DataFrame with the modified Row.
 	     * @example
 	     * df2.setRowByIndex(1, row => row.set("column1", 33))
@@ -7994,23 +7991,6 @@ var dfjs = (function (exports) {
 	      var newRows = Array.from(this[__rows__]);
 	      newRows[index] = func(newRows[index]);
 	      return this.__newInstance__(newRows, this[__columns__$1]);
-	    }
-	    /**
-	     * Modify a Row in place (by mutation) at the given index.
-	     * @param {Number} [index=0] The index to select the row.
-	     * @returns {DataFrame} The current DataFrame with the modified row.
-	     * @example
-	     * df2.setRowByIndex(1, row => row.set("column1", 33))
-	     */
-
-	  }, {
-	    key: "setRowInPlace",
-	    value: function setRowInPlace(index) {
-	      var func = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (row) {
-	        return row;
-	      };
-	      this[__rows__][index] = func(this[__rows__][index]);
-	      return this;
 	    }
 	  }]);
 
