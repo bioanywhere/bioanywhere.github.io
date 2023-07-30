@@ -6330,11 +6330,10 @@ var dfjs = (function (exports) {
 
 	var tsv = dsv("\t");
 
-<<<<<<< HEAD
-=======
+
 	var FILE_PATTERN = /^(?:[/]|[./]|(?:[a-zA-z]:\/)).*$/;
 
->>>>>>> 1.4.4
+
 	function saveFile(path, content) {
 	  try {
 	    require("fs").writeFileSync(path, content);
