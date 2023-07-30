@@ -136,22 +136,39 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     try {
     // Send the PATCH request to update the file content
-        const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
-        const updateContentHeaders = {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        };
-        console.log("Step 5: Sending PATCH request:", updateContentUrl, updateContentHeaders, updatedContentBlob);
+    console.log("Sending PATCH request to update file content...");
 
-        try {
-          const updateContentResponse = await fetch(updateContentUrl, {
-            method: 'PATCH',
-            headers: updateContentHeaders,
-            body: updatedContentBlob,
-          });
+    const updateContentUrl = `https://www.googleapis.com/upload/drive/v3/files/${duplicateData.id}`;
+    const updateContentHeaders = {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    };
 
-          const updateContentResponseData = await updateContentResponse.clone().json();
-          console.log("Step 5: Received response:", updateContentResponseData);
+    console.log("PATCH Request URL:", updateContentUrl);
+    console.log("PATCH Request Headers:", updateContentHeaders);
+    console.log("PATCH Request Body (updatedContentBlob):", updatedContentBlob);
+
+    try {
+      const updateContentResponse = await fetch(updateContentUrl, {
+        method: 'PATCH',
+        headers: updateContentHeaders,
+        body: updatedContentBlob,
+      });
+
+      console.log("PATCH Request Sent.");
+
+      // Read the response as JSON
+      const updateContentResponseData = await updateContentResponse.clone().json();
+
+      console.log("PATCH Response Data:", updateContentResponseData);
+
+      // Handle the response as needed
+      // ...
+    } catch (error) {
+      console.error('Error sending the PATCH request:', error);
+      alert('Failed to update the file content. Please try again later.');
+    };
+
       console.log("Step 5: Document content updated successfully.");
       debugger;
       // Step 6: Return the URL of the modified document
