@@ -1,4 +1,6 @@
 import utils from "./utils.js";
+import dataframe from "./dataframe.min.js";
+
 
 // Function to get nested properties from an object based on a dot-separated string
 function getNestedProperty(obj, propString) {
@@ -170,7 +172,8 @@ const reportData = jsonData.Report;
 const flattenedData = flattenJson(reportData);
 
 // Convert flattened data to a DataFrame
-const df = new DataFrame(flattenedData);
+const df = new dataframe.DataFrame(flattenedData); // Use the imported dataframe object
+
 
 // Add the 'Placeholder' column with placeholders in the format {{Field}}
 df.withColumn("Placeholder", (row) => `{{${row.Field}}}`);
