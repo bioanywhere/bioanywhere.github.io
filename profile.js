@@ -167,33 +167,19 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
     console.log("Step 3: Replacing placeholders with DataFrame values...");
+console.log("Step 3: Replacing placeholders with DataFrame values...");
 
-    const batchUpdateRequests = [];
-
-    // Helper function to recursively traverse the JSON object and create placeholders
-    function createPlaceholders(obj, prefix = '') {
-      for (const key in obj) {
-        const value = obj[key];
-        if (typeof value === 'object' && value !== null) {
-          // For nested objects, recursively create placeholders with the prefix
-          createPlaceholders(value, prefix + key + '.');
-        } else {
-          // For non-nested values, create a placeholder with the prefix and key
-          batchUpdateRequests.push({
-            replaceAllText: {
-              containsText: {
-                text: `{{${prefix + key}}}`,
-                matchCase: true,
-              },
-              replaceText: JSON.stringify(value), // Ensure that the value is properly escaped
-            },
-          });
-        }
-      }
-    }
-
-    // Create placeholders for all nested elements in the JSON data
-    createPlaceholders(jsonData);
+  const batchUpdateRequests = df.map(item => {
+    return {
+      replaceAllText: {
+        containsText: {
+          text: item.Placeholder,
+          matchCase: false, // Set to false for an exact match
+        },
+        replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
+      },
+    };
+  });
 
     const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
     const googleDocsApiHeaders = {
@@ -214,37 +200,11 @@ document.getElementById('Report').addEventListener('click', async () => {
       console.log("Step 3: Placeholders replaced with DataFrame values.");
       console.log("Batch Update Response Data:", batchUpdateResponseData);
 
-// Step 4: Send the Batch Update Request to the Google Docs API
-console.log("Step 4: Sending the Batch Update Request...");
-
-const batchUpdateUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
-const batchUpdateHeaders = {
-  Authorization: `Bearer ${access_token}`,
-  'Content-Type': 'application/json',
-};
-
-try {
-  const batchUpdateResponse = await fetch(batchUpdateUrl, {
-    method: 'POST',
-    headers: batchUpdateHeaders,
-    body: JSON.stringify({ requests: batchUpdateRequests }),
-  });
-
-  const batchUpdateResponseData = await batchUpdateResponse.json();
-  console.log("Step 4: Placeholders replaced with DataFrame values.");
-  console.log("Batch Update Response Data:", batchUpdateResponseData);
-
-  // Step 5: Return the URL of the modified document
-  const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-  console.log("Step 5: Document URL:", documentUrl);
-  debugger;
-
-  window.location.href = documentUrl;
-  
-} catch (error) {
-  console.error('Error replacing placeholders:', error);
-  alert('Failed to replace placeholders. Please try again later.');
-}
+      // Step 4: Return the URL of the modified document
+      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+      console.log("Step 4: Document URL:", documentUrl);
+      debugger;
+      window.location.href = documentUrl;
     } catch (error) {
       console.error('Error replacing placeholders:', error);
       alert('Failed to replace placeholders. Please try again later.');
