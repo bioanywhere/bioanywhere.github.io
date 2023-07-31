@@ -170,22 +170,13 @@ document.getElementById('Report').addEventListener('click', async () => {
 console.log("Step 3: Replacing placeholders with DataFrame values...");
 
   const batchUpdateRequests = df.map(item => {
-    const placeholderParts = item.Placeholder.split('.'); // Split the nested placeholder into parts
-    let replaceValue = jsonData;
-
-    // Traverse through the JSON structure to find the value for the nested placeholder
-    for (const part of placeholderParts) {
-      replaceValue = replaceValue[part];
-      if (replaceValue === undefined) break; // Exit if any part is undefined
-    }
-
     return {
       replaceAllText: {
         containsText: {
           text: item.Placeholder,
           matchCase: false, // Set to false for an exact match
         },
-        replaceText: JSON.stringify(replaceValue), // Ensure that the value is properly escaped
+        replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
       },
     };
   });
