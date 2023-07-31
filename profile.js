@@ -2,26 +2,36 @@ import utils from "./utils.js";
 import get from 'lodash.get';
 
 let params = utils.getParamsFromURL(location.href);
+let ACCESS_TOKEN = "";
 let redirect_url = "";
 
-console.log("params:", params);
+let button = document.getElementById("logout");
+
+console.log(params);
 
 utils.saveOAuth2Info(params, "profile.html", "info");
 
+let info = JSON.parse(localStorage.getItem("info"));
+ACCESS_TOKEN = info.access_token
+
 fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
   headers: {
-    Authorization: `Bearer ${params.access_token}`,
+    Authorization: `Bearer ${ACCESS_TOKEN}`,
   },
 })
   .then((data) => data.json())
   .then((info) => {
-    console.log("User Info:", info);
+    console.log(info);
     document.getElementById("name").innerHTML += info.name;
     document.getElementById("image").setAttribute("src", info.picture);
-  })
-  .catch((error) => {
-    console.error("Error fetching user info:", error);
   });
+
+button.onclick = logout;
+
+function logout() {
+  utils.logout(ACCESS_TOKEN, redirect_url);
+}
+
 
 
 
