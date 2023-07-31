@@ -159,8 +159,9 @@ function createPlaceholdersFromJSON(data, parentKey = "") {
       const value = data[key];
       const currentKey = parentKey ? `${parentKey}.${key}` : key;
       if (typeof value === "object" && value !== null) {
-        // If the value is an object, recursively traverse it
-        placeholders = placeholders.concat(createPlaceholdersFromJSON(value, currentKey));
+        // If the value is an object, recursively traverse it and concatenate the placeholders
+        const nestedPlaceholders = createPlaceholdersFromJSON(value, currentKey);
+        placeholders = placeholders.concat(nestedPlaceholders);
       } else {
         // If the value is a non-object value, create a placeholder
         const placeholder = `{{${currentKey}}}`;
