@@ -101,6 +101,19 @@ function convertValueToString(value) {
 }
 
 
+// Helper function to flatten the nested JSON and create placeholders
+function flattenJson(data, prefix = '') {
+  let items = [];
+  for (let key in data) {
+    if (typeof data[key] === 'object' && data[key] !== null) {
+      items = items.concat(flattenJson(data[key], prefix ? prefix + '.' + key : key));
+    } else {
+      const placeholder = `{{${prefix ? prefix + '.' + key : key}}}`; // Create separate placeholders for each key
+      items.push({ Placeholder: placeholder, Value: data[key] });
+    }
+  }
+  return items;
+}
 
 
 // Event listener for the "Create Report" button
@@ -167,38 +180,57 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
     console.log("Step 3: Replacing placeholders with DataFrame values...");
-console.log("Step 3: Replacing placeholders with DataFrame values...");
 
-  const batchUpdateRequests = df.map(item => {
-    return {
-      replaceAllText: {
-        containsText: {
-          text: item.Placeholder,
-          matchCase: false, // Set to false for an exact match
-        },
-        replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
-      },
-    };
-  });
+    // Flatten the nested JSON and create placeholders
+    const flattenedData = flattenJson(jsonData);
 
-    const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
-    const googleDocsApiHeaders = {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    };
+    // Convert flattened data to DataFrame format (Optional: Use this DataFrame for other purposes)
+    const df = flattenedData.map(item => {
+      return { 'Placeholder': item.Placeholder, 'Value': item.Value };
+    });
 
-    try {
-      const batchUpdateResponse = await makeFetchRequest(googleDocsApiUrl, {
+    // Perform nested replacements for each sub-element
+    for (const item of flattenedData) {
+      const batchUpdateResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}:batchUpdate`, {
         method: 'POST',
-        headers: googleDocsApiHeaders,
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          requests: batchUpdateRequests,
+          requests: [
+            {
+              replaceAllText: {
+                containsText: {
+                  text: item.Placeholder,
+                  matchCase: false,
+                },
+                replaceText: JSON.stringify(item.Value), // Properly escape the value
+              },
+            },
+          ],
         }),
       });
 
       const batchUpdateResponseData = await batchUpdateResponse.json();
-      console.log("Step 3: Placeholders replaced with DataFrame values.");
+      console.log(`Replaced Placeholder: ${item.Placeholder}`);
       console.log("Batch Update Response Data:", batchUpdateResponseData);
+    
+      // Function to print all the valid placeholders from the JSON data
+      function printValidPlaceholders(data, prefix = '') {
+        for (let key in data) {
+          if (typeof data[key] === 'object' && data[key] !== null) {
+            printValidPlaceholders(data[key], prefix ? prefix + '.' + key : key);
+          } else {
+            const placeholder = `{{${prefix ? prefix + '.' + key : key}}}`;
+            console.log(`Valid Placeholder: ${placeholder}`);
+          }
+        }
+      }
+
+      // Print all the valid placeholders from the JSON data
+      console.log("Valid Placeholders:");
+      printValidPlaceholders(jsonData);
 
       // Step 4: Return the URL of the modified document
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
