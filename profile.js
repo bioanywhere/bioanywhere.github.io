@@ -167,18 +167,19 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
     console.log("Step 3: Replacing placeholders with DataFrame values...");
+console.log("Step 3: Replacing placeholders with DataFrame values...");
 
-    const batchUpdateRequests = df.map(item => {
-      return {
-        replaceAllText: {
-          containsText: {
-            text: item.Placeholder,
-            matchCase: true,
-          },
-          replaceText: convertValueToString(item.Value), // Ensure that the value is a string
+  const batchUpdateRequests = df.map(item => {
+    return {
+      replaceAllText: {
+        containsText: {
+          text: item.Placeholder,
+          matchCase: false, // Set to false for an exact match
         },
-      };
-    });
+        replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
+      },
+    };
+  });
 
     const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
     const googleDocsApiHeaders = {
