@@ -80,10 +80,7 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
-
-
 // ... (Rest of the code)
-
 
 // Helper function to convert the value to a string and handle special characters
 function convertValueToString(value) {
@@ -100,7 +97,6 @@ function convertValueToString(value) {
   }
 }
 
-
 // Helper function to flatten the nested JSON and create placeholders
 function flattenJson(data, prefix = '') {
   let items = [];
@@ -114,7 +110,6 @@ function flattenJson(data, prefix = '') {
   }
   return items;
 }
-
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
@@ -215,35 +210,33 @@ document.getElementById('Report').addEventListener('click', async () => {
       const batchUpdateResponseData = await batchUpdateResponse.json();
       console.log(`Replaced Placeholder: ${item.Placeholder}`);
       console.log("Batch Update Response Data:", batchUpdateResponseData);
-    
-      // Function to print all the valid placeholders from the JSON data
-      function printValidPlaceholders(data, prefix = '') {
-        for (let key in data) {
-          if (typeof data[key] === 'object' && data[key] !== null) {
-            printValidPlaceholders(data[key], prefix ? prefix + '.' + key : key);
-          } else {
-            const placeholder = `{{${prefix ? prefix + '.' + key : key}}}`;
-            console.log(`Valid Placeholder: ${placeholder}`);
-          }
-        }
-      }
-
-      // Print all the valid placeholders from the JSON data
-      console.log("Valid Placeholders:");
-      printValidPlaceholders(jsonData);
-
-      // Step 4: Return the URL of the modified document
-      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-      console.log("Step 4: Document URL:", documentUrl);
-      debugger;
-      window.location.href = documentUrl;
-    } catch (error) {
-      console.error('Error replacing placeholders:', error);
-      alert('Failed to replace placeholders. Please try again later.');
     }
 
+    // Function to print all the valid placeholders from the JSON data
+    function printValidPlaceholders(data, prefix = '') {
+      for (let key in data) {
+        if (typeof data[key] === 'object' && data[key] !== null) {
+          printValidPlaceholders(data[key], prefix ? prefix + '.' + key : key);
+        } else {
+          const placeholder = `{{${prefix ? prefix + '.' + key : key}}}`;
+          console.log(`Valid Placeholder: ${placeholder}`);
+        }
+      }
+    }
+
+    // Print all the valid placeholders from the JSON data
+    console.log("Valid Placeholders:");
+    printValidPlaceholders(jsonData);
+
+    // Step 4: Return the URL of the modified document
+    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+    console.log("Step 4: Document URL:", documentUrl);
+    debugger;
+    window.location.href = documentUrl;
+
   } catch (error) {
-    console.error('Error creating the report:', error);
-    alert('Failed to create the report. Please try again later.');
+    console.error('Error replacing placeholders:', error);
+    alert('Failed to replace placeholders. Please try again later.');
   }
+
 });
