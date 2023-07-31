@@ -1,15 +1,62 @@
 import utils from "./utils.js";
-import get from 'lodash.get';
 
-let params = utils.getParamsFromURL(location.href);
-let ACCESS_TOKEN = "";
-let redirect_url = "";
+// Function to get nested properties from an object based on a dot-separated string
+function getNestedProperty(obj, propString) {
+  const props = propString.split('.');
+  let value = obj;
+  for (const prop of props) {
+    if (value.hasOwnProperty(prop)) {
+      value = value[prop];
+    } else {
+      return undefined; // Return undefined if the property doesn't exist
+    }
+  }
+  return value;
+}
 
-let button = document.getElementById("logout");
+// Function to create the multipart request body with metadata and JSON content
+utils.createMultipartRequestBody = (json_data) => {
+  // Define the metadata for the file (change as needed)
+  const metadata = {
+    name: "My Report", // The name of the file
+    mimeType: "application/vnd.google-apps.document", // MIME type for Google Docs document
+  };
 
-console.log(params);
+  // Create the multipart request body
+  const boundary = "-------" + Date.now();
+  const delimiter = `\r\n--${boundary}\r\n`;
+  const closeDelimiter = `\r\n--${boundary}--`;
 
-utils.saveOAuth2Info(params, "profile.html", "info");
+  // Construct the metadata part of the request
+  let requestBody = delimiter;
+  requestBody += `Content-Type: application/json; charset=UTF-8\r\n\r\n`;
+  requestBody += JSON.stringify(metadata);
+
+  // Add the JSON content part of the request
+  requestBody += delimiter;
+  requestBody += `Content-Type: application/json\r\n\r\n`;
+  requestBody += JSON.stringify(json_data);
+
+  // Add the closing boundary
+  requestBody += closeDelimiter;
+
+  return requestBody;
+};
+
+// Function to make a fetch request and log the request and response
+async function makeFetchRequest(url, options) {
+  console.log("Making request:", url);
+  console.log("Request Options:", options);
+
+  try {
+    const response = await fetch(url, options);
+    console.log("Response:", response);
+    return response;
+  } catch (error) {
+    console.error('Error making the request:', error);
+    throw error;
+  }
+}
 
 let params = utils.getParamsFromURL(location.href);
 let redirect_url = "";
@@ -35,15 +82,8 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 
 
 
-
 // ... (Rest of the code)
 
-
-
-// Function to get nested properties from an object based on a dot-separated string
-function getNestedProperty(obj, propString) {
-  return get(obj, propString); // Using lodash.get for robust nested property retrieval
-}
 
 // Helper function to convert the value to a string and handle special characters
 function convertValueToString(value) {
@@ -60,64 +100,8 @@ function convertValueToString(value) {
   }
 }
 
-// Function to replace placeholders in the Google Docs document using batchUpdate
-async function replacePlaceholdersWithValues(docId, replacements) {
-  const access_token = JSON.parse(localStorage.getItem("info")).access_token;
-  const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`;
-  const googleDocsApiHeaders = {
-    Authorization: `Bearer ${access_token}`,
-    'Content-Type': 'multipart/related; boundary="-------${boundary}"',
-  };
 
-  // Create the multipart request body
-  const boundary = "-------" + Date.now();
-  const delimiter = `\r\n--${boundary}\r\n`;
-  const closeDelimiter = `\r\n--${boundary}--`;
 
-  // Construct the metadata part of the request
-  let requestBody = `${delimiter}Content-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}`;
-
-  // Add the JSON content part of the request
-  requestBody += `${delimiter}Content-Type: application/json\r\n\r\n${JSON.stringify(json_data)}`;
-
-  // Add the closing boundary
-  requestBody += closeDelimiter;
-
-  try {
-    const batchUpdateResponse = await makeFetchRequest(googleDocsApiUrl, {
-      method: 'POST',
-      headers: googleDocsApiHeaders,
-      body: requestBody,
-    });
-
-    const batchUpdateResponseData = await batchUpdateResponse.json();
-    console.log("Step 3: Placeholders replaced with JSON values.");
-    console.log("Batch Update Response Data:", batchUpdateResponseData);
-  } catch (error) {
-    console.error('Error replacing placeholders:', error);
-    alert('Failed to replace placeholders. Please try again later.');
-  }
-}
-
-// Function to make a fetch request and log the request and response
-async function makeFetchRequest(url, options) {
-  console.log("Making request:", url);
-  console.log("Request Options:", options);
-
-  try {
-    const response = await fetch(url, options);
-    console.log("Response:", response);
-    return response;
-  } catch (error) {
-    console.error('Error making the request:', error);
-    throw error;
-  }
-}
-
-// Function to store the template document ID in the local storage
-function setTemplateDocumentId(templateDocumentId) {
-  localStorage.setItem("templateDocumentId", templateDocumentId);
-}
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
@@ -129,13 +113,68 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Retrieve the JSON data from the local storage
   const jsonData = JSON.parse(localStorage.getItem("json_data"));
 
+  // Helper function to flatten the nested JSON
+  function flattenJson(data, prefix = '') {
+    let items = [];
+    for (let key in data) {
+      if (typeof data[key] === 'object' && data[key] !== null) {
+        items = items.concat(flattenJson(data[key], prefix ? prefix + '.' + key : key));
+      } else {
+        items.push([prefix ? prefix + '.' + key : key, data[key]]);
+      }
+    }
+    return items;
+  }
+
   // Flatten the JSON
   const flattenedData = flattenJson(jsonData);
+
+  // Convert flattened data to DataFrame format
+  const df = flattenedData.map(item => {
+    return { 'Field': item[0], 'Value': item[1], 'Placeholder': `{{${item[0]}}}` };
+  });
+
+  // Display the DataFrame
+  console.log(df);
+
+  // Create placeholders from the JSON data
+  const jsonPlaceholders = createPlaceholdersFromJSON(jsonData);
+  console.log("JSON Placeholders:", jsonPlaceholders);
+
+  // Function to store the template document ID in the local storage
+  function setTemplateDocumentId(templateDocumentId) {
+    localStorage.setItem("templateDocumentId", templateDocumentId);
+  }
+
+  const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
+  setTemplateDocumentId(templateDocumentId);
+  console.log("Template Document ID:", templateDocumentId);
+
+
+// Helper function to recursively traverse the JSON data and create placeholders
+function createPlaceholdersFromJSON(data, parentKey = "") {
+  let placeholders = [];
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const value = data[key];
+      const currentKey = parentKey ? `${parentKey}.${key}` : key;
+      if (typeof value === "object" && value !== null) {
+        // If the value is an object, recursively traverse it
+        placeholders = placeholders.concat(createPlaceholdersFromJSON(value, currentKey));
+      } else {
+        // If the value is a non-object value, create a placeholder
+        const placeholder = `{{${currentKey}}}`;
+        placeholders.push(placeholder);
+      }
+    }
+  }
+  return placeholders;
+}
+
 
   try {
     // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
-    const templateDocumentId = localStorage.getItem("templateDocumentId");
     const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
       headers: {
@@ -152,27 +191,50 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     console.log("Step 2: Document content duplicated successfully.");
 
-    // Step 3: Use the Google Docs API to replace placeholders with JSON values
-    console.log("Step 3: Replacing placeholders with JSON values...");
+    // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
+    console.log("Step 3: Replacing placeholders with DataFrame values...");
+console.log("Step 3: Replacing placeholders with DataFrame values...");
 
-    const batchUpdateRequests = flattenedData.map(item => {
-      return {
-        replaceAllText: {
-          containsText: {
-            text: `{{${item[0]}}}`, // Placeholder in double curly braces
-            matchCase: false,
-          },
-          replaceText: convertValueToString(item[1]),
+  const batchUpdateRequests = df.map(item => {
+    return {
+      replaceAllText: {
+        containsText: {
+          text: item.Placeholder,
+          matchCase: false, // Set to false for an exact match
         },
-      };
-    });
+        replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
+      },
+    };
+  });
 
-    await replacePlaceholdersWithValues(duplicateData.id, batchUpdateRequests);
+    const googleDocsApiUrl = `https://docs.googleapis.com/v1/documents/${duplicateData.id}:batchUpdate`;
+    const googleDocsApiHeaders = {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    };
 
-    // Step 4: Return the URL of the modified document
-    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-    console.log("Step 4: Document URL:", documentUrl);
-    window.location.href = documentUrl;
+    try {
+      const batchUpdateResponse = await makeFetchRequest(googleDocsApiUrl, {
+        method: 'POST',
+        headers: googleDocsApiHeaders,
+        body: JSON.stringify({
+          requests: batchUpdateRequests,
+        }),
+      });
+
+      const batchUpdateResponseData = await batchUpdateResponse.json();
+      console.log("Step 3: Placeholders replaced with DataFrame values.");
+      console.log("Batch Update Response Data:", batchUpdateResponseData);
+
+      // Step 4: Return the URL of the modified document
+      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+      console.log("Step 4: Document URL:", documentUrl);
+      debugger;
+      window.location.href = documentUrl;
+    } catch (error) {
+      console.error('Error replacing placeholders:', error);
+      alert('Failed to replace placeholders. Please try again later.');
+    }
 
   } catch (error) {
     console.error('Error creating the report:', error);
