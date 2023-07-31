@@ -137,30 +137,6 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Display the DataFrame
   console.log(df);
 
-// Function to create placeholders from JSON data
-function createPlaceholdersFromJSON(data) {
-  let placeholders = [];
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const value = data[key];
-      if (typeof value === "object" && value !== null) {
-        // If the value is an object, recursively generate placeholders for nested objects
-        const nestedPlaceholders = createNestedPlaceholders(value, key);
-        placeholders = placeholders.concat(nestedPlaceholders);
-      } else {
-        // If the value is a non-object value, create a placeholder for the top-level key
-        const placeholder = `{{${key}}}`;
-        placeholders.push(placeholder);
-      }
-    }
-  }
-  return placeholders;
-}
-
-  // Create placeholders from the JSON data
-  const jsonPlaceholders = createPlaceholdersFromJSON(jsonData);
-  console.log("JSON Placeholders:", jsonPlaceholders);
-
   // Function to store the template document ID in the local storage
   function setTemplateDocumentId(templateDocumentId) {
     localStorage.setItem("templateDocumentId", templateDocumentId);
@@ -169,29 +145,6 @@ function createPlaceholdersFromJSON(data) {
   const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
   setTemplateDocumentId(templateDocumentId);
   console.log("Template Document ID:", templateDocumentId);
-
-
-// Helper function to recursively traverse the JSON data and create placeholders
-function createNestedPlaceholders(data, parentKey = "") {
-  let placeholders = [];
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const value = data[key];
-      const currentKey = parentKey ? `${parentKey}.${key}` : key;
-      if (typeof value === "object" && value !== null) {
-        // If the value is an object, recursively traverse it and concatenate the placeholders
-        const nestedPlaceholders = createNestedPlaceholders(value, currentKey);
-        placeholders = placeholders.concat(nestedPlaceholders);
-      } else {
-        // If the value is a non-object value, create a placeholder
-        const placeholder = `{{${currentKey}}}`;
-        placeholders.push(placeholder);
-      }
-    }
-  }
-  return placeholders;
-}
-
 
   try {
     // Step 1: Duplicate the template document
@@ -217,13 +170,22 @@ function createNestedPlaceholders(data, parentKey = "") {
 console.log("Step 3: Replacing placeholders with DataFrame values...");
 
   const batchUpdateRequests = df.map(item => {
+    const placeholderParts = item.Placeholder.split('.'); // Split the nested placeholder into parts
+    let replaceValue = jsonData;
+
+    // Traverse through the JSON structure to find the value for the nested placeholder
+    for (const part of placeholderParts) {
+      replaceValue = replaceValue[part];
+      if (replaceValue === undefined) break; // Exit if any part is undefined
+    }
+
     return {
       replaceAllText: {
         containsText: {
           text: item.Placeholder,
           matchCase: false, // Set to false for an exact match
         },
-        replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
+        replaceText: JSON.stringify(replaceValue), // Ensure that the value is properly escaped
       },
     };
   });
