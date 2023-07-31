@@ -137,6 +137,26 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Display the DataFrame
   console.log(df);
 
+// Function to create placeholders from JSON data
+function createPlaceholdersFromJSON(data) {
+  let placeholders = [];
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const value = data[key];
+      if (typeof value === "object" && value !== null) {
+        // If the value is an object, recursively generate placeholders for nested objects
+        const nestedPlaceholders = createNestedPlaceholders(value, key);
+        placeholders = placeholders.concat(nestedPlaceholders);
+      } else {
+        // If the value is a non-object value, create a placeholder for the top-level key
+        const placeholder = `{{${key}}}`;
+        placeholders.push(placeholder);
+      }
+    }
+  }
+  return placeholders;
+}
+
   // Create placeholders from the JSON data
   const jsonPlaceholders = createPlaceholdersFromJSON(jsonData);
   console.log("JSON Placeholders:", jsonPlaceholders);
@@ -152,7 +172,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 // Helper function to recursively traverse the JSON data and create placeholders
-function createPlaceholdersFromJSON(data, parentKey = "") {
+function createNestedPlaceholders(data, parentKey = "") {
   let placeholders = [];
   for (const key in data) {
     if (data.hasOwnProperty(key)) {
@@ -160,7 +180,7 @@ function createPlaceholdersFromJSON(data, parentKey = "") {
       const currentKey = parentKey ? `${parentKey}.${key}` : key;
       if (typeof value === "object" && value !== null) {
         // If the value is an object, recursively traverse it and concatenate the placeholders
-        const nestedPlaceholders = createPlaceholdersFromJSON(value, currentKey);
+        const nestedPlaceholders = createNestedPlaceholders(value, currentKey);
         placeholders = placeholders.concat(nestedPlaceholders);
       } else {
         // If the value is a non-object value, create a placeholder
