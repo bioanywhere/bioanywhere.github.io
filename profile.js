@@ -200,9 +200,28 @@ console.log("Step 3: Replacing placeholders with DataFrame values...");
       console.log("Step 3: Placeholders replaced with DataFrame values.");
       console.log("Batch Update Response Data:", batchUpdateResponseData);
 
-      // Step 4: Return the URL of the modified document
+
+      // Step 4: Set sharing settings to make the document publicly accessible
+      console.log("Step 4: Setting sharing settings...");
+
+      const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          role: 'reader',
+          type: 'anyone',
+        }),
+      });
+
+      const setSharingData = await setSharingResponse.json();
+      console.log("Step 4: Sharing settings updated:", setSharingData);
+
+      // Step 5: Return the URL of the modified document
       const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-      console.log("Step 4: Document URL:", documentUrl);
+      console.log("Step 5: Document URL:", documentUrl);
       debugger;
       window.location.href = documentUrl;
     } catch (error) {
