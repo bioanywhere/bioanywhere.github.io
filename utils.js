@@ -58,7 +58,7 @@ function saveOAuth2Info(data, path, name) {
 
     // hide the access token
 
-    window.history.pushState({}, document.title, "/" + path)
+   // window.history.pushState({}, document.title, "/" + path)
 
 }
 
