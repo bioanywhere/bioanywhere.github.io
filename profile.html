@@ -28,8 +28,15 @@
 
         /* Hide the name and image initially */
         #name,
-        #image {
+        #image,
+        #readout {
             display: none;
+        }
+
+        /* Flexbox container to align buttons */
+        #button-container {
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -43,14 +50,21 @@
             document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
             // Save the JSON data to the local storage
             localStorage.setItem('json_data', JSON.stringify(record));
+            // Show the readout element after data is available
+            document.getElementById('readout').style.display = 'block';
         });
     </script>
 
     <h1>Welcome to your Advanced Sustainability Assessment!</h1>
+    <br><br>
     <h2 id="name"><name></h2>
+    <br>
     <img id="image" src="<image>" />
-    <button id="Report">Create Assessment</button>
-    <button id="logout">Logout</button>
+    <br><br>
+    <div id="button-container">
+        <button id="Report">Create Assessment</button>
+        <button id="logout">Logout</button>
+    </div>
 
     <script>
         // Replace the <name> and <image> placeholders with actual values from the API
@@ -62,14 +76,14 @@
             if (nameElement) {
                 nameElement.textContent = info.name;
                 // Show the name element after data is available
-                nameElement.style.display = "inline";
+                nameElement.style.display = "block";
             }
             if (imageElement) {
                 imageElement.src = info.picture;
                 // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
                 imageElement.onload = () => {
                     // Show the image element after data is available
-                    imageElement.style.display = "inline";
+                    imageElement.style.display = "block";
                 };
             }
         }
