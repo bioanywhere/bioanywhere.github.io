@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Callback</title>
+</head>
+
+<body>
+    <script type="module">
+        import utils from "./utils.js";
+
+        // Parse the access token from the URL parameters
+        const params = new URLSearchParams(window.location.hash.substr(1));
+        const accessToken = utils.getParamsFromURL(window.location.href);
+
+        // Save the access token to localStorage for use in the main page (iframe)
+        utils.saveOAuth2Info(accessToken, "profile.html", "access_token");
+
+        // Close the popup window after saving the access token
+        window.close();
+    </script>
+</body>
+
+</html>
