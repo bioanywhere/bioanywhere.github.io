@@ -59,7 +59,7 @@ async function makeFetchRequest(url, options) {
 }
 
 let params = utils.getParamsFromURL(location.href);
-let redirect_url = "";
+let redirect_url = "https://bioanywhere.github.io/index.html";
 
 console.log("params:", params);
 

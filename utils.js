@@ -33,10 +33,16 @@ function logout(access_token, redirect_url) {
     headers: {
       "Content-type": "application/x-www-form-urlencoded",
     },
-  }).then((data) => {
+  }).then(() => {
+    // Clear access token from localStorage
+    localStorage.removeItem("access_token");
+    // Redirect to the specified URL after logout
     location.href = redirect_url;
   });
 }
+
+
+
 
 function getParamsFromURL(url) {
   let params = {};
