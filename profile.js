@@ -98,8 +98,26 @@ document.addEventListener("DOMContentLoaded", () => {
   if (info) {
     // If the OAuth2 information exists, fetch user information from Google API
     fetchUserInfo(info);
+  } else {
+    // If the OAuth2 information is not available, wait for it to become available before fetching user info
+    waitForOAuth2Info().then((params) => {
+      fetchUserInfo(params);
+    });
   }
 });
+
+function waitForOAuth2Info() {
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      // Get the OAuth2 information from localStorage
+      const info = JSON.parse(localStorage.getItem("info"));
+      if (info) {
+        clearInterval(interval);
+        resolve(info);
+      }
+    }, 100);
+  });
+}
 
 function fetchUserInfo(params) {
   const accessToken = params.access_token;
