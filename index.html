@@ -11,4 +11,13 @@
     <button id="button">Sign In With Google</button>
 </body>
 <script type="module" src="script.js"></script>
+<script>
+     // Listen for messages from the popup window (oauth-callback.html)
+     window.addEventListener("message", (event) => {
+          if (event.data === "loginComplete") {
+             // If the "loginComplete" message is received, redirect to profile.html
+              window.location.href = "profile.html";
+         }
+      });
+</script>
 </html>

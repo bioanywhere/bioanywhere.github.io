@@ -15,17 +15,17 @@
         // Parse the access token from the URL parameters
         const params = new URLSearchParams(window.location.hash.substr(1));
 
-        // Call the saveOAuth2Info function from utils.js to save the access token data to localStorage
-        utils.saveOAuth2Info(params, "profile.html", "info");
-
-        // Access the localStorage of the parent window (the iframe) using window.opener
+        // Access the localStorage of the parent window (index.html) using window.opener
         const iframeLocalStorage = window.opener.localStorage;
 
-        // Save the access token data to the localStorage of the iframe
+        // Save the access token data to the localStorage of the parent window (index.html)
         iframeLocalStorage.setItem("info", JSON.stringify(params));
 
         // Close the popup window after saving the access token
         window.close();
+
+        // Notify the parent window (index.html) that the login process is complete
+        window.opener.postMessage("loginComplete", "*");
     </script>
 </body>
 
