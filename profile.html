@@ -25,6 +25,12 @@
             margin-bottom: 20px;
             border-radius: 50%; /* Make the picture rounded */
         }
+
+        /* Hide the name and image initially */
+        #name,
+        #image {
+            display: none;
+        }
     </style>
 </head>
 
@@ -47,7 +53,7 @@
     <button id="logout">Logout</button>
 
     <script>
-        // Replace the <name> placeholder with the user's full name
+        // Replace the <name> and <image> placeholders with actual values from the API
         const nameElement = document.getElementById("name");
         const imageElement = document.getElementById("image");
         const storedInfo = localStorage.getItem("info");
@@ -55,9 +61,16 @@
             const info = JSON.parse(storedInfo);
             if (nameElement) {
                 nameElement.textContent = info.name;
+                // Show the name element after data is available
+                nameElement.style.display = "inline";
             }
             if (imageElement) {
                 imageElement.src = info.picture;
+                // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
+                imageElement.onload = () => {
+                    // Show the image element after data is available
+                    imageElement.style.display = "inline";
+                };
             }
         }
     </script>
