@@ -20,7 +20,15 @@ function signIn(CLIENT_ID, REDIRECT_URI, SCOPES, response_type = "token") {
   let loginUrl = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
 
   // Redirect the user to the Google login page
-  window.location.href = loginUrl;
+  //window.location.href = loginUrl;
+
+    // Open the Google login page in a new popup window
+  const width = 600;
+  const height = 600;
+  const left = window.screen.width / 2 - width / 2;
+  const top = window.screen.height / 2 - height / 2;
+  const options = `width=${width},height=${height},left=${left},top=${top},resizable,scrollbars=yes,status=1`;
+  window.open(loginUrl, "_blank", options);
 
 /*
   for (var p in params) {
