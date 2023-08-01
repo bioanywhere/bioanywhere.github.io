@@ -43,7 +43,7 @@
         /* Google-style grid layout */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             grid-gap: 20px;
             margin-top: 20px;
         }
@@ -53,6 +53,18 @@
             color: #4285F4;
             text-decoration: none;
             font-size: 14px;
+        }
+
+        /* Custom lines */
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+
+        /* Align button to the right */
+        .align-right {
+            display: flex;
+            justify-content: flex-end;
         }
     </style>
 </head>
@@ -71,16 +83,17 @@
         });
     </script>
 
-    <h1>Welcome to your Advanced Sustainability Assessment!</h1>
-    <br><br>
     <div class="grid-container">
         <div>
             <h2 id="name"></h2>
             <br>
             <img id="image" src="" />
+            <hr>
         </div>
         <div>
-            <div id="button-container">
+            <h1>Welcome to your Advanced Sustainability Assessment!</h1>
+            <hr>
+            <div class="align-right">
                 <button id="Report">Create Assessment</button>
                 <a id="logout" href="logout-url">Logout</a>
             </div>
