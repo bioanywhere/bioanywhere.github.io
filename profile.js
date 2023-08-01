@@ -88,6 +88,58 @@ function logout() {
   utils.logout(params.access_token, redirect_url);
 }
 
+
+
+// Main entry point when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+  // Get the OAuth2 information from localStorage
+  const info = JSON.parse(localStorage.getItem("info"));
+
+  if (info) {
+    // If the OAuth2 information exists, fetch user information from Google API
+    fetchUserInfo(info);
+  }
+});
+
+function fetchUserInfo(params) {
+  const accessToken = params.access_token;
+
+  // Check if the access token is available
+  if (!accessToken) {
+    console.error("Access token not available.");
+    return;
+  }
+
+  // Make a fetch request to get user information from the Google API
+  fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+      return response.json();
+    })
+    .then((info) => {
+      console.log("User Info:", info);
+
+      // Update the profile information in the HTML
+      const nameElement = document.getElementById("name");
+      const imageElement = document.getElementById("image");
+
+      nameElement.textContent = "Your Full Name is: " + info.name;
+      imageElement.src = info.picture;
+    })
+    .catch((error) => {
+      console.error("Error fetching user info:", error);
+    });
+}
+
+
+
+
 // ... (Rest of the code)
 
 
