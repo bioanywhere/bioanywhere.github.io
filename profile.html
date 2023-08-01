@@ -53,6 +53,8 @@
             color: #4285F4;
             text-decoration: none;
             font-size: 14px;
+            /* Align logout link to the left */
+            justify-self: start;
         }
 
         /* Custom lines */
@@ -65,6 +67,12 @@
         .align-right {
             display: flex;
             justify-content: flex-end;
+        }
+
+        /* Align name and picture on the same row */
+        .name-image-row {
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -85,18 +93,19 @@
 
     <div class="grid-container">
         <div>
-            <h2 id="name"></h2>
-            <br>
-            <img id="image" src="" />
+            <div class="name-image-row">
+                <h2 id="name"></h2>
+                <img id="image" src="" />
+            </div>
             <hr>
         </div>
         <div>
             <h1>Welcome to your Advanced Sustainability Assessment!</h1>
-            <hr>
-            <div class="align-right">
+            <div class="button-link-row">
                 <button id="Report">Create Assessment</button>
                 <a id="logout" href="logout-url">Logout</a>
             </div>
+            <hr>
         </div>
     </div>
 
