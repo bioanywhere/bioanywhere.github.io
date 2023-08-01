@@ -43,6 +43,10 @@ utils.createMultipartRequestBody = (json_data) => {
   return requestBody;
 };
 
+
+
+
+
 // Function to make a fetch request and log the request and response
 async function makeFetchRequest(url, options) {
   console.log("Making request:", url);
@@ -82,6 +86,9 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
+
+
+
 button.onclick = logout;
 
 function logout() {
@@ -115,7 +122,7 @@ function waitForOAuth2Info() {
         clearInterval(interval);
         resolve(info);
       }
-    }, 100);
+    }, 200);
   });
 }
 
