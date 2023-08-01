@@ -40,11 +40,12 @@
             display: none;
         }
 
-        /* Flexbox container to align buttons */
-        #button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px; /* Reduce the space between buttons */
+        /* Google-style grid layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            margin-top: 20px;
         }
 
         /* Style the logout link */
@@ -72,14 +73,18 @@
 
     <h1>Welcome to your Advanced Sustainability Assessment!</h1>
     <br><br>
-    <h2 id="name"></h2>
-    <br>
-    <img id="image" src="" />
-    <br><br>
-    <div id="button-container">
-        <a id="logout" href="logout-url">Logout</a>
-        <button id="Report">Buy Assessment</button>
-        
+    <div class="grid-container">
+        <div>
+            <h2 id="name"></h2>
+            <br>
+            <img id="image" src="" />
+        </div>
+        <div>
+            <div id="button-container">
+                <button id="Report">Create Assessment</button>
+                <a id="logout" href="logout-url">Logout</a>
+            </div>
+        </div>
     </div>
 
     <script>
