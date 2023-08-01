@@ -18,8 +18,8 @@
         // Access the localStorage of the parent window (index.html) using window.opener
         const iframeLocalStorage = window.opener.localStorage;
 
-        // Save the access token data to the localStorage of the parent window (index.html)
-        iframeLocalStorage.setItem("info", JSON.stringify(params));
+        // Save the access token data to the localStorage of the iframe
+        iframeLocalStorage.setItem("info", JSON.stringify(Object.fromEntries(params.entries())));
 
         // Close the popup window after saving the access token
         window.close();
