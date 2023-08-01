@@ -14,10 +14,9 @@
 
         // Parse the access token from the URL parameters
         const params = new URLSearchParams(window.location.hash.substr(1));
-        const accessToken = utils.getParamsFromURL(window.location.href);
 
-        // Save the access token to localStorage for use in the main page (iframe)
-        utils.saveOAuth2Info(accessToken, "profile.html", "access_token");
+        // Call the saveOAuth2Info function from utils.js to save the access token data to localStorage
+        utils.saveOAuth2Info(params, "profile.html", "info");
 
         // Close the popup window after saving the access token
         window.close();
@@ -25,3 +24,6 @@
 </body>
 
 </html>
+
+
+
