@@ -1,11 +1,11 @@
 function signIn(CLIENT_ID, REDIRECT_URI, SCOPES, response_type = "token") {
   let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
-
+/*
   let form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", oauth2Endpoint);
-
+*/
 
   let params = {
     client_id: CLIENT_ID,
