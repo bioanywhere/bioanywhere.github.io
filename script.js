@@ -13,8 +13,3 @@ function signIn(){
 utils.signIn(CLIENT_ID,REDIRECT_URI,SCOPES)
 
 }
-
-document.getElementById('signInButton').addEventListener('click', () => {
-    // Redirect the user to the Google OAuth page
-    window.location.href = 'https://bioanywhere.github.io/index.html';
-});
