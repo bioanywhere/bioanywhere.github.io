@@ -85,7 +85,7 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
 button.onclick = logout;
 
 function logout() {
-  utils.logout(ACCESS_TOKEN, redirect_url);
+  utils.logout(params.access_token, redirect_url);
 }
 
 // ... (Rest of the code)
