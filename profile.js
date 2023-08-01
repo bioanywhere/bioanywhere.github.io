@@ -63,6 +63,8 @@ let redirect_url = "https://bioanywhere.github.io/index.html";
 
 console.log("params:", params);
 
+let button = document.getElementById("logout");
+
 utils.saveOAuth2Info(params, "profile.html", "info");
 
 fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -80,7 +82,11 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
+button.onclick = logout;
 
+function logout() {
+  utils.logout(ACCESS_TOKEN, redirect_url);
+}
 
 // ... (Rest of the code)
 
