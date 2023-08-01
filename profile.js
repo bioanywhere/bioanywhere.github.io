@@ -150,27 +150,22 @@ function fetchUserInfo(params) {
     .then((info) => {
       console.log("User Info:", info);
 
-      // Update the profile information in the HTML
+// Replace the <name> placeholder with the user's full name
       const nameElement = document.getElementById("name");
-      const imageElement = document.getElementById("image");
-
-      // Check if the elements exist before updating the information
       if (nameElement) {
-        nameElement.textContent = "Your Full Name is: " + info.name;
+        nameElement.textContent = nameElement.textContent.replace("<name>", info.name);
       }
 
       // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
+      const imageElement = document.getElementById("image");
       if (imageElement) {
         imageElement.onload = () => {
           // Display the image element after it's loaded
           imageElement.style.display = "inline";
         };
-        // Set the 'src' attribute to trigger the image load
-        imageElement.src = info.picture;
+        // Set the 'src' attribute to trigger the image load and replace the <image> placeholder
+        imageElement.src = imageElement.src.replace("<image>", info.picture);
       }
-
-      // Display the name element after the profile information is updated
-      nameElement.style.display = "inline";
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);
