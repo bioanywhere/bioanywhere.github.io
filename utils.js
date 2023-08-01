@@ -1,19 +1,28 @@
-function signIn(clientId,redirectUri,scopes,response_type="token") {
+function signIn(CLIENT_ID, REDIRECT_URI, SCOPES, response_type = "token") {
   let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
+/*
   let form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", oauth2Endpoint);
+*/
 
   let params = {
-    client_id: clientId,
-    redirect_uri: redirectUri,
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
     response_type: response_type,
-    scope: scopes,
+    scope: SCOPES,
     include_granted_scopes: "true",
     state: "pass-through-value",
   };
 
+  // Construct the URL for Google login
+  let loginUrl = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
+
+  // Redirect the user to the Google login page
+  window.location.href = loginUrl;
+
+/*
   for (var p in params) {
     let input = document.createElement("input");
     input.setAttribute("type", "hidden");
@@ -21,11 +30,13 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
     input.setAttribute("value", params[p]);
     form.appendChild(input);
   }
-
   document.body.appendChild(form);
-
   form.submit();
+*/
+
 }
+
+
 
 function logout(access_token, redirect_url) {
   fetch("https://oauth2.googleapis.com/revoke?token=" + access_token, {
