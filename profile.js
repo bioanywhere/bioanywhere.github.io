@@ -129,8 +129,13 @@ function fetchUserInfo(params) {
       const nameElement = document.getElementById("name");
       const imageElement = document.getElementById("image");
 
-      nameElement.textContent = "Your Full Name is: " + info.name;
-      imageElement.src = info.picture;
+      // Check if the elements exist before updating the information
+      if (nameElement) {
+        nameElement.textContent = "Your Full Name is: " + info.name;
+      }
+      if (imageElement) {
+        imageElement.src = info.picture;
+      }
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);
