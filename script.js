@@ -13,18 +13,3 @@ function signIn(){
 utils.signIn(CLIENT_ID,REDIRECT_URI,SCOPES)
 
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-  let logoutButton = document.getElementById('logout');
-
-  logoutButton.addEventListener('click', logoutAction);
-
-  function logoutAction() {
-    let oAuth2Data = JSON.parse(localStorage.getItem('info'));
-    let access_token = oAuth2Data.access_token;
-    let redirect_url = "https://bioanywhere.github.io/index.html";
-
-    utils.logout(access_token, redirect_url);
-  }
-});
