@@ -45,7 +45,7 @@
             display: grid;
             grid-template-columns: 1fr;
             grid-gap: 20px;
-            margin-top: 20px;
+            margin: 20px; /* Increase the horizontal margin to 40px */
         }
 
         /* Style the logout link */
@@ -74,6 +74,13 @@
             display: flex;
             justify-content: space-between;
         }
+
+        /* Align button and link on the same row with spacing */
+        .button-link-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -82,57 +89,4 @@
     <pre id="readout">Waiting for data...</pre>
     <script>
         grist.ready();
-        grist.onRecord(function (record) {
-            document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
-            // Save the JSON data to the local storage
-            localStorage.setItem('json_data', JSON.stringify(record));
-            // Hide the readout element after data is available
-            document.getElementById('readout').style.display = 'none';
-        });
-    </script>
-
-    <div class="grid-container">
-        <div>
-            <div class="name-image-row">
-                <h2 id="name"></h2>
-                <img id="image" src="" />
-            </div>
-            <hr>
-        </div>
-        <div>
-            <h1>Welcome to your Advanced Sustainability Assessment!</h1>
-            <div class="button-link-row">
-                <button id="Report">Create Assessment</button>
-                <a id="logout" href="logout-url">Logout</a>
-            </div>
-            <hr>
-        </div>
-    </div>
-
-    <script>
-        // Replace the <name> and <image> placeholders with actual values from the API
-        const nameElement = document.getElementById("name");
-        const imageElement = document.getElementById("image");
-        const storedInfo = localStorage.getItem("info");
-        if (storedInfo) {
-            const info = JSON.parse(storedInfo);
-            if (nameElement) {
-                nameElement.textContent = info.name;
-                // Show the name element after data is available
-                nameElement.style.display = "block";
-            }
-            if (imageElement) {
-                imageElement.src = info.picture;
-                // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
-                imageElement.onload = () => {
-                    // Show the image element after data is available
-                    imageElement.style.display = "block";
-                };
-            }
-        }
-    </script>
-    <script type="module" src="profile.js"></script>
-
-</body>
-
-</html>
+       
