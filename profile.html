@@ -81,6 +81,11 @@
             justify-content: space-between;
             margin-top: 20px;
         }
+
+        /* Add spacing after .button-link-row */
+        .button-link-row + br {
+            margin-top: 60px;
+        }
     </style>
 </head>
 
@@ -108,13 +113,13 @@
         </div>
         <div>
             <h1>Welcome to your Advanced Sustainability Assessment!</h1>
-            <br>
-            <br>
-            <br>
             <div class="button-link-row">
-                <button id="Report">Create Assessment</button>
+                
                 <a id="logout" href="logout-url">Logout</a>
+                <button id="Report">Create Assessment</button>
+                
             </div>
+            <br><br><br> <!-- Adding three line breaks after the button-link-row -->
             <hr>
         </div>
     </div>
