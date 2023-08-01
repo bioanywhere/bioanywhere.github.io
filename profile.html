@@ -41,12 +41,28 @@
     </script>
 
     <h1>Welcome to your Advanced Sustainability Assessment!</h1>
-    <h2 id="name">Haber: <name></h2>
-    <br>
+    <h2 id="name"><name></h2>
     <img id="image" src="<image>" />
     <button id="Report">Create Assessment</button>
     <button id="logout">Logout</button>
+
+    <script>
+        // Replace the <name> placeholder with the user's full name
+        const nameElement = document.getElementById("name");
+        const imageElement = document.getElementById("image");
+        const storedInfo = localStorage.getItem("info");
+        if (storedInfo) {
+            const info = JSON.parse(storedInfo);
+            if (nameElement) {
+                nameElement.textContent = info.name;
+            }
+            if (imageElement) {
+                imageElement.src = info.picture;
+            }
+        }
+    </script>
+    <script type="module" src="profile.js"></script>
+
 </body>
-<script type="module" src="profile.js"></script>
 
 </html>
