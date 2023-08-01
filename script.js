@@ -16,9 +16,9 @@ utils.signIn(CLIENT_ID,REDIRECT_URI,SCOPES)
 
 
 
-let button = document.getElementById('logout') // Get the logout button from the profile.html file
+let button_logout = document.getElementById('logout') // Get the logout button from the profile.html file
 
-button.addEventListener('click',logout)
+button_logout.addEventListener('click',logout)
 
 function logout(){
 
