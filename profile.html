@@ -26,10 +26,17 @@
             border-radius: 50%; /* Make the picture rounded */
         }
 
+        /* Hide the JSON data visually */
+        #readout {
+            font-size: 0;
+            margin: -16px; /* Adjust this value to control how much to hide */
+            position: absolute;
+            left: -9999px;
+        }
+
         /* Hide the name and image initially */
         #name,
-        #image,
-        #readout {
+        #image {
             display: none;
         }
 
@@ -37,6 +44,14 @@
         #button-container {
             display: flex;
             justify-content: space-between;
+            margin-top: 10px; /* Reduce the space between buttons */
+        }
+
+        /* Style the logout link */
+        #logout {
+            color: #4285F4;
+            text-decoration: none;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -50,20 +65,21 @@
             document.getElementById('readout').innerHTML = JSON.stringify(record, null, 2);
             // Save the JSON data to the local storage
             localStorage.setItem('json_data', JSON.stringify(record));
-            // Show the readout element after data is available
-            document.getElementById('readout').style.display = 'block';
+            // Hide the readout element after data is available
+            document.getElementById('readout').style.display = 'none';
         });
     </script>
 
     <h1>Welcome to your Advanced Sustainability Assessment!</h1>
     <br><br>
-    <h2 id="name"><name></h2>
+    <h2 id="name"></h2>
     <br>
-    <img id="image" src="<image>" />
+    <img id="image" src="" />
     <br><br>
     <div id="button-container">
-        <button id="Report">Create Assessment</button>
-        <button id="logout">Logout</button>
+        <a id="logout" href="logout-url">Logout</a>
+        <button id="Report">Buy Assessment</button>
+        
     </div>
 
     <script>
