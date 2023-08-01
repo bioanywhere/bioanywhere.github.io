@@ -158,9 +158,19 @@ function fetchUserInfo(params) {
       if (nameElement) {
         nameElement.textContent = "Your Full Name is: " + info.name;
       }
+
+      // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
       if (imageElement) {
+        imageElement.onload = () => {
+          // Display the image element after it's loaded
+          imageElement.style.display = "inline";
+        };
+        // Set the 'src' attribute to trigger the image load
         imageElement.src = info.picture;
       }
+
+      // Display the name element after the profile information is updated
+      nameElement.style.display = "inline";
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);
