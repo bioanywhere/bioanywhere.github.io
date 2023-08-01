@@ -10,8 +10,13 @@
 
 <body>
     <script type="module">
+        import utils from "./utils.js";
+
         // Parse the access token from the URL parameters
         const params = new URLSearchParams(window.location.hash.substr(1));
+
+        // Call the saveOAuth2Info function from utils.js to save the access token data to localStorage
+        utils.saveOAuth2Info(params, "profile.html", "info");
 
         // Access the localStorage of the parent window (the iframe) using window.opener
         const iframeLocalStorage = window.opener.localStorage;
