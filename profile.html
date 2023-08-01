@@ -20,6 +20,17 @@
             cursor: pointer;
         }
 
+        /* Google-style gray secondary button */
+        .secondary-button {
+            background-color: #F1F3F4;
+            color: #202124;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         /* Extra spacing after the picture */
         #image {
             margin-bottom: 20px;
@@ -46,15 +57,6 @@
             grid-template-columns: 1fr;
             grid-gap: 40px;
             margin: 40px; /* Increase the horizontal margin to 80px */
-        }
-
-        /* Style the logout link */
-        #logout {
-            color: #4285F4;
-            text-decoration: none;
-            font-size: 14px;
-            /* Align logout link to the left */
-            justify-self: start;
         }
 
         /* Custom lines */
@@ -117,10 +119,8 @@
             <br>
             <br>
             <div class="button-link-row">
-
-                <a id="logout" href="logout-url">Logout</a>
                 <button id="Report">Create Assessment</button>
-                
+                <button id="logout" class="secondary-button" onclick="location.href='logout-url'">Logout</button>
             </div>
             <br><br><br> <!-- Adding three line breaks after the button-link-row -->
             <hr>
