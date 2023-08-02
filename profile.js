@@ -244,48 +244,8 @@ document.getElementById('Report').addEventListener('click', async () => {
   setTemplateDocumentId(templateDocumentId);
   console.log("Template Document ID:", templateDocumentId);
 
-
-  // Function to store the template sheet ID in the local storage
-  function setTemplateDocumentId(templateSheetId) {
-    localStorage.setItem("templateSheetId", templateSheetId);
-  }
-
-  const templateSheetId = '1998aLLtmz0tq0RfSAYAdUXc0aF2JU2jE-tl7bVrXbpM';
-  settemplateSheetId(templateSheetId);
-  console.log("Template Sheet ID:", templateSheetId;
-
-
   try {
-
-        // Step 1: Duplicate the Google Sheets Template
-    console.log("Step 1: Duplicating the template sheet...");
-    const duplicateResponse = await makeFetchRequest(
-      `https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "My Data", // The name of the duplicated sheet file
-        }),
-      }
-    );
-
-    const duplicateData = await duplicateResponse.json();
-    console.log("Step 1: Duplicated Google Sheets ID:", duplicateData.id);
-
-    return duplicateData.id;
-  } catch (error) {
-    console.error("Error duplicating the sheet:", error);
-    throw error;
-  }
-
-
-
-
-    // Step 1: Duplicate the Google Docs Template
+    // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
     const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
@@ -301,7 +261,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     const duplicateData = await duplicateResponse.json();
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
 
-    console.log("Step 2: Google Sheets and DocsTemplates duplicated successfully.");
+    console.log("Step 2: Document content duplicated successfully.");
 
     // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
     console.log("Step 3: Replacing placeholders with DataFrame values...");
