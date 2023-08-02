@@ -159,7 +159,7 @@ function fetchUserInfo(params) {
       // Check if the elements exist before updating the information
       if (nameElement && imageElement) {
         // Set the name element text to the user's name
-        nameElement.textContent = "Your Full Name is: " + info.name;
+        nameElement.textContent = info.name;
 
         // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
         imageElement.onload = () => {
