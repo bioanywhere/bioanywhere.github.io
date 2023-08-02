@@ -303,17 +303,8 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-
-
-
-
-
-
-
-
     // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
     console.log("Step 3: Replacing placeholders with DataFrame values...");
-console.log("Step 3: Replacing placeholders with DataFrame values...");
 
   const batchUpdateRequests = df.map(item => {
     return {
@@ -345,6 +336,48 @@ console.log("Step 3: Replacing placeholders with DataFrame values...");
       const batchUpdateResponseData = await batchUpdateResponse.json();
       console.log("Step 3: Placeholders replaced with DataFrame values.");
       console.log("Batch Update Response Data:", batchUpdateResponseData);
+
+
+
+
+
+
+
+
+
+
+    // Step 3: Use the Google Sheets API to replace placeholders with DataFrame values
+    console.log("Step 3: Replacing placeholders for sheet with DataFrame values...");
+
+    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`;
+    const googleSheetsApiHeaders = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    };
+
+    try {
+      const batchUpdateResponse2 = await makeFetchRequest(googleSheetsApiUrl, {
+        method: 'POST',
+        headers: googleSheetsApiHeaders,
+        body: JSON.stringify({
+          requests: batchUpdateRequests,
+        }),
+      });
+
+      const batchUpdateResponseSheet = await batchUpdateResponse2.json();
+      console.log("Step 3: Placeholders replaced with DataFrame values in sheet.");
+      console.log("Batch Sheets Update Response Data:", batchUpdateResponseSheet);
+
+
+
+
+
+
+
+
+
+
+
 
 
       // Step 4: Set sharing settings to make the document publicly accessible
