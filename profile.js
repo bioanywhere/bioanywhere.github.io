@@ -338,6 +338,44 @@ document.getElementById('Report').addEventListener('click', async () => {
       console.log("Batch Update Response Data in Doc:", batchUpdateResponseData);
 
 
+    } catch (error) {
+      console.error('Error replacing placeholders in Doc:', error);
+      alert('Failed to replace placeholders in Doc. Please try again later.');
+    }
+
+
+    // Step 3: Use the **Google Sheets API** to replace placeholders with DataFrame values
+    console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
+
+
+    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.Id}:batchUpdate`;
+    const googleSheetsApiHeaders = {
+      Authorization: `Bearer ${access_token}`,
+      "Content-Type": "application/json",
+    };
+
+
+
+    try {
+      const batchUpdateResponse2 = await makeFetchRequest(googleSheetsApiUrl, {
+        method: 'POST',
+        headers: googleSheetsApiHeaders,
+        body: JSON.stringify({
+          requests: batchUpdateRequests,
+        }),
+      });
+
+      const batchUpdateResponseSheet = await batchUpdateResponse2.json();
+      console.log("Step 3: Placeholders replaced with DataFrame values in sheet.");
+      console.log("Batch Sheets Update Response Data:", batchUpdateResponseSheet);
+
+
+    } catch (error) {
+      console.error('Error replacing placeholders in Sheet:', error);
+      alert('Failed to replace placeholders in Sheet. Please try again later.');
+    }
+
+
       // Step 4: Set sharing settings to make the document publicly accessible
       console.log("Step 4: Setting sharing settings for Doc...");
 
@@ -356,42 +394,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       const setSharingData = await setSharingResponse.json();
       console.log("Step 4: Sharing of Document settings updated:", setSharingData);
 
-      // Step 5: Return the URL of the modified document
-      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-      console.log("Step 5: Document URL:", documentUrl);
-      debugger;
-      window.location.href = documentUrl;
-    } catch (error) {
-      console.error('Error replacing placeholders in Doc:', error);
-      alert('Failed to replace placeholders in Doc. Please try again later.');
-    }
 
-
-
-    // Step 3: Use the **Google Sheets API** to replace placeholders with DataFrame values
-    console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
-
-
-    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.Id}:batchUpdate`;
-    const googleSheetsApiHeaders = {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    };
-
-
-
-    try {
-      const batchUpdateResponse2 = await makeFetchRequest(googleSheetsApiUrl, {
-        method: 'POST',
-        headers: googleSheetsApiHeaders,
-        body: JSON.stringify({
-          requests: batchUpdateRequests,
-        }),
-      });
-
-      const batchUpdateResponseSheet = await batchUpdateResponse2.json();
-      console.log("Step 3: Placeholders replaced with DataFrame values in sheet.");
-      console.log("Batch Sheets Update Response Data:", batchUpdateResponseSheet);
 
 
       // Step 4: Set sharing settings to make the **sheet document** publicly accessible
@@ -412,15 +415,24 @@ document.getElementById('Report').addEventListener('click', async () => {
       const setSharingSheet = await setSharingResponseSheet.json();
       console.log("Step 4: Sharing of sheet settings updated:", setSharingSheet);
 
-      // Step 5: Return the URL of the sheet modified document
+
+
+
+
+      // Step 5: Return the URL of the modified Document
+      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+      console.log("Step 5: Document URL:", documentUrl);
+
+      // Step 5: Return the URL of the modified Sheet
       const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
       console.log("Step 5: Sheet URL:", sheetUrl);
-      debugger;
 
-    } catch (error) {
-      console.error('Error replacing placeholders in Sheet:', error);
-      alert('Failed to replace placeholders in Sheet. Please try again later.');
-    }
+
+
+      debugger;
+      window.location.href = documentUrl;
+
+
 
 
   } catch (error) {
