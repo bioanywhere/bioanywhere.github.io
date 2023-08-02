@@ -156,6 +156,8 @@ function fetchUserInfo(params) {
       const nameElement = document.getElementById("name");
       if (nameElement) {
         nameElement.textContent = info.name;
+        // Show the name element after data is available
+        nameElement.style.display = "inline";
       }
 
       // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
