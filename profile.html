@@ -148,13 +148,11 @@
         if (storedInfo) {
             const info = JSON.parse(storedInfo);
             if (nameElement) {
-                // Set the name placeholder text to the user's name
-                nameElement.textContent = "Dear " + info.name;
+                nameElement.textContent = info.name;
                 // Show the name element after data is available
                 nameElement.style.display = "inline";
             }
             if (imageElement) {
-                // Set the image placeholder source to the user's picture
                 imageElement.src = info.picture;
                 // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
                 imageElement.onload = () => {
@@ -162,9 +160,17 @@
                     imageElement.style.display = "inline";
                 };
             }
+        } else {
+            // If data is not available, show a message or handle it as needed
+            const messageElement = document.createElement("p");
+            messageElement.textContent = "Waiting for user data...";
+            document.body.appendChild(messageElement);
         }
     </script>
     <script type="module" src="profile.js"></script>
+
+
+
 
 </body>
 
