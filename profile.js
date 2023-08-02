@@ -312,6 +312,7 @@ document.getElementById('Report').addEventListener('click', async () => {
         containsText: {
           text: item.Placeholder,
           matchCase: false, // Set to false for an exact match
+          allSheets: true,
         },
         replaceText: JSON.stringify(item.Value), // Ensure that the value is properly escaped
       },
@@ -352,15 +353,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
         console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
 
-        const batchUpdateSheetRequests = placeholdersData.map((item) => {
-          return {
-            findReplace: {
-              find: item.Placeholder,
-              replacement: JSON.stringify(item.Value), // Ensure that the value is properly escaped
-              allSheets: true,
-            },
-          };
-        });
+
 
 
         const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}:batchUpdate`;
@@ -373,7 +366,7 @@ document.getElementById('Report').addEventListener('click', async () => {
           method: "POST",
           headers: googleSheetsApiHeaders,
           body: JSON.stringify({
-            requests: batchUpdateSheetRequests,
+            requests: batchUpdateRequests,
           }),
         });
 
