@@ -244,6 +244,22 @@ document.getElementById('Report').addEventListener('click', async () => {
   setTemplateDocumentId(templateDocumentId);
   console.log("Template Document ID:", templateDocumentId);
 
+
+
+  // Function to store the template document ID in the local storage
+  function setTemplateSheetId(templateSheetId) {
+    localStorage.setItem("templateSheetId", templateSheetId);
+  }
+
+  const templateSheetId = '1998aLLtmz0tq0RfSAYAdUXc0aF2JU2jE-tl7bVrXbpM';
+  setTemplateSheetId(templateSheetId);
+  console.log("Template Sheet ID:", templateSheetId);
+
+
+
+
+
+
   try {
     // Step 1: Duplicate the template document
     console.log("Step 1: Duplicating the template document...");
