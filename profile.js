@@ -309,6 +309,10 @@ document.getElementById('Report').addEventListener('click', async () => {
   console.log("Access Token:", access_token);
 
 
+  // Retrieve the JSON data from the local storage
+  const jsonData = JSON.parse(localStorage.getItem("json_data"));
+
+
   // Helper function to fetch JSON data from localStorage
   function getJsonDataFromLocalStorage() {
     const jsonData = JSON.parse(localStorage.getItem("json_data"));
