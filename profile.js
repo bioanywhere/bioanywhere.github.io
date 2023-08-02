@@ -295,8 +295,8 @@ document.getElementById('Report').addEventListener('click', async () => {
       }),
     });
 
-    const duplicateSheetData = await duplicateSheetResponse.json();
-    console.log("Step 1: Duplicated sheet ID:", duplicateSheetData.id);
+    const duplicateSheet = await duplicateSheetResponse.json();
+    console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
     console.log("Step 2: Sheet content duplicated successfully.");
 
@@ -334,12 +334,12 @@ document.getElementById('Report').addEventListener('click', async () => {
       });
 
       const batchUpdateResponseData = await batchUpdateResponse.json();
-      console.log("Step 3: Placeholders replaced with DataFrame values.");
-      console.log("Batch Update Response Data:", batchUpdateResponseData);
+      console.log("Step 3: Placeholders replaced in Doc with DataFrame values.");
+      console.log("Batch Update Response Data in Doc:", batchUpdateResponseData);
 
 
       // Step 4: Set sharing settings to make the document publicly accessible
-      console.log("Step 4: Setting sharing settings...");
+      console.log("Step 4: Setting sharing settings for Doc...");
 
       const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
         method: 'POST',
@@ -362,17 +362,17 @@ document.getElementById('Report').addEventListener('click', async () => {
       debugger;
       window.location.href = documentUrl;
     } catch (error) {
-      console.error('Error replacing placeholders:', error);
-      alert('Failed to replace placeholders. Please try again later.');
+      console.error('Error replacing placeholders in Doc:', error);
+      alert('Failed to replace placeholders in Doc. Please try again later.');
     }
 
 
 
     // Step 3: Use the **Google Sheets API** to replace placeholders with DataFrame values
-    console.log("Step 3: Replacing placeholders with DataFrame values...");
+    console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
 
 
-    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`;
+    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.Id}:batchUpdate`;
     const googleSheetsApiHeaders = {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
@@ -397,7 +397,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       // Step 4: Set sharing settings to make the **sheet document** publicly accessible
       console.log("Step 4: Setting sharing settings for the sheet...");
 
-      const setSharingResponseSheet = await fetch(`https://www.googleapis.com/drive/v3/files/${sheetId}/permissions`, {
+      const setSharingResponseSheet = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateSheet.id}/permissions`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${access_token}`,
@@ -413,7 +413,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       console.log("Step 4: Sharing of sheet settings updated:", setSharingSheet);
 
       // Step 5: Return the URL of the sheet modified document
-      const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}`;
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
       console.log("Step 5: Sheet URL:", sheetUrl);
       debugger;
 
