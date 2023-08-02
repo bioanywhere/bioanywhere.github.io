@@ -298,10 +298,10 @@ document.getElementById('Report').addEventListener('click', async () => {
       }
     );
 
-    const duplicateData = await duplicateResponse.json();
-    console.log("Step 1: Duplicated sheet ID:", duplicateData.id);
+    const duplicateSheet = await duplicateResponse.json();
+    console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
-    return duplicateData.id;
+    return duplicateSheet.id;
   } catch (error) {
     console.error("Error duplicating the sheet:", error);
     throw error;
