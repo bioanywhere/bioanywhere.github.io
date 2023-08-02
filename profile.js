@@ -179,7 +179,6 @@ function fetchUserInfo(params) {
 
 
 
-
 // ... (Rest of the code)
 
 
@@ -200,6 +199,107 @@ function convertValueToString(value) {
 
 
 
+// Helper function to duplicate a Google Sheets template
+async function duplicateGoogleSheetTemplate(templateSheetId, accessToken) {
+  try {
+    // Step 1: Duplicate the template sheet
+    console.log("Step 1: Duplicating the template sheet...");
+    const duplicateResponse = await makeFetchRequest(
+      `https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: "My Report", // The name of the duplicated file
+        }),
+      }
+    );
+
+    const duplicateData = await duplicateResponse.json();
+    console.log("Step 1: Duplicated Google Sheets ID:", duplicateData.id);
+
+    return duplicateData.id;
+  } catch (error) {
+    console.error("Error duplicating the sheet:", error);
+    throw error;
+  }
+}
+
+// Helper function to replace placeholders in a Google Sheets document
+async function replacePlaceholdersInGoogleSheet(sheetId, placeholdersData, accessToken) {
+  try {
+    console.log("Step 3: Replacing placeholders with DataFrame values...");
+
+    const batchUpdateRequests = placeholdersData.map((item) => {
+      return {
+        findReplace: {
+          find: item.Placeholder,
+          replacement: JSON.stringify(item.Value), // Ensure that the value is properly escaped
+          allSheets: true,
+        },
+      };
+    });
+
+    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`;
+    const googleSheetsApiHeaders = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    };
+
+    const batchUpdateResponse = await makeFetchRequest(googleSheetsApiUrl, {
+      method: "POST",
+      headers: googleSheetsApiHeaders,
+      body: JSON.stringify({
+        requests: batchUpdateRequests,
+      }),
+    });
+
+    const batchUpdateResponseData = await batchUpdateResponse.json();
+    console.log("Step 3: Placeholders replaced with DataFrame values.");
+    console.log("Batch Update Response Data:", batchUpdateResponseData);
+  } catch (error) {
+    console.error("Error replacing placeholders:", error);
+    throw error;
+  }
+}
+
+// Helper function to set sharing settings for the duplicated Google Sheets
+async function setSharingSettingsForGoogleSheet(sheetId, accessToken) {
+  try {
+    console.log("Step 4: Setting sharing settings...");
+
+    const setSharingResponse = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${sheetId}/permissions`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role: "reader",
+          type: "anyone",
+        }),
+      }
+    );
+
+    const setSharingData = await setSharingResponse.json();
+    console.log("Step 4: Sharing settings updated:", setSharingData);
+  } catch (error) {
+    console.error("Error setting sharing settings:", error);
+    throw error;
+  }
+}
+
+
+
+
+
+
+
 
 // Event listener for the "Create Report" button
 document.getElementById('Report').addEventListener('click', async () => {
@@ -208,8 +308,17 @@ document.getElementById('Report').addEventListener('click', async () => {
   const access_token = JSON.parse(localStorage.getItem("info")).access_token;
   console.log("Access Token:", access_token);
 
-  // Retrieve the JSON data from the local storage
-  const jsonData = JSON.parse(localStorage.getItem("json_data"));
+
+  // Helper function to fetch JSON data from localStorage
+  function getJsonDataFromLocalStorage() {
+    const jsonData = JSON.parse(localStorage.getItem("json_data"));
+    if (!jsonData) {
+      throw new Error("JSON data not found in local storage.");
+    }
+    return jsonData;
+  }
+
+
 
   // Helper function to flatten the nested JSON
   function flattenJson(data, prefix = '') {
@@ -235,17 +344,45 @@ document.getElementById('Report').addEventListener('click', async () => {
   // Display the DataFrame
   console.log(df);
 
-  // Function to store the template document ID in the local storage
-  function setTemplateDocumentId(templateDocumentId) {
-    localStorage.setItem("templateDocumentId", templateDocumentId);
-  }
 
+
+
+
+
+
+
+
+ // Get the Google Docs template ID
   const templateDocumentId = '132dW6-cb5w1io1tB8qkc6W1wpA2xpEntugZezycyUa0';
   setTemplateDocumentId(templateDocumentId);
   console.log("Template Document ID:", templateDocumentId);
 
+   // Helper function to store the template document ID in local storage
+  function setTemplateDocumentId(templateDocumentId) {
+    localStorage.setItem("templateDocumentId", templateDocumentId);
+  }
+
+
+  // Get the Google Sheets template ID
+  const templateSheetId = '1998aLLtmz0tq0RfSAYAdUXc0aF2JU2jE-tl7bVrXbpM';
+
+  // Helper function to store the template sheet ID in local storage
+  function setTemplateSheetId(templateSheetId) {
+    localStorage.setItem("templateSheetId", templateSheetId);
+  }
+
+  // Store the template sheet ID in local storage
+  setTemplateSheetId(duplicatedSheetId);
+
+
   try {
-    // Step 1: Duplicate the template document
+
+
+    // Step 1: Duplicate the Google Sheets template
+    const duplicatedSheetId = await duplicateGoogleSheetTemplate(templateSheetId, access_token);
+
+
+    // Step 1: Duplicate the Google Docs document
     console.log("Step 1: Duplicating the template document...");
     const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
@@ -259,9 +396,16 @@ document.getElementById('Report').addEventListener('click', async () => {
     });
 
     const duplicateData = await duplicateResponse.json();
-    console.log("Step 1: Duplicated document ID:", duplicateData.id);
+
+
+    console.log("Step 1: Duplicated Google Docs ID:", duplicateData.id);
 
     console.log("Step 2: Document content duplicated successfully.");
+
+
+
+    // Step 3: Replace placeholders in the duplicated Google Sheets
+    await replacePlaceholdersInGoogleSheet(duplicatedSheetId, df, access_token);
 
     // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
     console.log("Step 3: Replacing placeholders with DataFrame values...");
@@ -301,6 +445,10 @@ console.log("Step 3: Replacing placeholders with DataFrame values...");
 
       // Step 4: Set sharing settings to make the document publicly accessible
       console.log("Step 4: Setting sharing settings...");
+
+
+      // Step 4: Set sharing settings for the duplicated Google Sheets
+      await setSharingSettingsForGoogleSheet(duplicatedSheetId, access_token);
 
       const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
         method: 'POST',
