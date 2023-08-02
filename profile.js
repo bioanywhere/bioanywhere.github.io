@@ -283,30 +283,23 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
     // Step 1: Duplicate the template sheet
-    console.log("Step 1: Duplicating the template sheet...");
-    const duplicateResponse = await makeFetchRequest(
-      `https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "My Data", // The name of the duplicated sheet file
-        }),
-      }
-    );
+    console.log("Step 1: Duplicating the template sheeet...");
+    const duplicateSheetResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: "My Data", // The name of the duplicated file
+      }),
+    });
 
-    const duplicateSheet = await duplicateResponse.json();
-    console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
+    const duplicateSheetData = await duplicateSheetResponse.json();
+    console.log("Step 1: Duplicated sheet ID:", duplicateSheetData.id);
 
-    return duplicateSheet.id;
-  } catch (error) {
-    console.error("Error duplicating the sheet:", error);
-    throw error;
-  }
-}
+    console.log("Step 2: Sheet content duplicated successfully.");
+
 
 
 
