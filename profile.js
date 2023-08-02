@@ -352,7 +352,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
         console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
 
-        const batchUpdateSheetRequests = placeholdersData.map((item) => {
+        const batchUpdateSheetRequests = df.map((item) => {
           return {
             findReplace: {
               find: item.Placeholder,
