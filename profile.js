@@ -261,7 +261,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
   try {
-    // Step 1: Duplicate the template document
+    // Step 1: Duplicate the template Document
     console.log("Step 1: Duplicating the template document...");
     const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
       method: 'POST',
@@ -348,32 +348,40 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
 
 
-    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}:batchUpdate`;
-    const googleSheetsApiHeaders = {
-      Authorization: `Bearer ${access_token}`,
-      "Content-Type": "application/json",
-    };
+    // Helper function to replace placeholders in a Google Sheets document
+
+        console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
+
+        const batchUpdateSheetRequests = placeholdersData.map((item) => {
+          return {
+            findReplace: {
+              find: item.Placeholder,
+              replacement: JSON.stringify(item.Value), // Ensure that the value is properly escaped
+              allSheets: true,
+            },
+          };
+        });
 
 
+        const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}:batchUpdate`;
+        const googleSheetsApiHeaders = {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        };
 
-    try {
-      const batchUpdateResponse2 = await makeFetchRequest(googleSheetsApiUrl, {
-        method: 'POST',
-        headers: googleSheetsApiHeaders,
-        body: JSON.stringify({
-          requests: batchUpdateRequests,
-        }),
-      });
+        const batchUpdateResponse2 = await makeFetchRequest(googleSheetsApiUrl, {
+          method: "POST",
+          headers: googleSheetsApiHeaders,
+          body: JSON.stringify({
+            requests: batchUpdateSheetRequests,
+          }),
+        });
 
-      const batchUpdateResponseSheet = await batchUpdateResponse2.json();
-      console.log("Step 3: Placeholders replaced with DataFrame values in sheet.");
-      console.log("Batch Sheets Update Response Data:", batchUpdateResponseSheet);
+        const batchUpdateResponseSheet = await batchUpdateResponse2.json();
+        console.log("Step 3: Placeholders replaced in Sheets with DataFrame values.");
+        console.log("Batch Update Response Sheet:", batchUpdateResponseSheet);
 
 
-    } catch (error) {
-      console.error('Error replacing placeholders in Sheet:', error);
-      alert('Failed to replace placeholders in Sheet. Please try again later.');
-    }
 
 
       // Step 4: Set sharing settings to make the document publicly accessible
