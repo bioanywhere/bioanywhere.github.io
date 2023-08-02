@@ -348,7 +348,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
 
 
-    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.Id}:batchUpdate`;
+    const googleSheetsApiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}:batchUpdate`;
     const googleSheetsApiHeaders = {
       Authorization: `Bearer ${access_token}`,
       "Content-Type": "application/json",
