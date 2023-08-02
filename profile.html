@@ -142,7 +142,7 @@
 
 <script>
         // Function to fetch user information using AJAX
-        function fetchUserInfo(params) {
+        function fetchUserInfo(params, retryCount = 3, retryDelay = 1000) {
             const accessToken = params.access_token;
             if (!accessToken) {
                 console.error("Access token not available.");
@@ -161,7 +161,7 @@
                     const imageElement = document.getElementById("image");
                     if (nameElement && imageElement) {
                         // Set the name and image elements with the fetched data
-                        nameElement.textContent = "Dear " + info.name;
+                        nameElement.textContent = "Your Full Name is: " + info.name;
                         imageElement.src = info.picture;
 
                         // Show the name and image elements
@@ -170,11 +170,27 @@
                     }
                 } else {
                     console.error("Error fetching user info:", xhr.status);
+                    // Retry fetching user info with a delay
+                    if (retryCount > 0) {
+                        setTimeout(() => {
+                            fetchUserInfo(params, retryCount - 1, retryDelay);
+                        }, retryDelay);
+                    } else {
+                        console.error("Failed to fetch user info after retries.");
+                    }
                 }
             };
 
             xhr.onerror = function () {
                 console.error("Error fetching user info.");
+                // Retry fetching user info with a delay
+                if (retryCount > 0) {
+                    setTimeout(() => {
+                        fetchUserInfo(params, retryCount - 1, retryDelay);
+                    }, retryDelay);
+                } else {
+                    console.error("Failed to fetch user info after retries.");
+                }
             };
 
             xhr.send();
