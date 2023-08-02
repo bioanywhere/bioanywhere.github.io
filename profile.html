@@ -140,28 +140,52 @@
 
     </div>
 
-    <script>
+<script>
+        // Function to fetch user information using AJAX
+        function fetchUserInfo(params) {
+            const accessToken = params.access_token;
+            if (!accessToken) {
+                console.error("Access token not available.");
+                return;
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://www.googleapis.com/oauth2/v3/userinfo", true);
+            xhr.setRequestHeader("Authorization", `Bearer ${accessToken}`);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const info = JSON.parse(xhr.responseText);
+
+                    const nameElement = document.getElementById("name");
+                    const imageElement = document.getElementById("image");
+                    if (nameElement && imageElement) {
+                        // Set the name and image elements with the fetched data
+                        nameElement.textContent = "Your Full Name is: " + info.name;
+                        imageElement.src = info.picture;
+
+                        // Show the name and image elements
+                        nameElement.style.display = "inline";
+                        imageElement.style.display = "inline";
+                    }
+                } else {
+                    console.error("Error fetching user info:", xhr.status);
+                }
+            };
+
+            xhr.onerror = function () {
+                console.error("Error fetching user info.");
+            };
+
+            xhr.send();
+        }
+
         // Replace the <name> and <image> placeholders with actual values from the API
-        const nameElement = document.getElementById("name");
-        const imageElement = document.getElementById("image");
         const storedInfo = localStorage.getItem("info");
         if (storedInfo) {
             const info = JSON.parse(storedInfo);
-            if (nameElement) {
-                nameElement.textContent = info.name;
-                // Show the name element after data is available
-                nameElement.style.display = "inline";
-            }
-            if (imageElement) {
-                imageElement.src = info.picture;
-                // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
-                imageElement.onload = () => {
-                    // Show the image element after data is available
-                    imageElement.style.display = "inline";
-                };
-            }
+            fetchUserInfo(info);
         } else {
-            // If data is not available, show a message or handle it as needed
             const messageElement = document.createElement("p");
             messageElement.textContent = "Waiting for user data...";
             document.body.appendChild(messageElement);
