@@ -18,7 +18,7 @@ function getNestedProperty(obj, propString) {
 utils.createMultipartRequestBody = (json_data) => {
   // Define the metadata for the file (change as needed)
   const metadata = {
-    name: "My Report", // The name of the file
+    name: "My Assesssment", // The name of the file
     mimeType: "application/vnd.google-apps.document", // MIME type for Google Docs document
   };
 
@@ -232,6 +232,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     return { 'Field': item[0], 'Value': item[1], 'Placeholder': `{{${item[0]}}}` };
   });
 
+
   // Display the DataFrame
   console.log(df);
 
@@ -276,7 +277,13 @@ document.getElementById('Report').addEventListener('click', async () => {
     });
 
     const duplicateSheet = await duplicateSheetResponse.json();
+    const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
     console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
+
+
+    // Add sheetURL at the end of the DataFrame
+    df.push({ 'Field': 'sheetUrl', 'Value': sheetUrl, 'Placeholder': '{{sheetUrl}}' });
+
 
     console.log("Step 2: Sheet content duplicated successfully.");
 
@@ -341,7 +348,6 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
       // Step 5: Return the URL of the modified Sheet
-      const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
       console.log("Step 5: Sheet URL:", sheetUrl);
 
 
@@ -369,6 +375,15 @@ document.getElementById('Report').addEventListener('click', async () => {
     });
 
     const duplicateData = await duplicateResponse.json();
+    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+
+    console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
+
+
+    // Add sheetURL at the end of the DataFrame
+    df.push({ 'Field': 'documentUrl', 'Value': documentUrl, 'Placeholder': '{{documentUrl}}' });
+
+
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
 
     console.log("Step 2: Document content duplicated successfully.");
@@ -438,7 +453,6 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
       // Step 5: Return the URL of the modified Document
-      const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
       console.log("Step 5: Document URL:", documentUrl);
 
       debugger;
