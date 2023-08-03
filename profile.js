@@ -284,6 +284,71 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
+    // Publish all charts in the new Google Sheets document
+    console.log("Step 2: Publishing all charts in the new Google Sheets document...");
+
+
+    // Save duplicateSheet.id in a variable named sheetId
+    const sheetId = duplicateSheet.id;
+
+    const publishCharts = async (sheetId) => {
+      const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const chartsData = await chartsResponse.json();
+      const sheets = chartsData.sheets;
+      
+      // Find all chart objects in the sheets
+      const chartObjects = [];
+      sheets.forEach(sheet => {
+        const data = sheet.data;
+        if (data && data.charts) {
+          data.charts.forEach(chart => {
+            chartObjects.push(chart);
+          });
+        }
+      });
+
+      // Set all charts to be published
+      const setPublishRequests = chartObjects.map(chart => {
+        return {
+          updateChartSpec: {
+            chartId: chart.chartId,
+            spec: {
+              ...chart.spec,
+              hiddenDimensionStrategy: 'SHOW_BOTH'
+            },
+            fields: 'hiddenDimensionStrategy'
+          }
+        };
+      });
+
+      // Send batch update request to publish all charts
+      const batchUpdateResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requests: setPublishRequests,
+        }),
+      });
+
+      const batchUpdateData = await batchUpdateResponse.json();
+      console.log("Step 2: All charts have been published in the new Google Sheets document.");
+    };
+
+    // Call the function to publish charts in the duplicated sheet
+    publishCharts(duplicateSheet.id);
+
+
+
+
     // Step 1: Duplicate Google Docs Template
     console.log("Step 1: Duplicating the template document...");
     const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
@@ -302,8 +367,6 @@ document.getElementById('Report').addEventListener('click', async () => {
     const duplicateData = await duplicateResponse.json();
     const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
     console.log("Step 1: Duplicated document ID:", duplicateData.id);
-
-
 
     // Add URLs at the end of the DataFrames
     df.push({ 'Field': 'documentUrl', 'Value': documentUrl, 'Placeholder': '{{documentUrl}}' });
