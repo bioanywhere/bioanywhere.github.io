@@ -326,6 +326,12 @@ document.getElementById('Report').addEventListener('click', async () => {
         };
       });
 
+      // Check if there are any update requests to process
+      if (setPublishRequests.length === 0) {
+        console.log("No charts found in the new Google Sheets document to publish.");
+        return;
+      }
+
       // Send batch update request to publish all charts
       const batchUpdateResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`, {
         method: 'POST',
