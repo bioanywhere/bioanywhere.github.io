@@ -284,12 +284,11 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-    // Publish all charts in the new Google Sheets document
-    console.log("Step 2: Publishing all charts in the new Google Sheets document...");
-
-
     // Save duplicateSheet.id in a variable named sheetId
     const sheetId = duplicateSheet.id;
+
+    // Step 2: Publish all charts in the new Google Sheets document
+    console.log("Step 2: Publishing all charts in the new Google Sheets document...");
 
     const publishCharts = async (sheetId) => {
       const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`, {
@@ -301,7 +300,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
       const chartsData = await chartsResponse.json();
       const sheets = chartsData.sheets;
-      
+
       // Find all chart objects in the sheets
       const chartObjects = [];
       sheets.forEach(sheet => {
@@ -341,10 +340,11 @@ document.getElementById('Report').addEventListener('click', async () => {
 
       const batchUpdateData = await batchUpdateResponse.json();
       console.log("Step 2: All charts have been published in the new Google Sheets document.");
+      console.log("Response of the API call to batchUpdate:", batchUpdateData);
     };
 
-    // Call the function to publish charts in the duplicated sheet
-    publishCharts(duplicateSheet.id);
+    // Call the function to publish charts in the duplicated sheet using the stored sheetId
+    publishCharts(sheetId);
 
 
 
