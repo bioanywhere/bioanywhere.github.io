@@ -260,11 +260,12 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-// ------------------- Google Sheets -------------------
 
 
-    // Step 1: Duplicate the Template Sheet
-    console.log("Step 1: Duplicating the template sheeet...");
+    // Step 1: Duplicate Google Sheets Template
+
+
+    console.log("Step 1: Duplicating Google Sheets Template...");
     const duplicateSheetResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`, {
       method: 'POST',
       headers: {
@@ -281,21 +282,46 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 
-    // Add sheetURL at the end of the DataFrame
+
+
+    // Step 1: Duplicate Google Docs Template
+    console.log("Step 1: Duplicating the template document...");
+    const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: "My Report", // The name of the duplicated file
+        description: `This document is linked to the Google Sheet: ${sheetUrl}`, // Set the description during duplication
+
+      }),
+    });
+
+    const duplicateData = await duplicateResponse.json();
+    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
+    console.log("Step 1: Duplicated document ID:", duplicateData.id);
+
+
+
+    // Add URLs at the end of the DataFrames
+    df.push({ 'Field': 'documentUrl', 'Value': documentUrl, 'Placeholder': '{{documentUrl}}' });
     df.push({ 'Field': 'sheetUrl', 'Value': sheetUrl, 'Placeholder': '{{sheetUrl}}' });
 
+    
 
-    console.log("Step 2: Sheet content duplicated successfully.");
-
-
-
-    // Step 3: Use the **Google Sheets API** to replace placeholders with DataFrame values
-    console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
+ 
 
 
-    // Helper function to replace placeholders in a Google Sheets document
 
-        console.log("Step 3: Replacing placeholders with DataFrame values in Sheet...");
+// ------------------- Google Sheets -------------------
+
+
+
+    // Step 2: Helper function to replace placeholders in a Google Sheets document
+
+        console.log("Step 2: Replacing placeholders with DataFrame values in New Google Sheets...");
 
         const batchUpdateSheetRequests = df.map((item) => {
           return {
@@ -323,13 +349,13 @@ document.getElementById('Report').addEventListener('click', async () => {
         });
 
         const batchUpdateResponseSheet = await batchUpdateResponse2.json();
-        console.log("Step 3: Placeholders replaced in Sheets with DataFrame values.");
+        console.log("Step 2: Placeholders replaced in Sheets with DataFrame values.");
         console.log("Batch Update Response Sheet:", batchUpdateResponseSheet);
 
 
 
-      // Step 4: Set sharing settings to make the **sheet document** publicly accessible
-      console.log("Step 4: Setting sharing settings for the sheet...");
+      // Step 3: Set sharing settings to make the **sheet document** publicly accessible
+      console.log("Step 3: Setting sharing settings for the sheet...");
 
       const setSharingResponseSheet = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateSheet.id}/permissions`, {
         method: 'POST',
@@ -344,11 +370,11 @@ document.getElementById('Report').addEventListener('click', async () => {
       });
 
       const setSharingSheet = await setSharingResponseSheet.json();
-      console.log("Step 4: Sharing of sheet settings updated:", setSharingSheet);
+      console.log("Step 3: Sharing of sheet settings updated:", setSharingSheet);
 
 
-      // Step 5: Return the URL of the modified Sheet
-      console.log("Step 5: Sheet URL:", sheetUrl);
+      // Step 4: Return the URL of the modified Sheet
+      console.log("Step 4: Sheet URL:", sheetUrl);
 
 
 
@@ -359,39 +385,10 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
   try {
-    // Step 1: Duplicate the template Document
-    console.log("Step 1: Duplicating the template document...");
-    const duplicateResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateDocumentId}/copy`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: "My Report", // The name of the duplicated file
-        description: `This document is linked to the Google Sheet: ${sheetUrl}`, // Set the description during duplication
-
-      }),
-    });
-
-    const duplicateData = await duplicateResponse.json();
-    const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-
-    console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 
-    // Add sheetURL at the end of the DataFrame
-    df.push({ 'Field': 'documentUrl', 'Value': documentUrl, 'Placeholder': '{{documentUrl}}' });
-
-
-    console.log("Step 1: Duplicated document ID:", duplicateData.id);
-
-    console.log("Step 2: Document content duplicated successfully.");
-
-
-
-    // Step 3: Use the Google Docs API to replace placeholders with DataFrame values
-    console.log("Step 3: Replacing placeholders with DataFrame values in Docs...");
+    // Step 2: Use the Google Docs API to replace placeholders with DataFrame values
+    console.log("Step 2: Replacing placeholders with DataFrame values in Docs...");
 
   const batchUpdateRequests = df.map(item => {
     return {
@@ -421,7 +418,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       });
 
       const batchUpdateResponseData = await batchUpdateResponse.json();
-      console.log("Step 3: Placeholders replaced in Doc with DataFrame values.");
+      console.log("Step 2: Placeholders replaced in Doc with DataFrame values.");
       console.log("Batch Update Response Data in Doc:", batchUpdateResponseData);
 
 
@@ -432,8 +429,8 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-      // Step 4: Set sharing settings to make the document publicly accessible
-      console.log("Step 4: Setting sharing settings for Doc...");
+      // Step 3: Set sharing settings to make the document publicly accessible
+      console.log("Step 3: Setting sharing settings for Doc...");
 
       const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
         method: 'POST',
@@ -448,12 +445,12 @@ document.getElementById('Report').addEventListener('click', async () => {
       });
 
       const setSharingData = await setSharingResponse.json();
-      console.log("Step 4: Sharing of Document settings updated:", setSharingData);
+      console.log("Step 3: Sharing of Document settings updated:", setSharingData);
 
 
 
       // Step 5: Return the URL of the modified Document
-      console.log("Step 5: Document URL:", documentUrl);
+      console.log("Step 4: Document URL:", documentUrl);
 
       debugger;
       window.location.href = documentUrl;
