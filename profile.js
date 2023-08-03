@@ -285,72 +285,84 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
     // Save duplicateSheet.id in a variable named sheetId
-    const sheetId = duplicateSheet.id;
+const sheetId = duplicateSheet.id;
 
-    // Step 2: Publish all charts in the new Google Sheets document
-    console.log("Step 2: Publishing all charts in the new Google Sheets document...");
+// Step 2: Publish all charts in the new Google Sheets document
+console.log("Step 2: Publishing all charts in the new Google Sheets document...");
 
-    const publishCharts = async (sheetId) => {
-      const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
+const publishCharts = async (sheetId) => {
+  const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+
+  const chartsData = await chartsResponse.json();
+  const sheets = chartsData.sheets;
+
+  // Find all chart objects in the sheets
+  const chartObjects = [];
+  sheets.forEach(sheet => {
+    const data = sheet.data;
+    if (data && data.charts && data.charts.length > 0) {
+      // If the sheet has charts, add them to the chartObjects array
+      data.charts.forEach(chart => {
+        chartObjects.push(chart);
+      });
+    }
+  });
+
+  // Check if there are any update requests to process
+  if (chartObjects.length === 0) {
+    console.log("No charts found in the new Google Sheets document to publish.");
+    return;
+  }
+
+  // Print information about the charts found
+  console.log("Charts found in the new Google Sheets document:");
+  chartObjects.forEach((chart, index) => {
+    console.log(`Chart ${index + 1}:`);
+    console.log("  Chart Title:", chart.chart.title);
+    console.log("  Chart ID:", chart.chartId);
+    console.log("  Chart Type:", chart.chartType);
+    console.log("  Hidden Dimension Strategy:", chart.spec.hiddenDimensionStrategy);
+    console.log("  Chart Spec:", chart.spec);
+  });
+
+  // Set all charts to be published
+  const setPublishRequests = chartObjects.map(chart => {
+    return {
+      updateChartSpec: {
+        chartId: chart.chartId,
+        spec: {
+          ...chart.spec,
+          hiddenDimensionStrategy: 'SHOW_BOTH'
         },
-      });
-
-      const chartsData = await chartsResponse.json();
-      const sheets = chartsData.sheets;
-
-      // Find all chart objects in the sheets
-      const chartObjects = [];
-      sheets.forEach(sheet => {
-        const data = sheet.data;
-        if (data && data.charts) {
-          data.charts.forEach(chart => {
-            chartObjects.push(chart);
-          });
-        }
-      });
-
-      // Set all charts to be published
-      const setPublishRequests = chartObjects.map(chart => {
-        return {
-          updateChartSpec: {
-            chartId: chart.chartId,
-            spec: {
-              ...chart.spec,
-              hiddenDimensionStrategy: 'SHOW_BOTH'
-            },
-            fields: 'hiddenDimensionStrategy'
-          }
-        };
-      });
-
-      // Check if there are any update requests to process
-      if (setPublishRequests.length === 0) {
-        console.log("No charts found in the new Google Sheets document to publish.");
-        return;
+        fields: 'hiddenDimensionStrategy'
       }
-
-      // Send batch update request to publish all charts
-      const batchUpdateResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          requests: setPublishRequests,
-        }),
-      });
-
-      const batchUpdateData = await batchUpdateResponse.json();
-      console.log("Step 2: All charts have been published in the new Google Sheets document.");
-      console.log("Response of the API call to batchUpdate:", batchUpdateData);
     };
+  });
 
-    // Call the function to publish charts in the duplicated sheet using the stored sheetId
-    publishCharts(sheetId);
+  // Send batch update request to publish all charts
+  const batchUpdateResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}:batchUpdate`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      requests: setPublishRequests,
+    }),
+  });
+
+  const batchUpdateData = await batchUpdateResponse.json();
+  console.log("Step 2: All charts have been published in the new Google Sheets document.");
+  console.log("Response of the API call to batchUpdate:", batchUpdateData);
+};
+
+// Call the function to publish charts in the duplicated sheet using the stored sheetId
+publishCharts(sheetId);
 
 
 
