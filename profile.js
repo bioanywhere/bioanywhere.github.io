@@ -312,12 +312,13 @@ document.getElementById('Report').addEventListener('click', async () => {
     charts.forEach((chart, index) => {
       console.log(`Chart ${index + 1}:`);
       console.log("Chart ID:", chart.chartId);
-      console.log("Chart Title:", chart.chart.title);
-      console.log("Chart Type:", chart.chart.chartType);
+      console.log("Chart Title:", chart.chart && chart.chart.title ? chart.chart.title : "Empty");
+      console.log("Chart Type:", chart.chart && chart.chart.chartType ? chart.chart.chartType : "Empty");
       console.log("--------------");
     });
 
     console.log("Step 2: Finished listing and printing charts.");
+
 
 
 
