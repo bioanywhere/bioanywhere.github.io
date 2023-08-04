@@ -282,18 +282,17 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 
-
+// *****************
 
     // Save duplicateSheet.id in a variable named sheetId
     const sheetId = duplicateSheet.id;
 
-    // Step 2: List and Print Charts from the New Google Sheets
-
+    // List and Print Charts from the New Google Sheets
     console.log("Step 2: Listing and Printing Charts from the New Google Sheets...");
 
     // Function to fetch the charts from the Google Sheets
     async function getChartsFromSheet(sheetId) {
-      const response = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`, {
+      const response = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.charts`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${access_token}`,
@@ -302,7 +301,7 @@ document.getElementById('Report').addEventListener('click', async () => {
       });
 
       const sheetData = await response.json();
-      return sheetData.sheets.filter(sheet => sheet.charts).flatMap(sheet => sheet.charts);
+      return sheetData.sheets.flatMap(sheet => sheet.charts || []);
     }
 
     // Fetch the charts from the new Google Sheets
@@ -318,6 +317,61 @@ document.getElementById('Report').addEventListener('click', async () => {
     });
 
     console.log("Step 2: Finished listing and printing charts.");
+
+    // Step 3: Publish All Charts from the New Google Sheets
+    console.log("Step 3: Publishing All Charts from the New Google Sheets...");
+
+    // Function to publish a chart by its chart ID
+    async function publishChart(sheetId, chartId) {
+      try {
+        const response = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/charts/${chartId}:publish`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "publishData": {
+              "sourceChart": {
+                "chartId": chartId
+              }
+            }
+          }),
+        });
+
+        const publishData = await response.json();
+        return publishData.publishedUrl;
+      } catch (error) {
+        console.error(`Error publishing Chart ${chartId}:`, error.message);
+        return null;
+      }
+    }
+
+    // Publish all the charts from the new Google Sheets and store the published URLs
+    const publishedUrls = [];
+    for (const chart of charts) {
+      const publishedUrl = await publishChart(duplicateSheet.id, chart.chartId);
+      if (publishedUrl) {
+        console.log(`Published Chart ${chart.chartId}. Publish URL: ${publishedUrl}`);
+        publishedUrls.push({ chartId: chart.chartId, url: publishedUrl });
+      } else {
+        console.log(`Failed to publish Chart ${chart.chartId}.`);
+      }
+    }
+
+    console.log("Step 3: Finished publishing all charts.");
+
+    // Step 4: Return Charts with their URLs
+    const chartsWithUrls = charts.map((chart, index) => ({
+      ...chart,
+      publishedUrl: publishedUrls[index].url || "Empty",
+    }));
+
+    console.log("Step 4: Charts with Published URLs:", chartsWithUrls);
+
+
+
+// *****************
 
 
 
