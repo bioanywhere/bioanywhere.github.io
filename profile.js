@@ -340,20 +340,29 @@ function createEmbedLink(sheetId, chartId) {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
 }
 
-// Function to fetch the chart data from the Google Sheets
+// Function to fetch the chart data from the Google Sheets USING PROXY
 async function getChartData(sheetId, chartId) {
-  const response = await makeFetchRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/charts/${chartId}`, {
-      method: 'GET',
+  const response = await fetch(
+    'https://sheets.anvil.app/_/api/get_google_sheet_data', {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
-    });
+      body: JSON.stringify({
+        sheet_id: sheetId,
+        chart_id: chartId,
+        access_token: access_token,
+      }),
+    }
+  );
 
   const chartData = await response.json();
   return chartData;
 }
+
+
+
+
 
 // Save duplicateSheet.id in a variable named sheetId
 const sheetId = duplicateSheet.id;
