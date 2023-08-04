@@ -341,7 +341,8 @@ function createEmbedLink(sheetId, chartId) {
 }
 
 // Function to fetch the chart data from the Google Sheets USING PROXY
-async function getChartData(sheetId, chartId) {
+
+async function getChartData(sheetId, chartId, access_token) {
   const response = await fetch(
     'https://sheets.anvil.app/_/api/get_google_sheet_data', {
       method: 'POST',
