@@ -359,22 +359,34 @@ async function getChartsFromSheet(sheetId) {
   return sheetData.sheets.flatMap(sheet => sheet.charts || []);
 }
 
+
 // Fetch the charts from the new Google Sheets
 const charts = await getChartsFromSheet(duplicateSheet.id);
 
-// Print the charts information and their embeddable links
-charts.forEach((chart, index) => {
+// Print the charts information and their SVG content
+for (const [index, chart] of charts.entries()) {
   console.log(`Chart ${index + 1}:`);
   console.log("Chart ID:", chart.chartId);
   console.log("Chart Title:", chart.chart && chart.chart.title ? chart.chart.title : "Empty");
   console.log("Chart Type:", chart.chart && chart.chart.chartType ? chart.chart.chartType : "Empty");
-  
+
   // Create and print the embeddable link for the chart
   const embedLink = createEmbedLink(sheetId, chart.chartId);
   console.log("Embeddable Link:", embedLink);
-  
+
+  // Fetch and print the SVG content of the chart
+  const chartData = await getChartData(sheetId, chart.chartId);
+  console.log("SVG Content:", chartData.currentChartData);
+
+  // Add the SVG content to the DataFrame
+  df.push({
+    'Field': chart.chart.title || `Chart ${index + 1}`,
+    'Value': chartData.currentChartData,
+    'Placeholder': `{{chart${index + 1}}}`,
+  });
+
   console.log("--------------");
-});
+}
 
 console.log("Step 2: Finished listing and printing charts.");
 
