@@ -335,33 +335,37 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-    function callAnvilEndpoint() {
-      console.log("*******Sheet ID****:", copiedSheetId);
-      console.log("******Access Token:*****", accessToken);
+function callAnvilEndpoint(copiedSheetId, accessToken) {
+  // Replace 'your-app' with your actual Anvil app's name
+  const apiUrl = "https://your-app.anvil.app/_/api/hello_world_endpoint";
 
-      // Replace 'your-app' with your actual Anvil app's name
-      const apiUrl = "https://sheets.anvil.app/_/api/hello_world_endpoint";
+  const data = {
+    copiedSheetId: copiedSheetId,
+    accessToken: accessToken,
+  };
 
-      const data = {
-        copiedSheetId: copiedSheetId,
-        accessToken: accessToken,
-      };
+  fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.text())
+    .then((message) => {
+      console.log(message);
+    })
+    .catch((error) => {
+      console.error("Error calling Anvil endpoint:", error);
+    });
+}
 
-      fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.text())
-        .then((message) => {
-          alert(message);
-        })
-        .catch((error) => {
-          console.error("Error calling Anvil endpoint:", error);
-        });
-    }
+// Example usage:
+const copiedSheetIdValue = "your_copied_sheet_id_here";
+const accessTokenValue = "your_access_token_here";
+
+callAnvilEndpoint(copiedSheetIdValue, accessTokenValue);
+
 
 
 /*
