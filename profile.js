@@ -340,8 +340,8 @@ document.getElementById('Report').addEventListener('click', async () => {
 // *****************
 
 
-console.log("Sheet ID:", copiedSheetId);
-console.log("Access Token:", accessToken);
+console.log("*******Sheet ID****:", copiedSheetId);
+console.log("******Access Token:*****", accessToken);
 
 // Anvil HTTP endpoint URL
 const anvilEndpointURL = "https://sheets.anvil.app/_/api/get_charts_data";
