@@ -342,14 +342,25 @@ function createEmbedLink(sheetId, chartId) {
 
 // Function to fetch the chart data from the Google Sheets
 async function getChartData(sheetId, chartId) {
-  const response = await makeFetchRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/charts/${chartId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  console.log(`Fetching chart data for Chart ID: ${chartId}...`);
+
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/charts/${chartId}`;
+  console.log("Request URL:", url);
+  
+  const response = await makeFetchRequest(url, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const chartData = await response.json();
+  
+  console.log(`Chart data fetched successfully for Chart ID: ${chartId}.`);
+  return chartData;
+}
+
 
   const chartData = await response.json();
   return chartData;
