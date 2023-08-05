@@ -357,6 +357,7 @@ async function fetchChartData(copiedSheetId, accessToken) {
 
     const response = await fetch(anvilEndpointURL, {
       method: 'POST',
+      mode: 'no-cors', // Set the mode to 'no-cors'
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*' // Include the Access-Control-Allow-Origin header
