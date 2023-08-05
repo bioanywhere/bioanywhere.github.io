@@ -351,6 +351,8 @@ const requestData = {
   access_token: accessToken
 };
 
+console.log("Request Data:", requestData); // Log the request data before sending
+
 fetch(anvilEndpointURL, {
   method: 'POST',
   headers: {
@@ -366,8 +368,8 @@ fetch(anvilEndpointURL, {
     return response.json();
   })
   .then(chartData => {
-    console.log("Request Data:", requestData);
-    console.log("Response Data:", chartData);
+    console.log("Request Data:", requestData); // Log the request data again in the response handler
+    console.log("Response Data:", chartData); // Log the received response data
     console.log("Sheet ID (from response):", chartData.sheet_id);
     console.log("Access Token (from response):", chartData.access_token);
     // Use the chart data here as needed
@@ -375,6 +377,7 @@ fetch(anvilEndpointURL, {
   .catch(error => {
     console.error('Fetch Error:', error);
   });
+
 
 
 
