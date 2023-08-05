@@ -425,7 +425,7 @@ for (const [index, chart] of charts.entries()) {
 
   // Fetch and print the SVG content of the chart
   const access_token = params.access_token;
-  const chartData = await getChartData(sheetId, chart.chartId, access_token;
+  const chartData = await getChartData(sheetId, chart.chartId, access_token);
   console.log("SVG Content:", chartData.currentChartData);
 
   // Add the SVG content to the DataFrame
