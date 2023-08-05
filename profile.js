@@ -340,9 +340,20 @@ function createEmbedLink(sheetId, chartId) {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
 }
 
-// Function to fetch the chart data from the Google Sheets USING PROXY
-
 async function getChartData(sheetId, chartId, access_token) {
+  // Printing request details in the console
+  console.log('Sending Request:');
+  console.log('URL:', 'https://sheets.anvil.app/_/api/get_google_sheet_data');
+  console.log('Method:', 'POST');
+  console.log('Headers:', {
+    'Content-Type': 'application/json',
+  });
+  console.log('Body:', JSON.stringify({
+    sheet_id: sheetId,
+    chart_id: chartId,
+    access_token: access_token,
+  }));
+
   const response = await fetch('https://sheets.anvil.app/_/api/get_google_sheet_data', {
     method: 'POST',
     headers: {
@@ -356,8 +367,16 @@ async function getChartData(sheetId, chartId, access_token) {
   });
 
   const chartData = await response.json();
+
+  // Printing response details in the console
+  console.log('Received Response:');
+  console.log('Status:', response.status);
+  console.log('Headers:', response.headers);
+  console.log('Body:', chartData);
+
   return chartData;
 }
+
 
 
 
