@@ -382,8 +382,8 @@ async function fetchChartData(copiedSheetId, accessToken) {
 }
 
 
-  //const chartData = await fetchChartData(copiedSheetId, accessToken);
- // console.log("Chart Data:", chartData); // Print the chartData in the console
+const chartData = await fetchChartData(copiedSheetId, accessToken);
+console.log("Chart Data:", chartData); // Print the chartData in the console
 
 
 /*
