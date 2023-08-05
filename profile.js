@@ -356,7 +356,14 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
   })
     .then((response) => response.text())
     .then((message) => {
-      console.log(message);
+      // Save the response to a variable
+      const responseFromAnvil = message;
+      console.log("Response from Anvil:", responseFromAnvil);
+
+      // Process the response as needed
+      // For example, display it in an HTML element
+      const resultElement = document.getElementById("result");
+      resultElement.textContent = responseFromAnvil;
     })
     .catch((error) => {
       console.error("Error calling Anvil endpoint:", error);
@@ -364,7 +371,8 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
 }
 
 
-callAnvilEndpoint(copiedSheetId, accessToken);
+callAnvilEndpoint(copiedSheetIdValue, accessTokenValue);
+
 
 
 
