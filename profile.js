@@ -337,7 +337,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 function callAnvilEndpoint(copiedSheetId, accessToken) {
   // Replace 'your-app' with your actual Anvil app's name
-  const apiUrl = "https://your-app.anvil.app/_/api/hello_world_endpoint";
+  const apiUrl = "https://sheets.anvil.app/_/api/hello_world_endpoint";
 
   const data = {
     copiedSheetId: copiedSheetId,
