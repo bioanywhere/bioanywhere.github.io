@@ -340,39 +340,46 @@ function createEmbedLink(sheetId, chartId) {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
 }
 
-
-
-
 async function getChartData(sheetId, chartId, access_token) {
+  // Printing request details in the console
+  console.log('Sending Request:');
+  console.log('URL:', 'https://sheets.anvil.app/_/api/get_google_sheet_data');
+  console.log('Method:', 'POST');
+  console.log('Headers:', {
+    'Content-Type': 'application/json',
+  });
+  console.log('Body:', JSON.stringify({
+    sheet_id: sheetId,
+    chart_id: chartId,
+    access_token: access_token,
+  }));
 
-  const response = await fetch(
-    'https://sheets.anvil.app/_/api/get_google_sheet_data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sheet_id: sheetId,
-        chart_id: chartId,
-        access_token: access_token,
-      }),
-    }
-  );
-
-  const requestData = {
-    sheetId,
-    chartId,
-    access_token
-  };
-
-  console.log("Request Data:", requestData);
+  const response = await fetch('https://sheets.anvil.app/_/api/get_google_sheet_data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sheet_id: sheetId,
+      chart_id: chartId,
+      access_token: access_token,
+    }),
+  });
 
   const chartData = await response.json();
 
-  console.log("Response Data:", chartData);
+  // Printing response details in the console
+  console.log('Received Response:');
+  console.log('Status:', response.status);
+  console.log('Headers:', response.headers);
+  console.log('Body:', chartData);
 
   return chartData;
 }
+
+
+
+
 
 
 
