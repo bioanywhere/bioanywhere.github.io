@@ -340,8 +340,6 @@ document.getElementById('Report').addEventListener('click', async () => {
 // *****************
 
 
-const copiedSheetId = duplicateSheet.id; // ID of the duplicated sheet
-
 console.log("Sheet ID:", copiedSheetId);
 console.log("Access Token:", accessToken);
 
