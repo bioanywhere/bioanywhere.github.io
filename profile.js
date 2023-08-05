@@ -343,6 +343,52 @@ document.getElementById('Report').addEventListener('click', async () => {
 console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
+
+
+// Replace 'YOUR_API_ENDPOINT' with the actual URL of your Anvil server endpoint
+const apiEndpoint = 'https://sheets.anvil.app/_/api/get_charts_data_proxy';
+
+
+// Function to print the request details
+function printRequestDetails(request) {
+  console.log('Request URL:', request.url);
+  console.log('Request Method:', request.method);
+  console.log('Request Headers:', request.headers);
+}
+
+// Create the request object
+const request = new Request(`${apiEndpoint}?copiedSheetId=${copiedSheetId}&accessToken=${accessToken}`, {
+  method: 'POST',
+  mode: 'no-cors', // Set the mode to 'no-cors'
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*' // Include the Access-Control-Allow-Origin header
+  },
+});
+
+// Print the request details
+printRequestDetails(request);
+
+// Make the fetch request
+fetch(request)
+  .then((response) => response.json())
+  .then((data) => {
+    // Handle the response data from the server
+    console.log('Received Response Data:', data);
+
+    // Your code to process the response data goes here
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+    // Handle any errors that occurred during the request
+  });
+
+
+
+
+
+/*
+
 // Function to fetch chart data from Anvil API
 async function fetchChartData(copiedSheetId, accessToken) {
   try {
@@ -385,7 +431,7 @@ async function fetchChartData(copiedSheetId, accessToken) {
 
 const chartData = await fetchChartData(copiedSheetId, accessToken);
 console.log("Chart Data:", chartData); // Print the chartData in the console
-
+*/
 
 /*
   // Fetch and print the SVG content of the chart
