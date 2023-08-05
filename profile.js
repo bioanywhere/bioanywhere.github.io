@@ -333,60 +333,10 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 // *****************
 
-// *****************
-
 // Function to create embeddable links for charts
 function createEmbedLink(sheetId, chartId) {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
 }
-
-async function getChartData(sheetId, chartId, access_token) {
-  // Printing request details in the console
-  console.log('Sending Request:');
-  console.log('URL:', 'https://sheets.anvil.app/_/api/get_google_sheet_data');
-  console.log('Method:', 'POST');
-  console.log('Headers:', {
-    'Content-Type': 'application/json',
-  });
-  console.log('Body:', JSON.stringify({
-    sheet_id: sheetId,
-    chart_id: chartId,
-    access_token: access_token,
-  }));
-
-  const response = await fetch('https://sheets.anvil.app/_/api/get_google_sheet_data', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      sheet_id: sheetId,
-      chart_id: chartId,
-      access_token: access_token,
-    }),
-  });
-
-  const chartData = await response.json();
-
-  // Printing response details in the console
-  console.log('Received Response:');
-  console.log('Status:', response.status);
-  console.log('Headers:', response.headers);
-  console.log('Body:', chartData);
-
-  return chartData;
-}
-
-
-
-
-
-
-
-
-
-
-
 
 // Save duplicateSheet.id in a variable named sheetId
 const sheetId = duplicateSheet.id;
@@ -409,6 +359,7 @@ async function getChartsFromSheet(sheetId) {
   return sheetData.sheets.flatMap(sheet => sheet.charts || []);
 }
 
+
 // Fetch the charts from the new Google Sheets
 const charts = await getChartsFromSheet(duplicateSheet.id);
 
@@ -424,8 +375,7 @@ for (const [index, chart] of charts.entries()) {
   console.log("Embeddable Link:", embedLink);
 
   // Fetch and print the SVG content of the chart
-  const access_token = JSON.parse(localStorage.getItem("info")).access_token;
-  const chartData = await getChartData(sheetId, chart.chartId, access_token);
+  const chartData = await getChartData(sheetId, chart.chartId);
   console.log("SVG Content:", chartData.currentChartData);
 
   // Add the SVG content to the DataFrame
@@ -439,7 +389,6 @@ for (const [index, chart] of charts.entries()) {
 }
 
 console.log("Step 2: Finished listing and printing charts.");
-
 
 
 
