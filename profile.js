@@ -344,7 +344,7 @@ console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
 // Anvil HTTP endpoint URL
-const anvilEndpointURL = "https://sheets.anvil.app/_/api/get_charts_data";
+const anvilEndpointURL = "https://sheets.anvil.app/_/api/get_charts_data_proxy";
 
 const requestData = {
   sheet_id: copiedSheetId,
