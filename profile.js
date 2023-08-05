@@ -334,6 +334,9 @@ document.getElementById('Report').addEventListener('click', async () => {
 // *****************
 
 
+console.log("*******Sheet ID****:", copiedSheetId);
+console.log("******Access Token:*****", accessToken);
+
 
 function callAnvilEndpoint(copiedSheetId, accessToken) {
   // Replace 'your-app' with your actual Anvil app's name
@@ -348,7 +351,6 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify(data),
   })
@@ -361,11 +363,9 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
     });
 }
 
-// Example usage:
-const copiedSheetIdValue = "your_copied_sheet_id_here";
-const accessTokenValue = "your_access_token_here";
 
-callAnvilEndpoint(copiedSheetIdValue, accessTokenValue);
+callAnvilEndpoint(copiedSheetId, accessToken);
+
 
 
 
