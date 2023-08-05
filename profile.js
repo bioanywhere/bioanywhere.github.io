@@ -126,8 +126,14 @@ function waitForOAuth2Info() {
   });
 }
 
+
+
+// Define a global variable to store the access token
+let accessToken;
+
 function fetchUserInfo(params) {
-  const accessToken = params.access_token;
+  // Store the access token in the global variable
+  accessToken = params.access_token;
 
   // Check if the access token is available
   if (!accessToken) {
@@ -333,74 +339,49 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 // *****************
 
-/// *****************
 
-// Function to create embeddable links for charts
-function createEmbedLink(sheetId, chartId) {
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
-}
+const copiedSheetId = duplicateSheet.id; // ID of the duplicated sheet
 
-// Function to fetch the chart data from the Google Sheets
-async function getChartData(sheetId, chartId) {
-  console.log(`Fetching chart data for Chart ID: ${chartId}...`);
+console.log("Sheet ID:", copiedSheetId);
+console.log("Access Token:", accessToken);
 
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/charts/${chartId}`;
-  console.log("Request URL:", url);
-  
-  const response = await makeFetchRequest(url, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    },
+// Anvil HTTP endpoint URL
+const anvilEndpointURL = "https://sheets.anvil.app/_/api/get_charts_data";
+
+const requestData = {
+  sheet_id: copiedSheetId,
+  access_token: accessToken
+};
+
+fetch(anvilEndpointURL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'  // Include the Access-Control-Allow-Origin header
+  },
+  body: JSON.stringify(requestData)
+})
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(chartData => {
+    console.log("Request Data:", requestData);
+    console.log("Response Data:", chartData);
+    console.log("Sheet ID (from response):", chartData.sheet_id);
+    console.log("Access Token (from response):", chartData.access_token);
+    // Use the chart data here as needed
+  })
+  .catch(error => {
+    console.error('Fetch Error:', error);
   });
 
-  const chartData = await response.json();
-  
-  console.log(`Chart data fetched successfully for Chart ID: ${chartId}.`);
-  return chartData;
-}
 
 
-  const chartData = await response.json();
-  return chartData;
-}
 
-// Save duplicateSheet.id in a variable named sheetId
-const sheetId = duplicateSheet.id;
-
-// List and Print Charts from the New Google Sheets
-console.log("Step 2: Listing and Printing Charts from the New Google Sheets...");
-
-// Function to fetch the charts from the Google Sheets
-async function getChartsFromSheet(sheetId) {
-  const response = await makeFetchRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?fields=sheets.charts`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-  const sheetData = await response.json();
-  return sheetData.sheets.flatMap(sheet => sheet.charts || []);
-}
-
-// Fetch the charts from the new Google Sheets
-const charts = await getChartsFromSheet(duplicateSheet.id);
-
-// Print the charts information and their SVG content
-for (const [index, chart] of charts.entries()) {
-  console.log(`Chart ${index + 1}:`);
-  console.log("Chart ID:", chart.chartId);
-  console.log("Chart Title:", chart.chart && chart.chart.title ? chart.chart.title : "Empty");
-  console.log("Chart Type:", chart.chart && chart.chart.chartType ? chart.chart.chartType : "Empty");
-
-  // Create and print the embeddable link for the chart
-  const embedLink = createEmbedLink(sheetId, chart.chartId);
-  console.log("Embeddable Link:", embedLink);
-
+/*
   // Fetch and print the SVG content of the chart
   const chartData = await getChartData(sheetId, chart.chartId);
   console.log("SVG Content:", chartData.currentChartData);
@@ -416,7 +397,7 @@ for (const [index, chart] of charts.entries()) {
 }
 
 console.log("Step 2: Finished listing and printing charts.");
-
+*/
 
 
 
