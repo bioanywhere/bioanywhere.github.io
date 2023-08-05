@@ -343,40 +343,43 @@ document.getElementById('Report').addEventListener('click', async () => {
 console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
-// Anvil HTTP endpoint URL
-const anvilEndpointURL = "https://sheets.anvil.app/_/api/get_charts_data_proxy";
+// Function to fetch chart data from Anvil API
+async function fetchChartData(copiedSheetId, accessToken) {
+  try {
+    const anvilEndpointURL = "https://sheets.anvil.app/_/api/get_charts_data_proxy";
 
-const requestData = {
-  sheet_id: copiedSheetId,
-  access_token: accessToken
-};
+    const requestData = {
+      sheet_id: copiedSheetId,
+      access_token: accessToken
+    };
 
-console.log("Request Data**************:", requestData); // Log the request data before sending
+    console.log("Request Data:", requestData);
 
-fetch(anvilEndpointURL, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'  // Include the Access-Control-Allow-Origin header
-  },
-  body: JSON.stringify(requestData)
-})
-  .then(response => {
+    const response = await fetch(anvilEndpointURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*' // Include the Access-Control-Allow-Origin header
+      },
+      body: JSON.stringify(requestData)
+    });
+
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status}`);
     }
-    return response.json();
-  })
-  .then(chartData => {
-    console.log("Request Data:", requestData); // Log the request data again in the response handler
-    console.log("Response Data:", chartData); // Log the received response data
+
+    const chartData = await response.json();
+    console.log("Response Data:", chartData);
+
+    // Use the chart data here as needed
     console.log("Sheet ID (from response):", chartData.sheet_id);
     console.log("Access Token (from response):", chartData.access_token);
-    // Use the chart data here as needed
-  })
-  .catch(error => {
+    return chartData;
+  } catch (error) {
     console.error('Fetch Error:', error);
-  });
+    throw error;
+  }
+}
 
 
 
