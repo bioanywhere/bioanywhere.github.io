@@ -356,7 +356,7 @@ async function fetchChartData(copiedSheetId, accessToken) {
     console.log("Request Data:", requestData);
 
     const response = await fetch(anvilEndpointURL, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*' // Include the Access-Control-Allow-Origin header
@@ -382,8 +382,8 @@ async function fetchChartData(copiedSheetId, accessToken) {
 }
 
 
-  const chartData = await fetchChartData(copiedSheetId, accessToken);
-  console.log("Chart Data:", chartData); // Print the chartData in the console
+  //const chartData = await fetchChartData(copiedSheetId, accessToken);
+ // console.log("Chart Data:", chartData); // Print the chartData in the console
 
 
 /*
