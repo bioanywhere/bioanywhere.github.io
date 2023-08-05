@@ -340,7 +340,7 @@ function createEmbedLink(sheetId, chartId) {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
 }
 
-async function getChartData(sheetId, chartId, params.access_token) {
+async function getChartData(sheetId, chartId, ${access_token}) {
   // Printing request details in the console
   console.log('Sending Request:');
   console.log('URL:', 'https://sheets.anvil.app/_/api/get_google_sheet_data');
