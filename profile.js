@@ -424,7 +424,7 @@ for (const [index, chart] of charts.entries()) {
   console.log("Embeddable Link:", embedLink);
 
   // Fetch and print the SVG content of the chart
-  const access_token = params.access_token;
+  const access_token = JSON.parse(localStorage.getItem("info")).access_token;
   const chartData = await getChartData(sheetId, chart.chartId, access_token);
   console.log("SVG Content:", chartData.currentChartData);
 
