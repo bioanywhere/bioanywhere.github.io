@@ -371,7 +371,7 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
 }
 
 
-callAnvilEndpoint(copiedSheetIdValue, accessTokenValue);
+callAnvilEndpoint(copiedSheetId, accessToken);
 
 
 
