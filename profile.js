@@ -333,9 +333,26 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 // *****************
 
+/// *****************
+
 // Function to create embeddable links for charts
 function createEmbedLink(sheetId, chartId) {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/chart?oid=${chartId}`;
+}
+
+// Function to fetch the chart data from the Google Sheets
+async function getChartData(sheetId, chartId) {
+  const response = await makeFetchRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/charts/${chartId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+  const chartData = await response.json();
+  return chartData;
 }
 
 // Save duplicateSheet.id in a variable named sheetId
@@ -358,7 +375,6 @@ async function getChartsFromSheet(sheetId) {
   const sheetData = await response.json();
   return sheetData.sheets.flatMap(sheet => sheet.charts || []);
 }
-
 
 // Fetch the charts from the new Google Sheets
 const charts = await getChartsFromSheet(duplicateSheet.id);
@@ -389,6 +405,7 @@ for (const [index, chart] of charts.entries()) {
 }
 
 console.log("Step 2: Finished listing and printing charts.");
+
 
 
 
