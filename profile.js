@@ -343,23 +343,26 @@ function createEmbedLink(sheetId, chartId) {
 // Function to fetch the chart data from the Google Sheets USING PROXY
 
 async function getChartData(sheetId, chartId, access_token) {
-  const response = await fetch(
-    'https://sheets.anvil.app/_/api/get_google_sheet_data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sheet_id: sheetId,
-        chart_id: chartId,
-        access_token: access_token,
-      }),
-    }
-  );
+  const response = await fetch('https://sheets.anvil.app/_/api/get_google_sheet_data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sheet_id: sheetId,
+      chart_id: chartId,
+      access_token: access_token,
+    }),
+  });
 
   const chartData = await response.json();
   return chartData;
 }
+
+
+
+
+
 
 
 
