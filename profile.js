@@ -331,15 +331,40 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-
-
-
-
-
-
 // *****************
 
 
+
+    function callAnvilEndpoint() {
+      console.log("*******Sheet ID****:", copiedSheetId);
+      console.log("******Access Token:*****", accessToken);
+
+      // Replace 'your-app' with your actual Anvil app's name
+      const apiUrl = "https://sheets.anvil.app/_/api/hello_world_endpoint";
+
+      const data = {
+        copiedSheetId: copiedSheetId,
+        accessToken: accessToken,
+      };
+
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.text())
+        .then((message) => {
+          alert(message);
+        })
+        .catch((error) => {
+          console.error("Error calling Anvil endpoint:", error);
+        });
+    }
+
+
+/*
 console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
@@ -385,7 +410,7 @@ fetch(request)
 
 
 
-
+*/
 
 /*
 
