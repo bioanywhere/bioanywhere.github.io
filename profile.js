@@ -351,7 +351,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 
-callWebAppWithAccessTokenAndSpreadsheetId(accessToken, spreadsheetId);
+callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
 
 
 
