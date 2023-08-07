@@ -341,7 +341,7 @@ console.log("******Access Token:*****", accessToken);
 
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
-  var webAppUrl = `https://script.google.com/macros/s/AKfycbwFjj2Gk0X3a8kiZW6krKUCR9ZxyKBFeu4dPIKONuZUQ7C8OCCR_XckH8jYLe7de9ia/exec?accessToken=${accessToken}&spreadsheetId=${copiedSheetId}`;
+  var webAppUrl = `https://script.google.com/macros/library/d/1Ne87lk2HD_yHA2I8FfbGKqyMDIn4QZqmSeLczmsZ77RXPBT3RTWNXmqg/1?accessToken=${accessToken}&spreadsheetId=${copiedSheetId}`;
 
   var response = await fetch(webAppUrl);
   var data = await response.json();
