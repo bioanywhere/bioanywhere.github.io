@@ -338,8 +338,24 @@ console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
 
+
+async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
+  var webAppUrl = `https://script.google.com/macros/s/AKfycbwFjj2Gk0X3a8kiZW6krKUCR9ZxyKBFeu4dPIKONuZUQ7C8OCCR_XckH8jYLe7de9ia/exec?accessToken=${accessToken}&spreadsheetId=${spreadsheetId}`;
+
+  var response = await fetch(webAppUrl);
+  var data = await response.json();
+
+  // Process the data to get the list of published URLs, chart IDs, and chart names
+  console.log(data);
+}
+
+
+
+
+
+
 function callAnvilEndpoint(copiedSheetId, accessToken) {
-  // Replace 'your-app' with your actual Anvil app's name
+  // Proxy API
   const apiUrl = "https://sheets.anvil.app/_/api/hello_world_endpoint";
 
   const data = {
