@@ -343,11 +343,20 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
   console.log("Calling Google Apps Script");
   var webAppUrl = `https://script.google.com/macros/library/d/1Ne87lk2HD_yHA2I8FfbGKqyMDIn4QZqmSeLczmsZ77RXPBT3RTWNXmqg/1?accessToken=${accessToken}&spreadsheetId=${copiedSheetId}`;
 
-  var response = await fetch(webAppUrl);
-  var data = await response.json();
 
-  // Process the data to get the list of published URLs, chart IDs, and chart names
-  console.log(data);
+  try {
+    var response = await fetch(webAppUrl);
+    var data = await response.json();
+
+    // Log the response status and data
+    console.log('Response Status:', response.status);
+    console.log('Response Data:', data);
+
+    // Process the data received from the web app, if necessary
+    // ...
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 
