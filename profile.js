@@ -416,8 +416,13 @@ async function createReportImagesFolder(accessToken) {
     body: JSON.stringify(folderData)
   };
 
+  console.log('Creating "Report Images" folder...');
   const response = await fetch('https://www.googleapis.com/drive/v3/files', options);
+  console.log('Folder creation request:', options);
+  console.log('Folder creation response:', response.status, response.statusText);
+
   const folder = await response.json();
+  console.log('Folder created:', folder);
 
   return folder;
 }
@@ -433,6 +438,9 @@ async function publishAllCharts(copiedSheetId, accessToken) {
       'Authorization': `Bearer ${accessToken}`
     }
   });
+  console.log('Sheets API request:', sheetsResponse.url);
+  console.log('Sheets API response:', sheetsResponse.status, sheetsResponse.statusText);
+
   const sheetsData = await sheetsResponse.json();
 
   for (const sheet of sheetsData.sheets) {
@@ -453,6 +461,9 @@ async function publishAllCharts(copiedSheetId, accessToken) {
 
       console.log('Fetching chart image data...');
       const imageResponse = await fetch(chartUrl, imageOptions);
+      console.log('Chart image request:', imageResponse.url);
+      console.log('Chart image response:', imageResponse.status, imageResponse.statusText);
+
       const imageText = await imageResponse.text();
 
       const imageIdPattern = /image id="([^"]+)"/;
@@ -475,9 +486,11 @@ async function publishAllCharts(copiedSheetId, accessToken) {
           })
         };
 
+        console.log('SVG file creation request:', svgOptions);
         const svgResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', svgOptions);
-        const svgFile = await svgResponse.json();
+        console.log('SVG file creation response:', svgResponse.status, svgResponse.statusText);
 
+        const svgFile = await svgResponse.json();
         console.log(`SVG file created: ${svgFile.name}, ID: ${svgFile.id}`);
 
         publishedUrls.push({
