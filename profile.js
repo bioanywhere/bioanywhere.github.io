@@ -416,8 +416,13 @@ async function createReportImagesFolder(accessToken) {
     body: JSON.stringify(folderData)
   };
 
+  console.log('Creating "Report Images" folder...');
   const response = await fetch('https://www.googleapis.com/drive/v3/files', options);
+  console.log('Folder creation request:', options);
+  console.log('Folder creation response:', response.status, response.statusText);
+
   const folder = await response.json();
+  console.log('Folder created:', folder);
 
   return folder;
 }
@@ -430,8 +435,13 @@ async function getChartImage(chartId, copiedSheetId, accessToken) {
     }
   };
 
+  console.log(`Fetching chart image for chart ID: ${chartId}...`);
   const chartImageResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/charts/${chartId}/image?alt=media`, imageOptions);
+  console.log('Chart image request:', chartImageResponse.url);
+  console.log('Chart image response:', chartImageResponse.status, chartImageResponse.statusText);
+
   const chartImageBlob = await chartImageResponse.blob();
+  console.log('Chart image fetched.');
 
   return chartImageBlob;
 }
@@ -447,6 +457,9 @@ async function publishAllCharts(copiedSheetId, accessToken) {
       'Authorization': `Bearer ${accessToken}`
     }
   });
+  console.log('Sheets API request:', sheetsResponse.url);
+  console.log('Sheets API response:', sheetsResponse.status, sheetsResponse.statusText);
+
   const sheetsData = await sheetsResponse.json();
 
   for (const sheet of sheetsData.sheets) {
@@ -458,7 +471,7 @@ async function publishAllCharts(copiedSheetId, accessToken) {
       console.log(`Processing chart ID: ${chartId}, Chart type: ${chartName}`);
 
       const chartImageBlob = await getChartImage(chartId, copiedSheetId, accessToken);
-      
+
       const svgOptions = {
         method: 'POST',
         headers: {
@@ -474,8 +487,10 @@ async function publishAllCharts(copiedSheetId, accessToken) {
 
       console.log('Creating SVG file...');
       const svgResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', svgOptions);
-      const svgFile = await svgResponse.json();
+      console.log('SVG file creation request:', svgOptions);
+      console.log('SVG file creation response:', svgResponse.status, svgResponse.statusText);
 
+      const svgFile = await svgResponse.json();
       console.log(`SVG file created: ${svgFile.name}, ID: ${svgFile.id}`);
 
       publishedUrls.push({
@@ -493,9 +508,6 @@ async function publishAllCharts(copiedSheetId, accessToken) {
 publishAllCharts(copiedSheetId, accessToken)
   .then(result => console.log('Result:', result))
   .catch(error => console.error('Error:', error));
-
-
-
 
 
 
