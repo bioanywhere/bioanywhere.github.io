@@ -416,15 +416,24 @@ async function createReportImagesFolder(accessToken) {
     body: JSON.stringify(folderData)
   };
 
-  console.log('Creating "Report Images" folder...');
   const response = await fetch('https://www.googleapis.com/drive/v3/files', options);
-  console.log('Folder creation request:', options);
-  console.log('Folder creation response:', response.status, response.statusText);
-
   const folder = await response.json();
-  console.log('Folder created:', folder);
 
   return folder;
+}
+
+async function getChartImage(chartId, copiedSheetId, accessToken) {
+  const imageOptions = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  };
+
+  const chartImageResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/charts/${chartId}/image?alt=media`, imageOptions);
+  const chartImageBlob = await chartImageResponse.blob();
+
+  return chartImageBlob;
 }
 
 async function publishAllCharts(copiedSheetId, accessToken) {
@@ -438,9 +447,6 @@ async function publishAllCharts(copiedSheetId, accessToken) {
       'Authorization': `Bearer ${accessToken}`
     }
   });
-  console.log('Sheets API request:', sheetsResponse.url);
-  console.log('Sheets API response:', sheetsResponse.status, sheetsResponse.statusText);
-
   const sheetsData = await sheetsResponse.json();
 
   for (const sheet of sheetsData.sheets) {
@@ -448,56 +454,34 @@ async function publishAllCharts(copiedSheetId, accessToken) {
     for (const chart of charts) {
       const chartId = chart.chartId;
       const chartName = chart.chartType;
-      const chartUrl = `https://docs.google.com/spreadsheets/d/${copiedSheetId}/gviz/chart?chartid=${chartId}`;
 
       console.log(`Processing chart ID: ${chartId}, Chart type: ${chartName}`);
 
-      const imageOptions = {
-        method: 'get',
+      const chartImageBlob = await getChartImage(chartId, copiedSheetId, accessToken);
+      
+      const svgOptions = {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: `Chart_${chartId}.svg`,
+          mimeType: 'image/svg+xml',
+          parents: [folder.id]
+        })
       };
 
-      console.log('Fetching chart image data...');
-      const imageResponse = await fetch(chartUrl, imageOptions);
-      console.log('Chart image request:', imageResponse.url);
-      console.log('Chart image response:', imageResponse.status, imageResponse.statusText);
+      console.log('Creating SVG file...');
+      const svgResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', svgOptions);
+      const svgFile = await svgResponse.json();
 
-      const imageText = await imageResponse.text();
+      console.log(`SVG file created: ${svgFile.name}, ID: ${svgFile.id}`);
 
-      const imageIdPattern = /image id="([^"]+)"/;
-      const imageIdMatch = imageText.match(imageIdPattern);
-      if (imageIdMatch && imageIdMatch[1]) {
-        const imageId = imageIdMatch[1];
-        const svgContent = decodeURIComponent(imageId);
-
-        console.log('Creating SVG file...');
-        const svgOptions = {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: `Chart_${chartId}.svg`,
-            mimeType: 'image/svg+xml',
-            parents: [folder.id]
-          })
-        };
-
-        console.log('SVG file creation request:', svgOptions);
-        const svgResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', svgOptions);
-        console.log('SVG file creation response:', svgResponse.status, svgResponse.statusText);
-
-        const svgFile = await svgResponse.json();
-        console.log(`SVG file created: ${svgFile.name}, ID: ${svgFile.id}`);
-
-        publishedUrls.push({
-          chartId: chartId,
-          svgUrl: `https://drive.google.com/uc?id=${svgFile.id}`
-        });
-      }
+      publishedUrls.push({
+        chartId: chartId,
+        svgUrl: `https://drive.google.com/uc?id=${svgFile.id}`
+      });
     }
   }
 
@@ -509,6 +493,7 @@ async function publishAllCharts(copiedSheetId, accessToken) {
 publishAllCharts(copiedSheetId, accessToken)
   .then(result => console.log('Result:', result))
   .catch(error => console.error('Error:', error));
+
 
 
 
