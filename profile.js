@@ -420,8 +420,8 @@ function publishAllCharts(copiedSheetId, accessToken) {
           const chartId = chart.chartId;
           const chartName = chart.chartType;
           const chartUrl = `https://docs.google.com/spreadsheets/d/${copiedSheetId}/gviz/chart?chartid=${chartId}`;
+          console.log("Creating links....");
           publishedUrls.push({
-            console.log("Creating links....");
             sheetName: sheet.properties.title,
             chartId: chartId,
             chartName: chartName,
