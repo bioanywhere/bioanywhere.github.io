@@ -434,7 +434,7 @@ function publishAllCharts(copiedSheetId, accessToken) {
 }
 
 
-publishAllCharts(copiedSheetId,, accessToken);
+publishAllCharts(copiedSheetId, accessToken);
 
 
 
