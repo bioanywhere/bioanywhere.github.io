@@ -338,10 +338,10 @@ console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
 
-
+/*
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
-  var webAppUrl = `https://script.google.com/macros/library/d/1Ne87lk2HD_yHA2I8FfbGKqyMDIn4QZqmSeLczmsZ77RXPBT3RTWNXmqg/1?accessToken=${accessToken}&spreadsheetId=${copiedSheetId}`;
+  var webAppUrl = `https://script.google.com/macros/s/AKfycbwFjj2Gk0X3a8kiZW6krKUCR9ZxyKBFeu4dPIKONuZUQ7C8OCCR_XckH8jYLe7de9ia/exec?accessToken=${accessToken}&spreadsheetId=${copiedSheetId}`;
 
 
   try {
@@ -362,7 +362,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
 
-
+*/
 
 
 function callAnvilEndpoint(copiedSheetId, accessToken) {
@@ -396,6 +396,45 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
 
 callAnvilEndpoint(copiedSheetId, accessToken);
 
+
+
+
+
+function publishAllCharts(copiedSheetId, accessToken) {
+  const publishedUrls = [];
+  const options = {
+    method: 'get',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  };
+
+  fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=false`, options)
+    .then(response => response.json())
+    .then(data => {
+      const sheets = data.sheets;
+      sheets.forEach(sheet => {
+        const charts = sheet.charts;
+        if (!charts) return;
+        charts.forEach(chart => {
+          const chartId = chart.chartId;
+          const chartName = chart.chartType;
+          const chartUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/chart?chartid=${chartId}`;
+          publishedUrls.push({
+            sheetName: sheet.properties.title,
+            chartId: chartId,
+            chartName: chartName,
+            publishedUrl: chartUrl
+          });
+        });
+      });
+      console.log(JSON.stringify(publishedUrls));
+    })
+    .catch(error => console.log('Error:', error));
+}
+
+
+publishAllCharts(copiedSheetId,, accessToken);
 
 
 
