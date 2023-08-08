@@ -400,42 +400,92 @@ callAnvilEndpoint(copiedSheetId, accessToken);
 
 
 
-function publishAllCharts(copiedSheetId, accessToken) {
-  const publishedUrls = [];
+async function createReportImagesFolder(accessToken) {
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${accessToken}`);
+  headers.append('Content-Type', 'application/json');
+
+  const folderData = {
+    name: 'Report Images',
+    mimeType: 'application/vnd.google-apps.folder'
+  };
+
   const options = {
-    method: 'get',
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(folderData)
+  };
+
+  const response = await fetch('https://www.googleapis.com/drive/v3/files', options);
+  const folder = await response.json();
+
+  return folder;
+}
+
+async function publishAllCharts(copiedSheetId, accessToken) {
+  const folder = await createReportImagesFolder(accessToken);
+  const publishedUrls = [];
+  const sheetsResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}?includeGridData=false`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`
     }
-  };
+  });
+  const sheetsData = await sheetsResponse.json();
 
-  fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}?includeGridData=false`, options)
-    .then(response => response.json())
-    .then(data => {
-      const sheets = data.sheets;
-      sheets.forEach(sheet => {
-        const charts = sheet.charts;
-        if (!charts) return;
-        charts.forEach(chart => {
-          const chartId = chart.chartId;
-          const chartName = chart.chartType;
-          const chartUrl = `https://docs.google.com/spreadsheets/d/${copiedSheetId}/gviz/chart?chartid=${chartId}`;
-          console.log("Creating links....");
-          publishedUrls.push({
-            sheetName: sheet.properties.title,
-            chartId: chartId,
-            chartName: chartName,
-            publishedUrl: chartUrl
-          });
+  for (const sheet of sheetsData.sheets) {
+    const charts = sheet.charts || [];
+    for (const chart of charts) {
+      const chartId = chart.chartId;
+      const chartName = chart.chartType;
+      const chartUrl = `https://docs.google.com/spreadsheets/d/${copiedSheetId}/gviz/chart?chartid=${chartId}`;
+
+      const imageOptions = {
+        method: 'get',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      };
+
+      const imageResponse = await fetch(chartUrl, imageOptions);
+      const imageText = await imageResponse.text();
+      
+      const imageIdPattern = /image id="([^"]+)"/;
+      const imageIdMatch = imageText.match(imageIdPattern);
+      if (imageIdMatch && imageIdMatch[1]) {
+        const imageId = imageIdMatch[1];
+        const svgContent = decodeURIComponent(imageId);
+        
+        const svgOptions = {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: `Chart_${chartId}.svg`,
+            mimeType: 'image/svg+xml',
+            parents: [folder.id]
+          })
+        };
+
+        const svgResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', svgOptions);
+        const svgFile = await svgResponse.json();
+        
+        publishedUrls.push({
+          chartId: chartId,
+          svgUrl: `https://drive.google.com/uc?id=${svgFile.id}`
         });
-      });
-      console.log(JSON.stringify(publishedUrls));
-    })
-    .catch(error => console.log('Error:', error));
+      }
+    }
+  }
+  
+  return publishedUrls;
 }
 
 
-publishAllCharts(copiedSheetId, accessToken);
+publishAllCharts(copiedSheetId, accessToken)
+  .then(result => console.log(result))
+  .catch(error => console.error(error));
 
 
 
