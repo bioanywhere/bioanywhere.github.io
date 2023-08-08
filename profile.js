@@ -409,7 +409,7 @@ function publishAllCharts(copiedSheetId, accessToken) {
     }
   };
 
-  fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=false`, options)
+  fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}?includeGridData=false`, options)
     .then(response => response.json())
     .then(data => {
       const sheets = data.sheets;
@@ -419,7 +419,7 @@ function publishAllCharts(copiedSheetId, accessToken) {
         charts.forEach(chart => {
           const chartId = chart.chartId;
           const chartName = chart.chartType;
-          const chartUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/chart?chartid=${chartId}`;
+          const chartUrl = `https://docs.google.com/spreadsheets/d/${copiedSheetId}/gviz/chart?chartid=${chartId}`;
           publishedUrls.push({
             sheetName: sheet.properties.title,
             chartId: chartId,
