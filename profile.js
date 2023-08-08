@@ -399,115 +399,60 @@ callAnvilEndpoint(copiedSheetId, accessToken);
 */
 
 
-
-async function createReportImagesFolder(accessToken) {
-  const headers = new Headers();
-  headers.append('Authorization', `Bearer ${accessToken}`);
-  headers.append('Content-Type', 'application/json');
-
-  const folderData = {
-    name: 'Report Images',
-    mimeType: 'application/vnd.google-apps.folder'
-  };
-
-  const options = {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(folderData)
-  };
-
-  console.log('Creating "Report Images" folder...');
-  const response = await fetch('https://www.googleapis.com/drive/v3/files', options);
-  console.log('Folder creation request:', options);
-  console.log('Folder creation response:', response.status, response.statusText);
-
-  const folder = await response.json();
-  console.log('Folder created:', folder);
-
-  return folder;
-}
-
-async function getChartImage(chartId, copiedSheetId, accessToken) {
-  const imageOptions = {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    }
-  };
-
-  console.log(`Fetching chart image for chart ID: ${chartId}...`);
-  const chartImageResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/charts/${chartId}/image?alt=media`, imageOptions);
-  console.log('Chart image request:', chartImageResponse.url);
-  console.log('Chart image response:', chartImageResponse.status, chartImageResponse.statusText);
-
-  const chartImageBlob = await chartImageResponse.blob();
-  console.log('Chart image fetched.');
-
-  return chartImageBlob;
-}
-
 async function publishAllCharts(copiedSheetId, accessToken) {
-  console.log('Creating "Report Images" folder...');
-  const folder = await createReportImagesFolder(accessToken);
-  console.log('Folder created:', folder);
-
-  const publishedUrls = [];
+  console.log('Fetching spreadsheet data...');
   const sheetsResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}?includeGridData=false`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`
     }
   });
-  console.log('Sheets API request:', sheetsResponse.url);
-  console.log('Sheets API response:', sheetsResponse.status, sheetsResponse.statusText);
 
+  if (sheetsResponse.status !== 200) {
+    console.error('Failed to fetch spreadsheet data:', sheetsResponse.status, sheetsResponse.statusText);
+    return [];
+  }
+
+  console.log('Spreadsheet data fetched successfully.');
   const sheetsData = await sheetsResponse.json();
 
+  const chartInfo = [];
+
   for (const sheet of sheetsData.sheets) {
+    const sheetName = sheet.properties.title;
     const charts = sheet.charts || [];
     for (const chart of charts) {
       const chartId = chart.chartId;
-      const chartName = chart.chartType;
+      const chartType = chart.chartType;
+      const position = chart.position;
+      const hiddenDimensionStrategy = chart.hiddenDimensionStrategy;
+      const title = chart.spec.title;
+      const xAxis = chart.spec.xAxis;
+      const yAxis = chart.spec.yAxis;
+      const legendPosition = chart.spec.legendPosition;
 
-      console.log(`Processing chart ID: ${chartId}, Chart type: ${chartName}`);
-
-      const chartImageBlob = await getChartImage(chartId, copiedSheetId, accessToken);
-
-      const svgOptions = {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: `Chart_${chartId}.svg`,
-          mimeType: 'image/svg+xml',
-          parents: [folder.id]
-        })
-      };
-
-      console.log('Creating SVG file...');
-      const svgResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=media', svgOptions);
-      console.log('SVG file creation request:', svgOptions);
-      console.log('SVG file creation response:', svgResponse.status, svgResponse.statusText);
-
-      const svgFile = await svgResponse.json();
-      console.log(`SVG file created: ${svgFile.name}, ID: ${svgFile.id}`);
-
-      publishedUrls.push({
+      chartInfo.push({
+        sheetName: sheetName,
         chartId: chartId,
-        svgUrl: `https://drive.google.com/uc?id=${svgFile.id}`
+        chartType: chartType,
+        position: position,
+        hiddenDimensionStrategy: hiddenDimensionStrategy,
+        title: title,
+        xAxis: xAxis,
+        yAxis: yAxis,
+        legendPosition: legendPosition
       });
     }
   }
 
-  console.log('Finished processing all charts.');
-  return publishedUrls;
+  console.log('Chart information retrieved:', chartInfo);
+  return chartInfo;
 }
 
 
 publishAllCharts(copiedSheetId, accessToken)
-  .then(result => console.log('Result:', result))
+  .then(result => console.log('Chart Information:', result))
   .catch(error => console.error('Error:', error));
+
 
 
 
