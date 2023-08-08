@@ -364,7 +364,7 @@ callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
 
 */
 
-/*
+
 function callAnvilEndpoint(copiedSheetId, accessToken) {
   // Proxy API
   const apiUrl = "https://sheets.anvil.app/_/api/hello_world_endpoint";
@@ -396,9 +396,9 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
 
 callAnvilEndpoint(copiedSheetId, accessToken);
 
-*/
 
 
+/*
 async function publishAllCharts(copiedSheetId, accessToken) {
   console.log('Fetching spreadsheet data...');
   const sheetsResponse = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}?includeGridData=false`, {
@@ -454,7 +454,7 @@ publishAllCharts(copiedSheetId, accessToken)
   .catch(error => console.error('Error:', error));
 
 
-
+*/
 
 
 /*
