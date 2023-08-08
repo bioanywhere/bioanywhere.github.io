@@ -381,11 +381,12 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
     },
     body: JSON.stringify(data),
   })
-    .then((response) => response.json())  // Parse response as JSON
-    .then((chartData) => {
+    .then((response) => response.text())
+    .then((message) => {
       // Save the response to a variable
-      const responseChartData = chartData;
-      console.log("Response chart_data from Anvil:", responseChartData);
+      const responseFromAnvil = message;
+      console.log("Response from Anvil:", responseFromAnvil);
+
     })
     .catch((error) => {
       console.error("Error calling Anvil endpoint:", error);
@@ -394,7 +395,6 @@ function callAnvilEndpoint(copiedSheetId, accessToken) {
 
 
 callAnvilEndpoint(copiedSheetId, accessToken);
-
 
 
 
