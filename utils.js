@@ -1,11 +1,11 @@
 function signIn(clientId,redirectUri,scopes,response_type="token") {
   let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
-
+/*
   let form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", oauth2Endpoint);
-
+*/
 
   let params = {
     client_id: clientId,
@@ -41,6 +41,9 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
   const top = window.screen.height / 2 - height / 2;
   const options = `width=${width},height=${height},left=${left},top=${top},resizable,scrollbars=yes,status=1`;
   window.open(loginUrl, "_blank", options);
+
+
+  
 
 
 }
