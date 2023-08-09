@@ -7,7 +7,7 @@ let redirect_url = "https://bioanywhere.github.io/index.html";
 
 let button = document.getElementById("logout");
 
-//console.log("params:", params);
+console.log("params:", params);
 
 //utils.saveOAuth2Info(params, "profile.html", "info");
 /*
