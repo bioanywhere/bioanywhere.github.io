@@ -1,5 +1,45 @@
 import utils from "./utils.js";
 
+let params = utils.getParamsFromURL(location.href);
+let ACCESS_TOKEN = params.access_token;
+console.log("Access Token:", ACCESS_TOKEN);
+let redirect_url = "https://bioanywhere.github.io/index.html";
+
+let button = document.getElementById("logout");
+
+console.log("params:", params);
+
+utils.saveOAuth2Info(params, "profile.html", "info");
+
+fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+  headers: {
+    Authorization: `Bearer ${params.access_token}`,
+  },
+})
+  .then((data) => data.json())
+  .then((info) => {
+    console.log("User Info:", info);
+    document.getElementById("name").innerHTML += info.name;
+    document.getElementById("image").setAttribute("src", info.picture);
+  })
+  .catch((error) => {
+    console.error("Error fetching user info:", error);
+  });
+
+
+
+
+button.onclick = logout;
+
+function logout() {
+  utils.logout(params.access_token, redirect_url);
+}
+
+
+
+
+
+
 // Function to get nested properties from an object based on a dot-separated string
 function getNestedProperty(obj, propString) {
   const props = propString.split('.');
@@ -62,38 +102,7 @@ async function makeFetchRequest(url, options) {
   }
 }
 
-let params = utils.getParamsFromURL(location.href);
-let redirect_url = "https://bioanywhere.github.io/index.html";
 
-console.log("params:", params);
-
-let button = document.getElementById("logout");
-
-utils.saveOAuth2Info(params, "profile.html", "info");
-
-fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-  headers: {
-    Authorization: `Bearer ${params.access_token}`,
-  },
-})
-  .then((data) => data.json())
-  .then((info) => {
-    console.log("User Info:", info);
-    document.getElementById("name").innerHTML += info.name;
-    document.getElementById("image").setAttribute("src", info.picture);
-  })
-  .catch((error) => {
-    console.error("Error fetching user info:", error);
-  });
-
-
-
-
-button.onclick = logout;
-
-function logout() {
-  utils.logout(params.access_token, redirect_url);
-}
 
 
 
