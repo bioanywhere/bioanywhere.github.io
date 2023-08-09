@@ -9,9 +9,7 @@ let button = document.getElementById('button')
 button.addEventListener('click',signIn)
 
 async function signIn() {
-  const { access_token } = await utils.signIn(CLIENT_ID, REDIRECT_URI, SCOPES);
-  if (access_token) {
-    await utils.loadGoogleSheetsAPI(); // Load the Google Sheets API
-   // await processCharts(access_token); // Call the chart processing function after sign-in
-  }
+  await utils.signIn(CLIENT_ID, REDIRECT_URI, SCOPES);
+  await utils.loadGoogleSheetsAPI();
+  //await processCharts(); // Call the chart processing function
 }
