@@ -105,6 +105,7 @@ function loadGoogleAPI() {
       },
       onerror: reject,
       timeout: 10000,
+      ontimeout: reject, // Set the ontimeout parameter
     });
   });
 }
@@ -117,3 +118,5 @@ export default{
     loadGoogleAPI // Include the new function
 
 }
+
+
