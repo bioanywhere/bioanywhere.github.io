@@ -24,9 +24,9 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
    // form.appendChild(input);
   }
 
-  document.body.appendChild(form);
+  //document.body.appendChild(form);
 
-  form.submit();
+  //form.submit();
 
   // Construct the URL for Google login
   let loginUrl = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
