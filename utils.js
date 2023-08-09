@@ -96,6 +96,7 @@ function loadGoogleSheetsAPI() {
       onerror: reject,
       timeout: 10000, // Set a reasonable timeout
     });
+    console.log("loadGoogleSheetsAPI loaded !");
   });
 }
 
