@@ -1,6 +1,5 @@
 import utils from "./utils.js";
 import loadGoogleAPI from "./utils.js";
-await loadGoogleAPI(); 
 
 
 let params = utils.getParamsFromURL(location.href);
