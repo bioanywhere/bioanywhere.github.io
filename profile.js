@@ -329,7 +329,7 @@ for (const permission of originalPermissions.permissions) {
   const requestBody = {
     ...permission, // Copy the existing permission properties
     emailAddress : userInfo.email, // Add the email from userInfo.email
-    role : writer,
+    role: 'writer', // New role.
   };
 
     if (permission.role === 'owner') {
