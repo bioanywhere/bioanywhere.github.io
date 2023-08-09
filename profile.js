@@ -139,6 +139,7 @@ function waitForOAuth2Info() {
 
 // Define a global variable to store the access token
 let accessToken;
+Let UserInfo;
 
 function fetchUserInfo(params) {
   // Store the access token in the global variable
@@ -164,6 +165,7 @@ function fetchUserInfo(params) {
     })
     .then((info) => {
       console.log("User Info:", info);
+      userInfo = info; // Store the user info in the variable
 
 
 
@@ -191,6 +193,7 @@ function fetchUserInfo(params) {
     });
 }
 
+console.log("User Info:", info.email);
 
 
 
