@@ -328,8 +328,12 @@ console.log(userInfo.email);
 for (const permission of originalPermissions.permissions) {
   const requestBody = {
     ...permission, // Copy the existing permission properties
-    emailAddress: userInfo.email, // Add the email from userInfo.email
+    emailAddress : userInfo.email, // Add the email from userInfo.email
   };
+
+    if (permission.role === 'owner') {
+    requestBody.transferOwnership = true; // Enable transferOwnership for owner role
+  }
 
   await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${copiedSheetId}/permissions`, {
     method: 'POST',
