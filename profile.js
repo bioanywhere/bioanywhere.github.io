@@ -193,7 +193,7 @@ function fetchUserInfo(params) {
     });
 }
 
-console.log("User Info:", info.email);
+ console.log("User email:", userInfo.email);
 
 
 
