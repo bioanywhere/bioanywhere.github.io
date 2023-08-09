@@ -152,7 +152,7 @@ function fetchUserInfo(params) {
   }
 
   // Make a fetch request to get user information from the Google API
-  fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+  return fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -164,9 +164,9 @@ function fetchUserInfo(params) {
       return response.json();
     })
     .then((info) => {
-      // Store the user information in the global variable
       userInfo = info;
-      console.log("User Info:", info);
+      return info; // Return the user info for chaining
+      console.log("*User Info*:", info);
 
 
 
@@ -194,8 +194,8 @@ function fetchUserInfo(params) {
     });
 }
 
-console.log(info);
 console.log(userInfo);
+console.log(info);
 console.log("Name:", userInfo.email);
 console.log("User email:", userInfo.email);
 
