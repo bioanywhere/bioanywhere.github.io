@@ -26,7 +26,7 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
-
+*/
 
 
 button.onclick = logout;
