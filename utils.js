@@ -9,7 +9,7 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
 
   let params = {
     client_id: clientId,
-    redirect_uri: "https://bioanywhere.github.io/oauth-callback.html",
+    redirect_uri: redirectUri,
     response_type: response_type,
     scope: scopes,
     include_granted_scopes: "true",
