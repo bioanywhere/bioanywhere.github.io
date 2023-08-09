@@ -288,7 +288,33 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
+//try gapi
 
+
+  utils.loadGoogleAPI().then(() => {
+  console.log('Google API loaded successfully in profile.js lets see files....');
+
+  // You can now use the gapi object and Google API features
+  // ...
+
+  // For example, you can make a test API request using the loaded gapi
+  gapi.client.load('drive', 'v3', () => {
+    gapi.client.drive.files.list({
+      pageSize: 10,
+      fields: "nextPageToken, files(id, name)"
+    }).then(response => {
+      const files = response.result.files;
+      if (files && files.length > 0) {
+        console.log("Files:");
+        files.forEach(file => {
+          console.log(`${file.name} (${file.id})`);
+        });
+      } else {
+        console.log("No files found.");
+      }
+    });
+  });
+});
 
 
     // Step 1: Duplicate Google Sheets Template
