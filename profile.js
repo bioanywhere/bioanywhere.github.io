@@ -1,6 +1,6 @@
 import utils from "./utils.js";
-import loadGoogleAPI from "./utils.js";
-utils.loadGoogleAPI();
+//import loadGoogleAPI from "./utils.js";
+//utils.loadGoogleAPI();
 
 
 let params = utils.getParamsFromURL(location.href);
@@ -291,14 +291,16 @@ document.getElementById('Report').addEventListener('click', async () => {
 //try gapi
 
 
-  utils.loadGoogleAPI().then(() => {
-  console.log('Google API loaded successfully in profile.js lets see files....');
+// You can complement the accessToken parameter in gapi client calls
+function someFunctionInProfileJS(access_token) {
+  // Use the access token in gapi client calls
+  gapi.client.init({
+    accessToken: access_token
+  }).then(() => {
+    // After the gapi client is initialized, you can start using it
+    console.log('Google API client initialized successfully in profile.js.');
 
-  // You can now use the gapi object and Google API features
-  // ...
-
-  // For example, you can make a test API request using the loaded gapi
-  gapi.client.load('drive', 'v3', () => {
+    // Use gapi.client.drive.files.list or other API requests here
     gapi.client.drive.files.list({
       pageSize: 10,
       fields: "nextPageToken, files(id, name)"
@@ -314,7 +316,12 @@ document.getElementById('Report').addEventListener('click', async () => {
       }
     });
   });
-});
+}
+
+// You can call the function with the access token
+someFunctionInProfileJS(access_token);
+
+
 
 
     // Step 1: Duplicate Google Sheets Template
