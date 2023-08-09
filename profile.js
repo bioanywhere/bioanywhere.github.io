@@ -1,5 +1,7 @@
 import utils from "./utils.js";
-await loadGoogleAPI(); // Assuming loadGoogleAPI returns a Promise
+import { loadGoogleAPI } from './utils.js';
+
+await loadGoogleAPI(); 
 
 
 let params = utils.getParamsFromURL(location.href);
