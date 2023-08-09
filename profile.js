@@ -175,7 +175,6 @@ function fetchUserInfo(params) {
     .then((info) => {
       // Store the user information in the global variable
       userInfo = info;
-      console.log("User Info:", info);
 
       const nameElement = document.getElementById("name");
       if (nameElement) {
@@ -324,17 +323,23 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     const originalPermissions = await originalPermissionsResponse.json();
 
-    // Apply original sheet's permissions to the duplicated sheet
-    for (const permission of originalPermissions.permissions) {
-      await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${copiedSheetId}/permissions`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(permission),
-      });
-    }
+console.log(userInfo.email);
+// Apply original sheet's permissions to the duplicated sheet
+for (const permission of originalPermissions.permissions) {
+  const requestBody = {
+    ...permission, // Copy the existing permission properties
+    email: userInfo.email, // Add the email from userInfo.email
+  };
+
+  await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${copiedSheetId}/permissions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+}
 
     console.log("Step 2: Permissions of individual charts copied successfully.");
 
