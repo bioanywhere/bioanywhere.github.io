@@ -106,4 +106,6 @@ export default{
     logout,
     saveOAuth2Info,
     getParamsFromURL
+    loadGoogleSheetsAPI, // Include the new function
+
 }
