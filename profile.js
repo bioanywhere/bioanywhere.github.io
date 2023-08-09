@@ -7,7 +7,7 @@ let redirect_url = "https://bioanywhere.github.io/index.html";
 
 let button = document.getElementById("logout");
 
-console.log("params:", params);
+//console.log("params:", params);
 
 //utils.saveOAuth2Info(params, "profile.html", "info");
 /*
@@ -138,55 +138,71 @@ function waitForOAuth2Info() {
 
 
 // Define a global variable to store the access token
+let accessToken;
 
+// Define a global variable to store user information
+let userInfo;
 
-const accessToken = params.access_token;
+function fetchUserInfo(params) {
+  // Store the access token in the global variable
+  accessToken = params.access_token;
 
+  // Check if the access token is available
+  if (!accessToken) {
+    console.error("Access token not available.");
+    return;
+  }
 
-let userInfo; // Declare a variable to store the user info
-function fetchUserInfo(accessToken) {
+  // Make a fetch request to get user information from the Google API
   fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok.");
-    }
-    return response.json();
-  })
-  .then((info) => {
-    console.log("User Info:", info);
-    userInfo = info; // Store the user info in the variable
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+      return response.json();
+    })
+    .then((info) => {
+      // Store the user information in the global variable
+      userInfo = info;
 
-    const nameElement = document.getElementById("name");
-    if (nameElement) {
-      nameElement.textContent = info.name;
-      nameElement.style.display = "inline";
-    }
+      // Log the user info
+      console.log("User Info:", userInfo);
 
-    const imageElement = document.getElementById("image");
-    if (imageElement) {
-      imageElement.onload = () => {
-        imageElement.style.display = "inline";
-      };
-      imageElement.src = info.picture;
-    }
-  })
-  .catch((error) => {
-    console.error("Error fetching user info:", error);
-  });
+      // Call a function to update UI with user information
+      updateUIWithUserInfo(userInfo);
+    })
+    .catch((error) => {
+      console.error("Error fetching user info:", error);
+    });
 }
 
-// Outside the function, you can use the stored userInfo object
-// For example:
-if (userInfo) {
-  console.log("User name:", userInfo.name);
-  console.log("User email:", userInfo.email);
-} else {
-  console.log("User info not available yet.");
+// Function to update UI with user information
+function updateUIWithUserInfo(info) {
+  // Replace the <name> placeholder with the user's full name
+  const nameElement = document.getElementById("name");
+  if (nameElement) {
+    nameElement.textContent = info.name;
+    // Show the name element after data is available
+    nameElement.style.display = "inline";
+  }
+
+  // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
+  const imageElement = document.getElementById("image");
+  if (imageElement) {
+    imageElement.onload = () => {
+      // Display the image element after it's loaded
+      imageElement.style.display = "inline";
+    };
+    // Set the 'src' attribute to trigger the image load
+    imageElement.src = info.picture;
+  }
 }
+
+
 
 
 
