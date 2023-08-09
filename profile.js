@@ -141,6 +141,15 @@ function waitForOAuth2Info() {
 let accessToken;
 let userInfo;
 
+// Function to print user information when available
+function printUserInfo() {
+  if (userInfo) {
+    console.log("User Info, I am outside wiht userInfo:", userInfo);
+  } else {
+    console.log("User information not available yet.");
+  }
+}
+
 function fetchUserInfo(params) {
   // Store the access token in the global variable
   accessToken = params.access_token;
@@ -152,7 +161,7 @@ function fetchUserInfo(params) {
   }
 
   // Make a fetch request to get user information from the Google API
-  return fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+  fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -164,39 +173,37 @@ function fetchUserInfo(params) {
       return response.json();
     })
     .then((info) => {
+      // Store the user information in the global variable
       userInfo = info;
-      return info; // Return the user info for chaining
-      console.log("*User Info*:", info);
+      console.log("User Info:", info);
 
-
-
-      // Replace the <name> placeholder with the user's full name
       const nameElement = document.getElementById("name");
       if (nameElement) {
         nameElement.textContent = info.name;
-        // Show the name element after data is available
         nameElement.style.display = "inline";
       }
 
-      // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
       const imageElement = document.getElementById("image");
       if (imageElement) {
         imageElement.onload = () => {
-          // Display the image element after it's loaded
           imageElement.style.display = "inline";
         };
-        // Set the 'src' attribute to trigger the image load
         imageElement.src = info.picture;
       }
+
+      // Call the function to print user information
+      printUserInfo();
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);
     });
 }
 
-console.log(userInfo);
-console.log("Name:", userInfo.name);
-console.log("User email:", userInfo.email);
+// Call fetchUserInfo with appropriate params
+// For example: fetchUserInfo({ access_token: 'your_access_token' });
+
+
+
 
 
 
