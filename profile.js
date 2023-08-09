@@ -203,11 +203,7 @@ function updateUIWithUserInfo(info) {
 }
 
 
-if (userInfo && userInfo.email) {
-  console.log("User Email:", userInfo.email);
-} else {
-  console.log("User email not available.");
-}
+console.log("User Email:", userInfo.email);
 
 
 
