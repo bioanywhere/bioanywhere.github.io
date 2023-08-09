@@ -43,9 +43,6 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
   window.open(loginUrl, "_blank", options);
 
 
-  
-
-
 }
 
 
@@ -90,6 +87,18 @@ function saveOAuth2Info(data, path, name) {
    // window.history.pushState({}, document.title, "/" + path)
 
 }
+
+
+function loadGoogleSheetsAPI() {
+  return new Promise((resolve, reject) => {
+    gapi.load('client', {
+      callback: resolve,
+      onerror: reject,
+      timeout: 10000, // Set a reasonable timeout
+    });
+  });
+}
+
 
 export default{
     signIn,

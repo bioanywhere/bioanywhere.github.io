@@ -11,5 +11,7 @@ button.addEventListener('click',signIn)
 function signIn(){
 
 utils.signIn(CLIENT_ID,REDIRECT_URI,SCOPES)
+await utils.loadGoogleSheetsAPI(); // Load the Google Sheets API
+
 
 }
