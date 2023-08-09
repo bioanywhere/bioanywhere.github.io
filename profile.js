@@ -309,42 +309,41 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-    // Step 2: Copy Permissions of Charts
+    // Step 2: Publish charts
     const originalSheetId = templateSheetId; // Replace this with the ID of the original sheet
     const copiedSheetId = duplicateSheet.id; // ID of the duplicated sheet
 
-    // Fetch original sheet's permissions
-    const originalPermissionsResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${originalSheetId}/permissions`, {
+    // Fetch the list of all charts in the copied Google Sheet
+    const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/?fields=sheets(charts)`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     });
 
-    const originalPermissions = await originalPermissionsResponse.json();
+    const chartsData = await chartsResponse.json();
+    const charts = chartsData.sheets[0].charts;
 
-console.log(userInfo.email);
-// Apply original sheet's permissions to the duplicated sheet
-for (const permission of originalPermissions.permissions) {
-  const requestBody = {
-    ...permission, // Copy the existing permission properties
-    emailAddress : userInfo.email, // Add the email from userInfo.email
-    role: 'writer', // New role.
-  };
+    // Loop through the chart IDs and update publishing settings
+    for (const chart of charts) {
+      const chartId = chart.chartId;
+      const publishableLink = chart.publishingInfo.readOnlyLink;
 
-    if (permission.role === 'owner') {
-    requestBody.transferOwnership = true; // Enable transferOwnership for owner role
-  }
+      // Make a request to update the chart's publishing settings
+      await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/charts/${chartId}:publish`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "publishingType": "LINK",
+          "autoRepublish": true,
+          "link": publishableLink
+        }),
+      });
+    }
 
-  await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${copiedSheetId}/permissions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  });
-}
 
     console.log("Step 2: Permissions of individual charts copied successfully.");
 
