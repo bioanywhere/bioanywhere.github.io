@@ -152,55 +152,58 @@ function fetchUserInfo(params) {
   }
 
   // Make a fetch request to get user information from the Google API
-  fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok.");
-      }
-      return response.json();
+  return fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     })
-    .then((info) => {
-      // Store the user information in the global variable
-      userInfo = info;
-      console.log("User Info:", info);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        return response.json();
+      })
+      .then((info) => {
+        userInfo = info;
+        return info; // Return the user info for chaining
 
+        // Replace the <name> placeholder with the user's full name
+        const nameElement = document.getElementById("name");
+        if (nameElement) {
+          nameElement.textContent = info.name;
+          // Show the name element after data is available
+          nameElement.style.display = "inline";
+        }
 
-
-      // Replace the <name> placeholder with the user's full name
-      const nameElement = document.getElementById("name");
-      if (nameElement) {
-        nameElement.textContent = info.name;
-        // Show the name element after data is available
-        nameElement.style.display = "inline";
-      }
-
-      // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
-      const imageElement = document.getElementById("image");
-      if (imageElement) {
-        imageElement.onload = () => {
-          // Display the image element after it's loaded
-          imageElement.style.display = "inline";
-        };
-        // Set the 'src' attribute to trigger the image load
-        imageElement.src = info.picture;
+        // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
+        const imageElement = document.getElementById("image");
+        if (imageElement) {
+          imageElement.onload = () => {
+            // Display the image element after it's loaded
+            imageElement.style.display = "inline";
+          };
+          // Set the 'src' attribute to trigger the image load
+          imageElement.src = info.picture;
       }
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);
+      throw error; // Re-throw the error for chaining
     });
 }
 
-console.log(userInfo);
-console.log("Name:", userInfo.name);
-console.log("User email:", userInfo.email);
+async function main() {
+  try {
+    await fetchUserInfo(params); // Wait for user info to be fetched
+    console.log("User Info:", userInfo);
+    console.log("Name:", userInfo.name);
+    console.log("User email:", userInfo.email);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
-
-
-// ... (Rest of the code)
+main(); // Call the async main function
 
 
 // Helper function to convert the value to a string and handle special characters
