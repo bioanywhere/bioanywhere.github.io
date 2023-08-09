@@ -1,4 +1,6 @@
 import utils from "./utils.js";
+await loadGoogleAPI(); // Assuming loadGoogleAPI returns a Promise
+
 
 let params = utils.getParamsFromURL(location.href);
 let ACCESS_TOKEN = params.access_token;
