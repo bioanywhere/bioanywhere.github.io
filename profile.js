@@ -7,10 +7,10 @@ let redirect_url = "https://bioanywhere.github.io/index.html";
 
 let button = document.getElementById("logout");
 
-console.log("params:", params);
+//console.log("params:", params);
 
-utils.saveOAuth2Info(params, "profile.html", "info");
-
+//utils.saveOAuth2Info(params, "profile.html", "info");
+/*
 fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
   headers: {
     Authorization: `Bearer ${params.access_token}`,
@@ -26,7 +26,7 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
-
+*/
 
 
 button.onclick = logout;
