@@ -1,20 +1,32 @@
-function signIn(CLIENT_ID, REDIRECT_URI, SCOPES, response_type = "token") {
+function signIn(clientId,redirectUri,scopes,response_type="token") {
   let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
-/*
+
   let form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", oauth2Endpoint);
-*/
+
 
   let params = {
-    client_id: CLIENT_ID,
+    client_id: clientId,
     redirect_uri: "https://bioanywhere.github.io/oauth-callback.html",
     response_type: response_type,
-    scope: SCOPES,
+    scope: scopes,
     include_granted_scopes: "true",
     state: "pass-through-value",
   };
+
+  for (var p in params) {
+    let input = document.createElement("input");
+    input.setAttribute("type", "hidden");
+    input.setAttribute("name", p);
+    input.setAttribute("value", params[p]);
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+
+  form.submit();
 
   // Construct the URL for Google login
   let loginUrl = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
@@ -29,17 +41,6 @@ function signIn(CLIENT_ID, REDIRECT_URI, SCOPES, response_type = "token") {
   const top = window.screen.height / 2 - height / 2;
   const options = `width=${width},height=${height},left=${left},top=${top},resizable,scrollbars=yes,status=1`;
   window.open(loginUrl, "_blank", options);
-
-
-  for (var p in params) {
-    let input = document.createElement("input");
-    input.setAttribute("type", "hidden");
-    input.setAttribute("name", p);
-    input.setAttribute("value", params[p]);
-    form.appendChild(input);
-  }
-  document.body.appendChild(form);
-  form.submit();
 
 
 }
