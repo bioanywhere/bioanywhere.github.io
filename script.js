@@ -10,6 +10,6 @@ button.addEventListener('click',signIn)
 
 async function signIn() {
   await utils.signIn(CLIENT_ID, REDIRECT_URI, SCOPES);
-  await utils.loadGoogleSheetsAPI();
+  await utils.loadGoogleAPI(); // Load the Google API client
   //await processCharts(); // Call the chart processing function
 }

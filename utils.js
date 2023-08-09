@@ -89,23 +89,31 @@ function saveOAuth2Info(data, path, name) {
 }
 
 
-function loadGoogleSheetsAPI() {
+let googleAPILoaded = false;
+
+function loadGoogleAPI() {
   return new Promise((resolve, reject) => {
+    if (googleAPILoaded) {
+      resolve();
+      return;
+    }
+
     gapi.load('client', {
-      callback: resolve,
+      callback: () => {
+        googleAPILoaded = true;
+        resolve();
+      },
       onerror: reject,
-      timeout: 10000, // Set a reasonable timeout
+      timeout: 10000,
     });
-    console.log("loadGoogleSheetsAPI loaded !");
   });
 }
-
 
 export default{
     signIn,
     logout,
     saveOAuth2Info,
     getParamsFromURL,
-    loadGoogleSheetsAPI // Include the new function
+    loadGoogleAPI // Include the new function
 
 }
