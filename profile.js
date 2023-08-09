@@ -26,7 +26,7 @@ fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     console.error("Error fetching user info:", error);
   });
 
-*/
+
 
 
 button.onclick = logout;
@@ -183,7 +183,7 @@ function fetchUserInfo(params) {
           imageElement.style.display = "inline";
         };
         // Set the 'src' attribute to trigger the image load
-        //imageElement.src = info.picture;
+        imageElement.src = info.picture;
       }
     })
     .catch((error) => {
