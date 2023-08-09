@@ -195,6 +195,7 @@ function fetchUserInfo(params) {
 }
 
 
+console.log("User email:", userInfo.email);
 
 
 
