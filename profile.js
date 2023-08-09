@@ -183,7 +183,7 @@ function fetchUserInfo(params) {
           imageElement.style.display = "inline";
         };
         // Set the 'src' attribute to trigger the image load
-       // imageElement.src = info.picture;
+        imageElement.src = info.picture;
       }
     })
     .catch((error) => {
