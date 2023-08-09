@@ -21,7 +21,7 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
     input.setAttribute("type", "hidden");
     input.setAttribute("name", p);
     input.setAttribute("value", params[p]);
-    form.appendChild(input);
+   // form.appendChild(input);
   }
 
   document.body.appendChild(form);
