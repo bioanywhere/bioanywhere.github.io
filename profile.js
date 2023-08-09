@@ -176,14 +176,14 @@ function fetchUserInfo(params) {
       }
 
       // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
-      const imageElement = document.getElementById("picture");
+      const imageElement = document.getElementById("imag");
       if (imageElement) {
         imageElement.onload = () => {
           // Display the image element after it's loaded
           imageElement.style.display = "inline";
         };
         // Set the 'src' attribute to trigger the image load
-        imageElement.src = info.picture;
+        //imageElement.src = info.picture;
       }
     })
     .catch((error) => {
