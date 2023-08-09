@@ -139,7 +139,7 @@ function waitForOAuth2Info() {
 
 // Define a global variable to store the access token
 let accessToken;
-let UserInfo;
+let userInfo;
 
 function fetchUserInfo(params) {
   // Store the access token in the global variable
