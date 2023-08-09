@@ -176,7 +176,7 @@ function fetchUserInfo(params) {
       }
 
       // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
-      const imageElement = document.getElementById("imag");
+      const imageElement = document.getElementById("image");
       if (imageElement) {
         imageElement.onload = () => {
           // Display the image element after it's loaded
