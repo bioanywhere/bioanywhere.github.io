@@ -137,10 +137,8 @@ function waitForOAuth2Info() {
 
 
 
-// Define a global variable to store the access token
+// Define a global variable to store the access token and userInfo
 let accessToken;
-
-// Define a global variable to store user information
 let userInfo;
 
 function fetchUserInfo(params) {
@@ -168,42 +166,35 @@ function fetchUserInfo(params) {
     .then((info) => {
       // Store the user information in the global variable
       userInfo = info;
+      console.log("User Info:", info);
 
-      // Log the user info
-      console.log("User Info:", userInfo);
 
-      // Call a function to update UI with user information
-      updateUIWithUserInfo(userInfo);
+
+      // Replace the <name> placeholder with the user's full name
+      const nameElement = document.getElementById("name");
+      if (nameElement) {
+        nameElement.textContent = info.name;
+        // Show the name element after data is available
+        nameElement.style.display = "inline";
+      }
+
+      // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
+      const imageElement = document.getElementById("image");
+      if (imageElement) {
+        imageElement.onload = () => {
+          // Display the image element after it's loaded
+          imageElement.style.display = "inline";
+        };
+        // Set the 'src' attribute to trigger the image load
+        imageElement.src = info.picture;
+      }
     })
     .catch((error) => {
       console.error("Error fetching user info:", error);
     });
 }
 
-// Function to update UI with user information
-function updateUIWithUserInfo(info) {
-  // Replace the <name> placeholder with the user's full name
-  const nameElement = document.getElementById("name");
-  if (nameElement) {
-    nameElement.textContent = info.name;
-    // Show the name element after data is available
-    nameElement.style.display = "inline";
-  }
 
-  // Set the 'onload' event for the image element to ensure it's displayed after the image is fully loaded
-  const imageElement = document.getElementById("image");
-  if (imageElement) {
-    imageElement.onload = () => {
-      // Display the image element after it's loaded
-      imageElement.style.display = "inline";
-    };
-    // Set the 'src' attribute to trigger the image load
-    imageElement.src = info.picture;
-  }
-}
-
-
-console.log("User Email:", userInfo.email);
 
 
 
