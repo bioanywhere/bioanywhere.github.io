@@ -104,8 +104,11 @@ function loadGoogleAPI() {
         resolve();
       },
       onerror: reject,
-      timeout: 10000,
-      ontimeout: reject, // Set the ontimeout parameter
+      timeout: 20000,
+      ontimeout: function() {
+       console.log('Request timed out');
+       // Perform actions like retrying the request or displaying an error message
+  }
     });
   });
 }
