@@ -350,7 +350,7 @@ callGoogleAppsScript(duplicateSheet.id, accessToken);
 
 // *****************
 
-
+const copiedSheetId = duplicateSheet.id
 console.log("*******Sheet ID****:", copiedSheetId);
 console.log("******Access Token:*****", accessToken);
 
