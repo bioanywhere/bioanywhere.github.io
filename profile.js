@@ -317,18 +317,10 @@ console.log("Step 2: Calling Google Apps Script...");
 function callGoogleAppsScript() {
   const url = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
   
-  const accessToken = params.access_token; // Replace with your actual access token
-  print("Accees Token:", access_token);
-
-  const headers = new Headers();
-  headers.append("Authorization", `Bearer ${accessToken}`);
-  
-  fetch(url, { headers, redirect: "follow" })  // Follow redirects and include access token
-    .then(response => response.json())
-    .then(data => {
-      // Process the data returned from the web app
-      console.log("Response from Google Apps Script:", data);
-      // You can do further processing here
+  fetch(url, { mode: 'no-cors' })
+    .then(response => {
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
