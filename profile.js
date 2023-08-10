@@ -317,9 +317,9 @@ console.log("Step 2: Calling Google Apps Script...");
 function callGoogleAppsScript() {
   const url = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
   
-  const accessToken = access_token; // Replace with your actual access token
+  const accessToken = params.access_token; // Replace with your actual access token
   print("Accees Token:", access_token);
-  
+
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${accessToken}`);
   

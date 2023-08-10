@@ -32,8 +32,8 @@
         const accessToken = savedData.access_token;
 
         // Automatically open the Google Apps Script authorization window with the access token
-        const scriptAuthUrl = `hhttps://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize?access_token=${accessToken}`;
-        const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
+        //const scriptAuthUrl = `hhttps://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize?access_token=${accessToken}`;
+        //const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
         
         // Check if the script authorization window is closed at intervals
         const scriptAuthCheck = setInterval(() => {
