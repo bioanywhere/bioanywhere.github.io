@@ -314,6 +314,8 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 console.log("Step 2: Calling Google Apps Script...");
 
 
+
+
 const fetchData = async (scriptURL, data) => {
   var json;
   try {
@@ -334,15 +336,28 @@ const fetchData = async (scriptURL, data) => {
 };
 
 async function callGoogleAppsScript() {
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize"; // Replace with your actual script URL
- // const data = { key1: "value1" }; // Replace with your data
+  // ?functionName=authorize
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec"; // Replace with your actual script URL
+
+  const accessToken = params.access_token ; 
+  const spreadsheetId = duplicateSheet.id; 
+  
+  const data = [
+    {
+      name: "accessToken",
+      value: accessToken
+    },
+    {
+      name: "spreadsheetId",
+      value: spreadsheetId
+    }
+  ];
   
   const res = await fetchData(scriptURL, data);
   console.log(res);
 }
 
 callGoogleAppsScript();
-
 
 
 
