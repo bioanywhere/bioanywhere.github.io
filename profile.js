@@ -316,12 +316,29 @@ console.log("Step 2: Calling Google Apps Script...");
 
 function callGoogleAppsScript() {
   var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace with your actual Google Apps Script URL
-  var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
   var callbackName = "jsonpCallback"; // JSONP callback function name
 
+  // Construct the authorization URL for Google Apps Script
+  var authUrl = scriptUrl + "?access_token=" + access_token + "&spreadsheetId=" + duplicateSheet.id;
+
+  // Open a new window for authorization
+  var authWindow = window.open(authUrl, "Google Apps Script Authorization", "width=600,height=400");
+
+  // Check if the authorization window is closed at intervals
+  var authWindowCheck = setInterval(function() {
+    if (authWindow.closed) {
+      clearInterval(authWindowCheck);
+      // Authorization window is closed, call the function to get data
+      getGoogleAppsScriptData(callbackName);
+    }
+  }, 1000);
+}
+
+// Function to retrieve data from Google Apps Script
+function getGoogleAppsScriptData(callbackName) {
   var scriptElement = document.createElement("script");
-  scriptElement.src = scriptUrl + "?callback=" + callbackName + "&access_token=" + accessToken + "&spreadsheetId=" + spreadsheetId;
+  scriptElement.src = scriptUrl + "?callback=" + callbackName + "&spreadsheetId=" + duplicateSheet.id;
   document.body.appendChild(scriptElement);
 
   // Define the JSONP callback function
@@ -334,8 +351,9 @@ function callGoogleAppsScript() {
   console.log("Script URL:", scriptElement.src);
 }
 
-// Call the function to initiate the JSONP request
+// Call the function to initiate the Google Apps Script authorization process
 callGoogleAppsScript();
+
 
 
 
