@@ -26,23 +26,29 @@
 
         // Notify the parent window (index.html) that the login process is complete
         window.opener.postMessage("loginComplete", "*");
+    </script>
 
-        // Get the access token from the saved data
-        const savedData = JSON.parse(localStorage.getItem("info"));
-        const accessToken = savedData.access_token;
+    <!-- Add a button to authorize the Google Apps Script -->
+    <button id="authorizeScriptButton">Authorize Google Apps Script</button>
 
-        // Automatically open the Google Apps Script authorization window with the access token
-      // const scriptAuthUrl = `https://script.google.com/a/macros/g-forward.com/s/AKfycbzrF4y_wkXUHzXCEE6nbTsNl9IJO5dfunA1bt0JFuhfdnJRZZMpbokLTUujUOVJmP9WEw/exec?access_token=${accessToken}`;
-      // const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
-        
-        // Check if the script authorization window is closed at intervals
-       //const scriptAuthCheck = setInterval(() => {
-        //    if (scriptAuthWindow.closed) {
-          //      clearInterval(scriptAuthCheck);
-              //   Script authorization window is closed
-          //      console.log("Google Apps Script authorized.");
-        //    }
-      //  }, 1000);
+    <script>
+        // Handle the click event of the "Authorize Google Apps Script" button
+        document.getElementById("authorizeScriptButton").addEventListener("click", () => {
+            // Replace this URL with your actual Google Apps Script URL
+            const scriptAuthUrl = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
+            
+            // Open a new window for script authorization
+            const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
+            
+            // Check if the script authorization window is closed at intervals
+            const scriptAuthCheck = setInterval(() => {
+                if (scriptAuthWindow.closed) {
+                    clearInterval(scriptAuthCheck);
+                    // Script authorization window is closed
+                    console.log("Google Apps Script authorized.");
+                }
+            }, 1000);
+        });
     </script>
 </body>
 
