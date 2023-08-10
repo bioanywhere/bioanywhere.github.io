@@ -335,6 +335,7 @@ const fetchData = async (scriptURL, data) => {
   return json;
 };
 
+console.log ("Access Token", params.access_token);
 async function callGoogleAppsScript() {
   // ?functionName=authorize
   const scriptURL = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec"; // Replace with your actual script URL
@@ -345,7 +346,7 @@ async function callGoogleAppsScript() {
   const data = [
     {
       name: "accessToken",
-      value: accessToken
+      value: params.access_token
     },
     {
       name: "spreadsheetId",
