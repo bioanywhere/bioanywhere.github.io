@@ -347,7 +347,7 @@ function callGoogleAppsScript() {
   })
     .then(response => response.json())
     .then(data => {
-      console.log("Data from Google Apps Script:", data.response.result);
+      console.log("*Data from Google Apps Script*:", data.response.result);
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
