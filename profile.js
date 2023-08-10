@@ -314,45 +314,27 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 console.log("Step 2: Calling Google Apps Script...");
 
 
+
 function callGoogleAppsScript() {
-  var scriptId = "AKfycbzrF4y_wkXUHzXCEE6nbTsNl9IJO5dfunA1bt0JFuhfdnJRZZMpbokLTUujUOVJmP9WEw"; // Replace with your actual script ID
+  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW"; // Replace with your actual script ID
   var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
 
-  var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + ":run";
-
-  var payload = {
-    function: "callPublishAllCharts", // Use the new function name
-    parameters: [
-      {
-        name: "accessToken",
-        value: accessToken
-      },
-      {
-        name: "spreadsheetId",
-        value: spreadsheetId
-      }
-    ]
-  };
+  var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + "/run" +
+               "?function=callPublishAllCharts" +
+               "&parameters=" + encodeURIComponent(JSON.stringify([accessToken, spreadsheetId]));
 
   var headers = {
-    Authorization: "Bearer " + accessToken,
-    "Content-Type": "application/json"
+    Authorization: "Bearer " + accessToken
   };
 
   fetch(apiUrl, {
     method: "POST",
-    headers: headers,
-    body: JSON.stringify(payload)
+    headers: headers
   })
     .then(response => response.json())
     .then(data => {
-      // Check if the API response has a 'response' property and a 'result' property within it
-      if (data.response && data.response.result) {
-        console.log("Data from Google Apps Script:", data.response.result);
-      } else {
-        console.error("Error calling Google Apps Script:", data);
-      }
+      console.log("Data from Google Apps Script:", data.response.result);
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
