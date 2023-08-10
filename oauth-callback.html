@@ -27,8 +27,12 @@
         // Notify the parent window (index.html) that the login process is complete
         window.opener.postMessage("loginComplete", "*");
 
-        // Automatically open the Google Apps Script authorization window
-        const scriptAuthUrl = "https://script.google.com/a/macros/g-forward.com/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec";
+        // Get the access token from the saved data
+        const savedData = JSON.parse(localStorage.getItem("info"));
+        const accessToken = savedData.access_token;
+
+        // Automatically open the Google Apps Script authorization window with the access token
+        const scriptAuthUrl = `https://script.google.com/a/macros/g-forward.com/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${accessToken}`;
         const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
         
         // Check if the script authorization window is closed at intervals
