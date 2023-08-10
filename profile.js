@@ -313,42 +313,24 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
     // Step 2: Publish charts
-    const originalSheetId = templateSheetId; // Replace this with the ID of the original sheet
+   // const originalSheetId = templateSheetId; // Replace this with the ID of the original sheet
     const copiedSheetId = duplicateSheet.id; // ID of the duplicated sheet
 
-    // Fetch the list of all charts in the copied Google Sheet
-    const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/?fields=sheets(charts)`, {
+
+    // Step 2: Call Google Apps Script
+
+    console.log("Step 2: Calling Google Apps Script...");
+    const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${access_token}&spreadsheetId=${duplicateSheet.id}`;
+
+    const scriptResponse = await makeFetchRequest(webAppUrl, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     });
 
-    const chartsData = await chartsResponse.json();
-    const charts = chartsData.sheets[0].charts;
+    console.log("Step 2: Google Apps Script response:", scriptResponse);
 
-    // Loop through the chart IDs and update publishing settings
-    for (const chart of charts) {
-      const chartId = chart.chartId;
-      const publishableLink = chart.publishingInfo.readOnlyLink;
-
-      // Make a request to update the chart's publishing settings
-      await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${copiedSheetId}/charts/${chartId}:publish`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          "publishingType": "LINK",
-          "autoRepublish": true,
-          "link": publishableLink
-        }),
-      });
-    }
-
-
-    console.log("Step 2: Permissions of individual charts copied successfully.");
 
 
 
