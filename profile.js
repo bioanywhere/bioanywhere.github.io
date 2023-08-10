@@ -313,29 +313,30 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 console.log("Step 2: Calling Google Apps Script...");
 
-// Define the JSONP callback function globally
-window.jsonpCallback = function(data) {
-  console.log("Data from Google Apps Script:", data);
-};
 
-// Function to call the Google Apps Script using JSONP
-function callGoogleAppsScript(spreadsheetId, accessToken, callback) {
-  var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace this with the URL of your published Google Apps Script
-  var queryParams = "?access_token=" + encodeURIComponent(accessToken) +
-                    "&spreadsheetId=" + encodeURIComponent(duplicateSheet.id) +
-                    "&callback=jsonpCallback"; // Use the global callback function name
+function callGoogleAppsScript() {
+  var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace with your actual Google Apps Script URL
+  var accessToken = accessToken; // Replace with the access token
+  var spreadsheetId = spreadsheet.id; // Replace with the spreadsheet ID
+  var callbackName = "jsonpCallback"; // JSONP callback function name
 
-  // Create a script element
   var scriptElement = document.createElement("script");
-  scriptElement.src = scriptUrl + queryParams;
+  scriptElement.src = scriptUrl + "?callback=" + callbackName + "&access_token=" + accessToken + "&spreadsheetId=" + spreadsheetId;
   document.body.appendChild(scriptElement);
 
-  // Print the generated script URL for debugging
-  console.log("Generated Script URL:", scriptElement.src);
+  // Define the JSONP callback function
+  window.jsonpCallback = function(data) {
+    console.log("Data from Google Apps Script:", data);
+    document.body.removeChild(scriptElement); // Clean up the script tag
+  };
+
+  // Debug: Print the full script URL with parameters
+  console.log("Script URL:", scriptElement.src);
 }
 
 // Call the function to initiate the JSONP request
-callGoogleAppsScript(duplicateSheet.id, accessToken);
+callGoogleAppsScript();
+
 
 
 
