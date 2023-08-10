@@ -315,26 +315,46 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
-  var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace with your actual Google Apps Script URL
+  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW"; // Replace with your actual script ID
   var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
-  var callbackName = "jsonpCallback"; // JSONP callback function name
 
-  var scriptElement = document.createElement("script");
-  scriptElement.src = scriptUrl + "?callback=" + callbackName + "&access_token=" + accessToken + "&spreadsheetId=" + spreadsheetId;
-  document.body.appendChild(scriptElement);
+  var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + ":run";
 
-  // Define the JSONP callback function
-  window.jsonpCallback = function(data) {
-    console.log("Data from Google Apps Script:", data);
-    document.body.removeChild(scriptElement); // Clean up the script tag
+  var payload = {
+    function: "callPublishAllCharts", // Use the new function name
+    parameters: [
+      {
+        name: "accessToken",
+        value: accessToken
+      },
+      {
+        name: "spreadsheetId",
+        value: spreadsheetId
+      }
+    ]
   };
 
-  // Debug: Print the full script URL with parameters
-  console.log("Script URL:", scriptElement.src);
+  var headers = {
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json"
+  };
+
+  fetch(apiUrl, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(payload)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Data from Google Apps Script:", data.response.result);
+    })
+    .catch(error => {
+      console.error("Error calling Google Apps Script:", error);
+    });
 }
 
-// Call the function to initiate the JSONP request
+// Call the function to initiate the API request
 callGoogleAppsScript();
 
 
