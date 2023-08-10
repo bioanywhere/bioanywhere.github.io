@@ -316,21 +316,34 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
-  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW"; // Replace with your actual script ID
+  var deploymentId = "AKfycbzrF4y_wkXUHzXCEE6nbTsNl9IJO5dfunA1bt0JFuhfdnJRZZMpbokLTUujUOVJmP9WEw"; // Replace with your actual deployment ID
   var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
 
-  var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + "/run" +
-               "?function=callPublishAllCharts" +
-               "&parameters=" + encodeURIComponent(JSON.stringify([accessToken, spreadsheetId]));
+  var apiUrl = "https://script.googleapis.com/v1/projects/" + deploymentId + "/run:callPublishAllCharts";
+
+  var payload = {
+    parameters: [
+      {
+        name: "accessToken",
+        value: accessToken
+      },
+      {
+        name: "spreadsheetId",
+        value: spreadsheetId
+      }
+    ]
+  };
 
   var headers = {
-    Authorization: "Bearer " + accessToken
+    Authorization: "Bearer " + accessToken,
+    "Content-Type": "application/json"
   };
 
   fetch(apiUrl, {
     method: "POST",
-    headers: headers
+    headers: headers,
+    body: JSON.stringify(payload)
   })
     .then(response => response.json())
     .then(data => {
@@ -343,13 +356,6 @@ function callGoogleAppsScript() {
 
 // Call the function to initiate the API request
 callGoogleAppsScript();
-
-
-
-
-
-
-
 
 
 
