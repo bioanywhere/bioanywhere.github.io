@@ -96,7 +96,6 @@ export default{
     logout,
     saveOAuth2Info,
     getParamsFromURL,
-    loadGoogleAPI // Include the new function
 
 }
 
