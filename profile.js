@@ -347,7 +347,11 @@ function callGoogleAppsScript() {
   })
     .then(response => response.json())
     .then(data => {
-      console.log("*Data from Google Apps Script*:", data.response.result);
+      if (data.response && data.response.result) {
+        console.log("Data from Google Apps Script:", data.response.result);
+      } else {
+        console.error("Error calling Google Apps Script:", data);
+      }
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
@@ -356,9 +360,6 @@ function callGoogleAppsScript() {
 
 // Call the function to initiate the API request
 callGoogleAppsScript();
-
-
-
 
 
 
