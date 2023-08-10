@@ -317,14 +317,22 @@ console.log("Step 2: Calling Google Apps Script...");
 function callGoogleAppsScript() {
   const url = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
   
-  fetch(url, { mode: 'no-cors' })
-    .then(response => {
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-    })
-    .catch(error => {
-      console.error("Error calling Google Apps Script:", error);
-    });
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        const responseData = xhr.responseText;
+        console.log("Response from Google Apps Script:", responseData);
+        // You can do further processing here
+      } else {
+        console.error("Error calling Google Apps Script:", xhr.statusText);
+      }
+    }
+  };
+  
+  xhr.send();
 }
 
 // Call the function when needed
