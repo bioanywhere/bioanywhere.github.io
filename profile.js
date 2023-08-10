@@ -324,7 +324,7 @@ function callGoogleAppsScript() {
 
   var payload = {
    // function: "callPublishAllCharts", // Use the new function name
-   functionName: "authorize", // Use the new function name
+   //function: "authorize", // Use the new function name
 
     /*
     parameters: [
