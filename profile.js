@@ -335,8 +335,6 @@ function callGoogleAppsScript(spreadsheetId, accessToken, callback) {
 }
 
 // Call the function to initiate the JSONP request
-var duplicateSheetId = "YOUR_DUPLICATE_SHEET_ID"; // Replace with the actual duplicate sheet ID
-var accessToken = "YOUR_ACCESS_TOKEN"; // Replace with your actual access token
 callGoogleAppsScript(duplicateSheetId, accessToken);
 
 
