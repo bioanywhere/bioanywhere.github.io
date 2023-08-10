@@ -291,46 +291,39 @@ document.getElementById('Report').addEventListener('click', async () => {
 
 
 
-    // Step 1: Duplicate Google Sheets Template
+// Step 1: Duplicate Google Sheets Template
 
+console.log("Step 1: Duplicating Google Sheets Template...");
+const duplicateSheetResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`, {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${access_token}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    name: "My Data", // The name of the duplicated file
+  }),
+});
 
-    console.log("Step 1: Duplicating Google Sheets Template...");
-    const duplicateSheetResponse = await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${templateSheetId}/copy`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: "My Data", // The name of the duplicated file
-      }),
-    });
+const duplicateSheet = await duplicateSheetResponse.json();
+const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
+console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
-    const duplicateSheet = await duplicateSheetResponse.json();
-    const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
-    console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
+// Step 2: Call Google Apps Script
 
+console.log("Step 2: Calling Google Apps Script...");
+const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${access_token}&spreadsheetId=${duplicateSheet.id}`;
 
+const scriptResponse = await makeFetchRequest(webAppUrl, {
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${access_token}`,
+  },
+});
 
-    // Step 2: Publish charts
-   // const originalSheetId = templateSheetId; // Replace this with the ID of the original sheet
-    const copiedSheetId = duplicateSheet.id; // ID of the duplicated sheet
+const responseContent = await scriptResponse.text();
+console.log("Step 2: Google Apps Script response content:", responseContent);
 
-
-    // Step 2: Call Google Apps Script
-
-    console.log("Step 2: Calling Google Apps Script...");
-    const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${access_token}&spreadsheetId=${duplicateSheet.id}`;
-
-
-    const scriptResponse = await makeFetchRequest(webAppUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-
-    console.log("Step 2: Google Apps Script response:", scriptResponse);
 
 
 
