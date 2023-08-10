@@ -323,7 +323,10 @@ function callGoogleAppsScript() {
   var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + ":run";
 
   var payload = {
-    function: "callPublishAllCharts", // Use the new function name
+   // function: "callPublishAllCharts", // Use the new function name
+   function: "authorize", // Use the new function name
+
+    /*
     parameters: [
       {
         name: "accessToken",
@@ -333,7 +336,7 @@ function callGoogleAppsScript() {
         name: "spreadsheetId",
         value: spreadsheetId
       }
-    ]
+    ] */
   };
 
   var headers = {
