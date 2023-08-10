@@ -316,9 +316,9 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
-  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW"; // Replace with your actual script ID
-  var accessToken = access_token; // Replace with the access token
-  var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
+  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW";
+  var accessToken = access_token;
+  var spreadsheetId = duplicateSheet.id;
 
   var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + ":run";
 
@@ -351,7 +351,7 @@ function callGoogleAppsScript() {
       if (data.response && data.response.result) {
         console.log("Data from Google Apps Script:", data.response.result);
       } else {
-        console.error("Error calling Google Apps Script:", data.error);
+        console.error("Error calling Google Apps Script:", data);
       }
     })
     .catch(error => {
@@ -361,6 +361,7 @@ function callGoogleAppsScript() {
 
 // Call the function to initiate the API request
 callGoogleAppsScript();
+
 
 
 
