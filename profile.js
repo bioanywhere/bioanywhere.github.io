@@ -785,7 +785,7 @@ console.log("Step 2: Finished listing and printing charts.");
       // Step 5: Return the URL of the modified Document
       console.log("Step 4: Document URL:", documentUrl);
 
-      debugger;
+     // debugger;
       window.location.href = documentUrl;
 
 
