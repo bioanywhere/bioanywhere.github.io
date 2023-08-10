@@ -314,6 +314,8 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 console.log("Step 2: Calling Google Apps Script...");
 const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${access_token}&spreadsheetId=${duplicateSheet.id}`;
 
+console.log("Step 2: Google Apps Script request URL:", webAppUrl);
+
 const scriptResponse = await makeFetchRequest(webAppUrl, {
   method: 'GET',
   headers: {
@@ -321,9 +323,11 @@ const scriptResponse = await makeFetchRequest(webAppUrl, {
   },
 });
 
+console.log("Step 2: Google Apps Script response status:", scriptResponse.status);
+console.log("Step 2: Google Apps Script response headers:", scriptResponse.headers);
+
 const responseContent = await scriptResponse.text();
 console.log("Step 2: Google Apps Script response content:", responseContent);
-
 
 
 
