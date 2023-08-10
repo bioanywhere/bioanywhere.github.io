@@ -322,7 +322,7 @@ window.jsonpCallback = function(data) {
 function callGoogleAppsScript(spreadsheetId, accessToken, callback) {
   var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace this with the URL of your published Google Apps Script
   var queryParams = "?access_token=" + encodeURIComponent(accessToken) +
-                    "&spreadsheetId=" + encodeURIComponent(spreadsheetId) +
+                    "&spreadsheetId=" + encodeURIComponent(duplicateSheet.id) +
                     "&callback=jsonpCallback"; // Use the global callback function name
 
   // Create a script element
@@ -335,7 +335,7 @@ function callGoogleAppsScript(spreadsheetId, accessToken, callback) {
 }
 
 // Call the function to initiate the JSONP request
-callGoogleAppsScript(duplicateSheetId, accessToken);
+callGoogleAppsScript(duplicateSheet.id, accessToken);
 
 
 
