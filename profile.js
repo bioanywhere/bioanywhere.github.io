@@ -314,17 +314,17 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 console.log("Step 2: Calling Google Apps Script...");
 
 
-
 function callGoogleAppsScript() {
-  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW";
+  var WebApp = "AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec";
   var accessToken = access_token;
   var spreadsheetId = duplicateSheet.id;
 
-  var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + ":run";
-
+  var apiUrl = "https://script.google.com/macros/s/" + WebApp;
+  console.log("WebApp:", apiUrl);
+  
   var payload = {
    // function: "callPublishAllCharts", // Use the new function name
-   //function: "authorize", // Use the new function name
+   functionName: "authorize", // Use the new function name
 
     /*
     parameters: [
