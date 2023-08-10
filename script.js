@@ -26,6 +26,7 @@ async function signIn() {
 
     // Call the chart processing function or other API-related actions
     // ...
+    
   });
 }
 

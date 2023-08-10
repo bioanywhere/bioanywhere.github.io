@@ -3,6 +3,7 @@ import loadGoogleAPI from "./utils.js";
 utils.loadGoogleAPI();
 
 
+
 let params = utils.getParamsFromURL(location.href);
 let ACCESS_TOKEN = params.access_token;
 console.log("Access Token:", ACCESS_TOKEN);
