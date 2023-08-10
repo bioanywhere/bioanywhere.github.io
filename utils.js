@@ -89,7 +89,7 @@ function saveOAuth2Info(data, path, name) {
 }
 
 
-/*
+
 let googleAPILoaded = false;
 
 function loadGoogleAPI() {
@@ -118,14 +118,14 @@ function loadGoogleAPI() {
     });
   });
 }
-*/
+
 
 export default{
     signIn,
     logout,
     saveOAuth2Info,
     getParamsFromURL,
-  //  loadGoogleAPI // Include the new function
+    loadGoogleAPI // Include the new function
 
 }
 
