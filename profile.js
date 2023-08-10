@@ -312,7 +312,7 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 // Step 2: Call Google Apps Script
 
 console.log("Step 2: Calling Google Apps Script...");
-const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${access_token}&spreadsheetId=${duplicateSheet.id}`;
+const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec`;
 
 console.log("Step 2: Google Apps Script request URL:", webAppUrl);
 
@@ -320,6 +320,7 @@ const scriptResponse = await makeFetchRequest(webAppUrl, {
   method: 'GET',
   headers: {
     Authorization: `Bearer ${access_token}`,
+    'Spreadsheet-Id': duplicateSheet.id, // Add this header
   },
 });
 
@@ -328,6 +329,7 @@ console.log("Step 2: Google Apps Script response headers:", scriptResponse.heade
 
 const responseContent = await scriptResponse.text();
 console.log("Step 2: Google Apps Script response content:", responseContent);
+
 
 
 
