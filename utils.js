@@ -90,36 +90,6 @@ function saveOAuth2Info(data, path, name) {
 
 
 
-let googleAPILoaded = false;
-
-function loadGoogleAPI() {
-  return new Promise((resolve, reject) => {
-    if (googleAPILoaded) {
-      console.log('Google API already loaded.');
-      resolve();
-      return;
-    }
-
-    gapi.load('client', {
-      callback: () => {
-        googleAPILoaded = true;
-        console.log('Google API loaded successfully.');
-        resolve();
-      },
-      onerror: (error) => {
-        console.error('Error loading Google API:', error);
-        reject(error);
-      },
-      timeout: 20000,
-            ontimeout: function() {
-       console.log('Request timed out');
-       // Perform actions like retrying the request or displaying an error message
-  }
-    });
-  });
-  
-}
-
 
 export default{
     signIn,

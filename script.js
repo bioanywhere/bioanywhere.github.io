@@ -1,7 +1,6 @@
 import utils from './utils.js'
 
 
-//let API_KEY = "AIzaSyCFRg7F-3SaOoZNVHy-YcIlTpWzdkMC1C0";
 let CLIENT_ID = "200624216191-nujs4nugdo4171450bfmm55rk5fksdej.apps.googleusercontent.com"
 let REDIRECT_URI = "https://bioanywhere.github.io/profile.html"
 let SCOPES = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file";

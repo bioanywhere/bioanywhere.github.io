@@ -1,6 +1,5 @@
 import utils from "./utils.js";
-import loadGoogleAPI from "./utils.js";
-utils.loadGoogleAPI();
+
 
 
 
@@ -327,7 +326,7 @@ document.getElementById('Report').addEventListener('click', async () => {
 
     const chartsData = await chartsResponse.json();
     const charts = chartsData.sheets[0].charts;
-/*
+
     // Loop through the chart IDs and update publishing settings
     for (const chart of charts) {
       const chartId = chart.chartId;
@@ -347,7 +346,7 @@ document.getElementById('Report').addEventListener('click', async () => {
         }),
       });
     }
-*/
+
 
     console.log("Step 2: Permissions of individual charts copied successfully.");
 
