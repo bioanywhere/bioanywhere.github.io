@@ -315,12 +315,17 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
+  // Display a message indicating that it's waiting for authorization
+  var statusMessage = document.createElement("p");
+  statusMessage.textContent = "Waiting for authorization...";
+  document.body.appendChild(statusMessage);
+
   var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace with your actual Google Apps Script URL
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
   var callbackName = "jsonpCallback"; // JSONP callback function name
 
   // Construct the authorization URL for Google Apps Script
-  var authUrl = scriptUrl + "?access_token=" + access_token + "&spreadsheetId=" + duplicateSheet.id;
+  var authUrl = scriptUrl + "?access_token=" + accessToken + "&spreadsheetId=" + spreadsheetId;
 
   // Open a new window for authorization
   var authWindow = window.open(authUrl, "Google Apps Script Authorization", "width=600,height=400");
@@ -329,11 +334,15 @@ function callGoogleAppsScript() {
   var authWindowCheck = setInterval(function() {
     if (authWindow.closed) {
       clearInterval(authWindowCheck);
-      // Authorization window is closed, call the function to get data
+      // Authorization window is closed, remove the status message
+      document.body.removeChild(statusMessage);
+      // Call the function to get data
       getGoogleAppsScriptData(callbackName);
     }
   }, 1000);
 }
+
+
 
 // Function to retrieve data from Google Apps Script
 function getGoogleAppsScriptData(callbackName) {
