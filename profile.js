@@ -322,6 +322,7 @@ document.getElementById('Report').addEventListener('click', async () => {
     console.log("Step 2: Calling Google Apps Script...");
     const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec?access_token=${access_token}&spreadsheetId=${duplicateSheet.id}`;
 
+
     const scriptResponse = await makeFetchRequest(webAppUrl, {
       method: 'GET',
       headers: {
