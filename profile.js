@@ -347,6 +347,7 @@ function callGoogleAppsScript() {
   })
     .then(response => response.json())
     .then(data => {
+      // Check if the API response has a 'response' property and a 'result' property within it
       if (data.response && data.response.result) {
         console.log("Data from Google Apps Script:", data.response.result);
       } else {
@@ -360,6 +361,7 @@ function callGoogleAppsScript() {
 
 // Call the function to initiate the API request
 callGoogleAppsScript();
+
 
 
 
