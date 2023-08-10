@@ -26,28 +26,19 @@
 
         // Notify the parent window (index.html) that the login process is complete
         window.opener.postMessage("loginComplete", "*");
-    </script>
 
-    <!-- Add a button to authorize the Google Apps Script -->
-    <button id="authorizeScriptButton">Authorize Google Apps Script</button>
-
-    <script>
-        // Handle the click event of the "Authorize Google Apps Script" button
-        document.getElementById("authorizeScriptButton").addEventListener("click", () => {
-            const scriptAuthUrl = "https://script.google.com/a/macros/g-forward.com/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec";
-            
-            // Open a new window for script authorization
-            const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
-            
-            // Check if the script authorization window is closed at intervals
-            const scriptAuthCheck = setInterval(() => {
-                if (scriptAuthWindow.closed) {
-                    clearInterval(scriptAuthCheck);
-                    // Script authorization window is closed
-                    console.log("Google Apps Script authorized.");
-                }
-            }, 1000);
-        });
+        // Automatically open the Google Apps Script authorization window
+        const scriptAuthUrl = "https://script.google.com/a/macros/g-forward.com/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec";
+        const scriptAuthWindow = window.open(scriptAuthUrl, "Google Apps Script Authorization", "width=600,height=400");
+        
+        // Check if the script authorization window is closed at intervals
+        const scriptAuthCheck = setInterval(() => {
+            if (scriptAuthWindow.closed) {
+                clearInterval(scriptAuthCheck);
+                // Script authorization window is closed
+                console.log("Google Apps Script authorized.");
+            }
+        }, 1000);
     </script>
 </body>
 
