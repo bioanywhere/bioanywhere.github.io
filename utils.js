@@ -22,8 +22,6 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
   // Construct the URL for Google login
   let loginUrl = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
 
-  // Redirect the user to the Google login page
-  //window.location.href = loginUrl;
 
     // Open the Google login page in a new popup window
   const width = 600;
