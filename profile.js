@@ -316,7 +316,7 @@ console.log("Step 2: Calling Google Apps Script...");
 
 function callGoogleAppsScript() {
   var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace with your actual Google Apps Script URL
-  var accessToken = accessToken; // Replace with the access token
+  var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
   var callbackName = "jsonpCallback"; // JSONP callback function name
 
