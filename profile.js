@@ -315,56 +315,22 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
-  var WebApp = "AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec";
-  var accessToken = access_token;
-  var spreadsheetId = duplicateSheet.id;
-
-  var apiUrl = "https://script.google.com/macros/s/" + WebApp;
-  console.log("WebApp:", apiUrl);
+  const url = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
   
-  var payload = {
-   // function: "callPublishAllCharts", // Use the new function name
-   functionName: "authorize", // Use the new function name
-
-    /*
-    parameters: [
-      {
-        name: "accessToken",
-        value: accessToken
-      },
-      {
-        name: "spreadsheetId",
-        value: spreadsheetId
-      }
-    ] */
-  };
-
-  var headers = {
-    Authorization: "Bearer " + accessToken,
-    "Content-Type": "application/json"
-  };
-
-  fetch(apiUrl, {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify(payload)
-  })
+  fetch(url)
     .then(response => response.json())
     .then(data => {
-      if (data.response && data.response.result) {
-        console.log("Data from Google Apps Script:", data.response.result);
-      } else {
-        console.error("Error calling Google Apps Script:", data);
-      }
+      // Process the data returned from the web app
+      console.log("Response from Google Apps Script:", data);
+      // You can do further processing here
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
     });
 }
 
-// Call the function to initiate the API request
+// Call the function when needed
 callGoogleAppsScript();
-
 
 
 
