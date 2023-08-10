@@ -314,28 +314,33 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 console.log("Step 2: Calling Google Apps Script...");
 
 
-function callGoogleAppsScript() {
-  const url = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
-  
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
-  
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        const responseData = xhr.responseText;
-        console.log("Response from Google Apps Script:", responseData);
-        // You can do further processing here
-      } else {
-        console.error("Error calling Google Apps Script:", xhr.statusText);
-      }
+const fetchData = async (scriptURL, data) => {
+  var json;
+  try {
+    const response = await fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      json = await response.json();
+      console.log('Success:', JSON.stringify(json));
+    } else {
+      console.log('HTTP Error:', response.status);
     }
-  };
+  } catch (e) {
+    console.log('Error:', e.message);
+  }
+  return json;
+};
+
+async function callGoogleAppsScript() {
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize"; // Replace with your actual script URL
+ // const data = { key1: "value1" }; // Replace with your data
   
-  xhr.send();
+  const res = await fetchData(scriptURL, data);
+  console.log(res);
 }
 
-// Call the function when needed
 callGoogleAppsScript();
 
 
