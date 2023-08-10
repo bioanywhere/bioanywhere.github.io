@@ -317,21 +317,12 @@ console.log("Step 2: Calling Google Apps Script...");
 function callGoogleAppsScript() {
   const url = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec?functionName=authorize";
   
-  fetch(url)
-    .then(response => {
-      if (response.status === 302) {
-        console.log("Redirecting to:", response.headers.get("location"));
-      } else if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("Request failed with status: " + response.status);
-      }
-    })
+  fetch(url, { redirect: "follow" })  // Follow redirects
+    .then(response => response.json())
     .then(data => {
-      if (data) {
-        console.log("Response from Google Apps Script:", data);
-        // You can do further processing here
-      }
+      // Process the data returned from the web app
+      console.log("Response from Google Apps Script:", data);
+      // You can do further processing here
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
@@ -340,7 +331,6 @@ function callGoogleAppsScript() {
 
 // Call the function when needed
 callGoogleAppsScript();
-
 
 
 
