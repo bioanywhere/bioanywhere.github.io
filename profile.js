@@ -322,17 +322,23 @@ window.jsonpCallback = function(data) {
 function callGoogleAppsScript(spreadsheetId, accessToken, callback) {
   var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace this with the URL of your published Google Apps Script
   var queryParams = "?access_token=" + encodeURIComponent(accessToken) +
-                    "&spreadsheetId=" + encodeURIComponent(duplicateSheet.id) +
+                    "&spreadsheetId=" + encodeURIComponent(spreadsheetId) +
                     "&callback=jsonpCallback"; // Use the global callback function name
 
   // Create a script element
   var scriptElement = document.createElement("script");
   scriptElement.src = scriptUrl + queryParams;
   document.body.appendChild(scriptElement);
+
+  // Print the generated script URL for debugging
+  console.log("Generated Script URL:", scriptElement.src);
 }
 
 // Call the function to initiate the JSONP request
-callGoogleAppsScript(duplicateSheet.id, accessToken);
+var duplicateSheetId = "YOUR_DUPLICATE_SHEET_ID"; // Replace with the actual duplicate sheet ID
+var accessToken = "YOUR_ACCESS_TOKEN"; // Replace with your actual access token
+callGoogleAppsScript(duplicateSheetId, accessToken);
+
 
 
 
