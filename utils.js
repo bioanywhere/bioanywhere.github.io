@@ -1,12 +1,6 @@
 function signIn(clientId,redirectUri,scopes,response_type="token") {
   let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
-/*
-  let form = document.createElement("form");
-  form.setAttribute("method", "GET");
-  form.setAttribute("action", oauth2Endpoint);
-*/
-/*
   let params = {
     client_id: clientId,
     redirect_uri: "https://bioanywhere.github.io/oauth-callback.html",
@@ -23,10 +17,7 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
     input.setAttribute("value", params[p]);
    // form.appendChild(input);
   }
-*/
-  //document.body.appendChild(form);
 
-  //form.submit();
 
   // Construct the URL for Google login
   let loginUrl = oauth2Endpoint + "?" + new URLSearchParams(params).toString();
