@@ -312,25 +312,27 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 // Step 2: Call Google Apps Script
 
 console.log("Step 2: Calling Google Apps Script...");
-const webAppUrl = `https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec`;
 
-console.log("Step 2: Google Apps Script request URL:", webAppUrl);
+// Define the JSONP callback function globally
+window.jsonpCallback = function(data) {
+  console.log("Data from Google Apps Script:", data);
+};
 
-const scriptResponse = await makeFetchRequest(webAppUrl, {
-  method: 'GET',
-  headers: {
-    Authorization: `Bearer ${access_token}`,
-    'Spreadsheet-Id': duplicateSheet.id, // Add this header
-  },
-});
+// Function to call the Google Apps Script using JSONP
+function callGoogleAppsScript(spreadsheetId, accessToken, callback) {
+  var scriptUrl = "https://script.google.com/macros/s/AKfycbxVf0vfo-J3QTEFTVbFKRarTW-X9fFquLmFqYxgTpU0VNP3PxSdkAMmKmKu-XCvSbNt/exec"; // Replace this with the URL of your published Google Apps Script
+  var queryParams = "?access_token=" + encodeURIComponent(accessToken) +
+                    "&spreadsheetId=" + encodeURIComponent(duplicateSheet.id) +
+                    "&callback=jsonpCallback"; // Use the global callback function name
 
-console.log("Step 2: Google Apps Script response status:", scriptResponse.status);
-console.log("Step 2: Google Apps Script response headers:", scriptResponse.headers);
+  // Create a script element
+  var scriptElement = document.createElement("script");
+  scriptElement.src = scriptUrl + queryParams;
+  document.body.appendChild(scriptElement);
+}
 
-const responseContent = await scriptResponse.text();
-console.log("Step 2: Google Apps Script response content:", responseContent);
-
-
+// Call the function to initiate the JSONP request
+callGoogleAppsScript(duplicateSheet.id, accessToken);
 
 
 
