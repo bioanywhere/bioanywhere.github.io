@@ -316,13 +316,14 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
-  var deploymentId = "AKfycbzrF4y_wkXUHzXCEE6nbTsNl9IJO5dfunA1bt0JFuhfdnJRZZMpbokLTUujUOVJmP9WEw"; // Replace with your actual deployment ID
+  var scriptId = "AKfycbzrF4y_wkXUHzXCEE6nbTsNl9IJO5dfunA1bt0JFuhfdnJRZZMpbokLTUujUOVJmP9WEw"; // Replace with your actual script ID
   var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
 
-  var apiUrl = "https://script.googleapis.com/v1/projects/" + deploymentId + "/run:callPublishAllCharts";
+  var apiUrl = "https://script.googleapis.com/v1/scripts/" + scriptId + ":run";
 
   var payload = {
+    function: "callPublishAllCharts", // Use the new function name
     parameters: [
       {
         name: "accessToken",
@@ -347,7 +348,11 @@ function callGoogleAppsScript() {
   })
     .then(response => response.json())
     .then(data => {
-      console.log("Data from Google Apps Script:", data.response.result);
+      if (data.response && data.response.result) {
+        console.log("Data from Google Apps Script:", data.response.result);
+      } else {
+        console.error("Error calling Google Apps Script:", data.error);
+      }
     })
     .catch(error => {
       console.error("Error calling Google Apps Script:", error);
