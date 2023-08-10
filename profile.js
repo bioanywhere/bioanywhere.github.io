@@ -316,7 +316,7 @@ console.log("Step 2: Calling Google Apps Script...");
 
 
 function callGoogleAppsScript() {
-  var scriptId = "AKfycbzrF4y_wkXUHzXCEE6nbTsNl9IJO5dfunA1bt0JFuhfdnJRZZMpbokLTUujUOVJmP9WEw"; // Replace with your actual script ID
+  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW"; // Replace with your actual script ID
   var accessToken = access_token; // Replace with the access token
   var spreadsheetId = duplicateSheet.id; // Replace with the spreadsheet ID
 
