@@ -6,7 +6,7 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
   form.setAttribute("method", "GET");
   form.setAttribute("action", oauth2Endpoint);
 */
-
+/*
   let params = {
     client_id: clientId,
     redirect_uri: "https://bioanywhere.github.io/oauth-callback.html",
@@ -23,7 +23,7 @@ function signIn(clientId,redirectUri,scopes,response_type="token") {
     input.setAttribute("value", params[p]);
    // form.appendChild(input);
   }
-
+*/
   //document.body.appendChild(form);
 
   //form.submit();
