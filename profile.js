@@ -412,18 +412,18 @@ console.log("******Access Token:*****", accessToken);
 
 
 
-async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
+async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df) {
   console.log("Calling Google Apps Script");
-  
+
   var scriptId = "AKfycbyfc71mHc8dgNr5bMBoZHPanzdrWwpbDCnrEdCwkXKJV5M3MfsFOGAPo4MVxWvjoRg5zQ";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
-  
+
   // Construct the request body
   var requestBody = {
     function: "callPublishAllCharts", 
     parameters: [accessToken, copiedSheetId]
   };
-  
+
   try {
     var response = await fetch(apiUrl, {
       method: "POST",
@@ -433,40 +433,34 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
       },
       body: JSON.stringify(requestBody)
     });
-    
+
     var data = await response.json();
 
     // Log the response status and data
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
-    // Create a temporary JSON structure to hold the processed data
-    var tempJson = [];
+    // Process the data received from the web app and update the dataframe-like structure
+    data.forEach(item => {
+      df.push({
+        Field: item.chartId,
+        Value: item.publishedUrl,
+        Placeholder: `{{${item.chartId}}}`
+      });
+    });
 
-    // Process the data received from the web app
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        const entry = data[key];
-        tempJson.push({
-          'Field': entry.chartId.toString(),
-          'Value': entry.publishedUrl,
-          'Placeholder': `{{${entry.chartId}}}`,
-        });
-      }
-    }
-
-    // Push the tempJson to the df array
-    df.push(...tempJson);
-
-    // Now df contains the desired data
-    console.log('df:', df);
+    // Log the updated dataframe
+    console.log('Updated DataFrame:', df);
 
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
-callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
+
+// Call the function with parameters and the existing dataframe-like structure
+callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df);
 
 
 
