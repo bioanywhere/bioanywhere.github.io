@@ -458,6 +458,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+console.log(df);
 
 /*
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
