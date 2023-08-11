@@ -434,24 +434,21 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
       body: JSON.stringify(requestBody)
     });
 
-    var data = await response.json();
+    var responseJson = await response.json();
+    var data = Array.isArray(responseJson) ? responseJson : [responseJson]; // Wrap it in an array if needed
 
     // Log the response status and data
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
     // Process the data received from the web app and update the dataframe-like structure
-    if (Array.isArray(data)) {
-      data.forEach(item => {
-        df.push({
-          Field: item.chartId,
-          Value: item.publishedUrl,
-          Placeholder: `{{${item.chartId}}}`
-        });
+    data.forEach(item => {
+      df.push({
+        Field: item.chartId,
+        Value: item.publishedUrl,
+        Placeholder: `{{${item.chartId}}}`
       });
-    } else {
-      console.error('Received data is not an array.');
-    }
+    });
 
     // Log the updated dataframe
     console.log('Updated DataFrame:', df);
@@ -460,6 +457,8 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.error('Error:', error);
   }
 }
+
+
 
 
 // Call the function with parameters and the existing dataframe-like structure
