@@ -440,20 +440,20 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
-    // Create a temporary JSON structure
+    // Create a temporary JSON structure to hold the processed data
     var tempJson = [];
 
     // Process the data received from the web app
-    for (const entry of data) {
-      tempJson.push({
-        'Field': entry.chartId,
-        'Value': entry.publishedUrl,
-        'Placeholder': `{{${entry.chartId}}}`,
-      });
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const entry = data[key];
+        tempJson.push({
+          'Field': entry.chartId.toString(),
+          'Value': entry.publishedUrl,
+          'Placeholder': `{{${entry.chartId}}}`,
+        });
+      }
     }
-
-    // Now tempJson contains the desired data in JSON format
-    console.log('tempJson:', tempJson);
 
     // Push the tempJson to the df array
     df.push(...tempJson);
@@ -467,6 +467,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
