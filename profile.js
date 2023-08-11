@@ -339,7 +339,19 @@ console.log ("Access Token!", accessToken);
 
 
 
+const spreadsheetId = duplicateSheet.id; 
 
+
+const DATA = [
+   {
+    name: "accessToken",
+    value: accessToken
+  },
+   {
+    name: "spreadsheetId",
+    value: spreadsheetId
+  }
+];
 
 
 fetch("https://script.google.com/macros/s/AKfycbyfc71mHc8dgNr5bMBoZHPanzdrWwpbDCnrEdCwkXKJV5M3MfsFOGAPo4MVxWvjoRg5zQ/exec", {
