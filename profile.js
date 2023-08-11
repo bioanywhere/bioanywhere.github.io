@@ -452,9 +452,9 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
         const chartId = chartData.chartId !== undefined ? chartData.chartId.toString() : '';
 
         df.push({
-          'Field': chartId,
+          'Field': chartData.chartId,
           'Value': chartData.publishedUrl,
-          'Placeholder': `{{${chartId}l}}`,
+          'Placeholder': `{{${chartData.chartId}}}`,
         });
       }
     }
