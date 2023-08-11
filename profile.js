@@ -444,14 +444,26 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     // Process the data received from the web app, if necessary
     // ...
 
-    // Loop through the data and populate the df array
-    data.forEach((chartData, index) => {
-      df.push({
-        'Field': chartData.chartName || `Chart ${index + 1}`,
-        'Value': chartData.publishedUrl,
-        'Placeholder': `{{chart${index + 1}}}`,
-      });
-    });
+    // Check if data is an object with multiple chart entries
+    if (typeof data === 'object' && !Array.isArray(data)) {
+      // Initialize an index counter
+      let index = 0;
+
+      // Iterate over each property in the object
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          const chartData = data[key];
+          df.push({
+            'Field': chartData.chartName || `Chart ${index + 1}`,
+            'Value': chartData.publishedUrl,
+            'Placeholder': `{{chart${index + 1}}}`,
+          });
+          index++;
+        }
+      }
+    } else {
+      console.log('Invalid data format:', data);
+    }
 
     // Now df contains the desired data
     console.log('df:', df);
