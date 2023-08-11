@@ -440,14 +440,23 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
+    // Create a temporary JSON structure
+    var tempJson = [];
+
     // Process the data received from the web app
     for (const entry of data) {
-      df.push({
+      tempJson.push({
         'Field': entry.chartId,
         'Value': entry.publishedUrl,
         'Placeholder': `{{${entry.chartId}}}`,
       });
     }
+
+    // Now tempJson contains the desired data in JSON format
+    console.log('tempJson:', tempJson);
+
+    // Push the tempJson to the df array
+    df.push(...tempJson);
 
     // Now df contains the desired data
     console.log('df:', df);
@@ -458,6 +467,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
