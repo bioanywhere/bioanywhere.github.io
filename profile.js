@@ -413,7 +413,7 @@ console.log("******Access Token:*****", accessToken);
 
 
 
-async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
+async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df) {
   console.log("Calling Google Apps Script");
   
   var scriptId = "AKfycbyfc71mHc8dgNr5bMBoZHPanzdrWwpbDCnrEdCwkXKJV5M3MfsFOGAPo4MVxWvjoRg5zQ";
@@ -441,12 +441,21 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
-    // Process the data received from the web app, if necessary
-    // ...
+    // Process the data received from the web app
+    if (Array.isArray(data)) {
+      data.forEach((chartData, index) => {
+        df.push({
+          'Field': chartData.chartName || `Chart ${index + 1}`,
+          'Value': chartData.publishedUrl,
+          'Placeholder': `{{chart${index + 1}}}`,
+        });
+      });
+    }
   } catch (error) {
     console.error('Error:', error);
   }
 }
+
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
 
