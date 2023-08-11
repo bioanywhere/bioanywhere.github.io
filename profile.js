@@ -440,23 +440,13 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
-    // Process the data received from the web app, if necessary
-    // ...
-
-    // Loop through the data and populate the df array
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        const chartData = data[key];
-        
-        // Check if chartId is defined before using toString()
-        const chartId = chartData.chartId !== undefined ? chartData.chartId.toString() : '';
-
-        df.push({
-          'Field': chartData.chartId,
-          'Value': chartData.publishedUrl,
-          'Placeholder': `{{${chartData.chartId}}}`,
-        });
-      }
+    // Process the data received from the web app
+    for (const entry of data) {
+      df.push({
+        'Field': entry.chartId,
+        'Value': entry.publishedUrl,
+        'Placeholder': `{{${entry.chartId}}}`,
+      });
     }
 
     // Now df contains the desired data
@@ -468,6 +458,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
