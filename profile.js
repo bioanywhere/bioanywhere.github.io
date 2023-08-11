@@ -337,6 +337,29 @@ const fetchData = async (scriptURL, data) => {
 
 console.log ("Access Token!", accessToken);
 
+
+
+
+
+
+fetch("https://script.google.com/macros/s/AKfycbyfc71mHc8dgNr5bMBoZHPanzdrWwpbDCnrEdCwkXKJV5M3MfsFOGAPo4MVxWvjoRg5zQ/exec", {
+  redirect: "follow",
+  method: "POST",
+  body: JSON.stringify(DATA),
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8",
+  },
+})
+
+
+
+
+
+
+
+
+
+/*
 async function callGoogleAppsScript() {
   // ?functionName=authorize
   const scriptURL = "https://script.google.com/macros/s/AKfycbzPTeJqUtyeXVZ5ibUOASQV46QgdZIUQU6LiPRgJDn8enHbxp5zxJHZ3tKBJi6YK4SWCg/exec"; // Replace with your actual script URL
@@ -359,7 +382,7 @@ async function callGoogleAppsScript() {
 }
 
 callGoogleAppsScript();
-
+*/
 
 
 
