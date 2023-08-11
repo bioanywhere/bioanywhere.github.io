@@ -447,10 +447,14 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const chartData = data[key];
+        
+        // Check if chartId is defined before using toString()
+        const chartId = chartData.chartId !== undefined ? chartData.chartId.toString() : '';
+
         df.push({
-          'Field': chartData.chartId.toString(),
+          'Field': chartId,
           'Value': chartData.publishedUrl,
-          'Placeholder': `{{${chartData.chartId}l}}`,
+          'Placeholder': `{{${chartId}l}}`,
         });
       }
     }
