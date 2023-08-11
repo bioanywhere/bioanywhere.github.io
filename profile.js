@@ -415,9 +415,10 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
   console.log("Calling Google Apps Script");
   var webAppUrl = `https://script.google.com/macros/s/AKfycbyfc71mHc8dgNr5bMBoZHPanzdrWwpbDCnrEdCwkXKJV5M3MfsFOGAPo4MVxWvjoRg5zQ/exec?accessToken=${accessToken}&spreadsheetId=${copiedSheetId}`;
 
-
   try {
-    var response = await fetch(webAppUrl);
+    var response = await fetch(webAppUrl, {
+      redirect: "follow" // Add the redirect option
+    });
     var data = await response.json();
 
     // Log the response status and data
@@ -430,6 +431,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.error('Error:', error);
   }
 }
+
 
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
