@@ -412,7 +412,6 @@ console.log("******Access Token:*****", accessToken);
 
 
 
-
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
   
@@ -444,25 +443,20 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     // Process the data received from the web app, if necessary
     // ...
 
-    // Check if data is an object with multiple chart entries
-    if (typeof data === 'object' && !Array.isArray(data)) {
-      // Initialize an index counter
-      let index = 0;
+    // Initialize an index counter
+    let index = 0;
 
-      // Iterate over each property in the object
-      for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-          const chartData = data[key];
-          df.push({
-            'Field': chartData.chartName || `Chart ${index + 1}`,
-            'Value': chartData.publishedUrl,
-            'Placeholder': `{{chart${index + 1}}}`,
-          });
-          index++;
-        }
+    // Loop through the data and populate the df array
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const chartData = data[key];
+        df.push({
+          'Field': chartData.chartId,
+          'Value': chartData.publishedUrl,
+          'Placeholder': `{{chartId}}`,
+        });
+        index++;
       }
-    } else {
-      console.log('Invalid data format:', data);
     }
 
     // Now df contains the desired data
@@ -474,6 +468,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
