@@ -443,19 +443,15 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     // Process the data received from the web app, if necessary
     // ...
 
-    // Initialize an index counter
-    let index = 0;
-
     // Loop through the data and populate the df array
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const chartData = data[key];
         df.push({
-          'Field': chartData.chartId,
+          'Field': chartData.chartId.toString(),
           'Value': chartData.publishedUrl,
-          'Placeholder': `{{chartId}}`,
+          'Placeholder': `{{${chartData.chartId}l}}`,
         });
-        index++;
       }
     }
 
@@ -468,6 +464,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
