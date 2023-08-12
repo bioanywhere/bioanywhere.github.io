@@ -443,22 +443,22 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     // ...
 
     // Create an array to hold the new structure
-    var newStructure = [];
+    //var newStructure = [];
 
     // Iterate through the 'result' array and extract values
     data.response.result.forEach(function(item) {
       var chartId = item.chartId;
       var publishedUrl = item.publishedUrl;
 
-      newStructure.push({
-        'Field': chartId,
+      df.push({
+        'Field': chartName,
         'Value': publishedUrl,
         'Placeholder': `{{${chartId}}}`
       });
     });
 
     // Print the new structure to the console
-    console.log("New Structure:", newStructure);
+    console.log("Updated Dataframe:", df);
   } catch (error) {
     console.error('Error:', error);
   }
