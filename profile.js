@@ -451,8 +451,8 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
       var publishedUrl = item.publishedUrl;
 
       newStructure.push({
-        'Field': 'chartId',
-        'Value': 'publishedUrl',
+        'Field': chartId,
+        'Value': publishedUrl,
         'Placeholder': `{{${chartId}}}`
       });
     });
@@ -465,6 +465,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
