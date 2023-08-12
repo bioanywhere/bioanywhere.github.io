@@ -411,18 +411,18 @@ console.log("******Access Token:*****", accessToken);
 
 
 
-async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df) {
+async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
-
+  
   var scriptId = "AKfycbyfc71mHc8dgNr5bMBoZHPanzdrWwpbDCnrEdCwkXKJV5M3MfsFOGAPo4MVxWvjoRg5zQ";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
-
+  
   // Construct the request body
   var requestBody = {
     function: "callPublishAllCharts", 
     parameters: [accessToken, copiedSheetId]
   };
-
+  
   try {
     var response = await fetch(apiUrl, {
       method: "POST",
@@ -432,46 +432,21 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
       },
       body: JSON.stringify(requestBody)
     });
-
+    
     var data = await response.json();
 
     // Log the response status and data
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
-    // Process the data received from the web app and update the dataframe-like structure
-    if (Array.isArray(data)) {
-      data.forEach(item => processItem(item, df));
-    } else if (typeof data === 'object') {
-      for (var key in data) {
-        processItem(data[key], df);
-      }
-    }
-
-    // Log the updated dataframe
-    console.log('Updated DataFrame:', df);
-
+    // Process the data received from the web app, if necessary
+    // ...
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
-function processItem(item, df) {
-  var chartId = item.chartId || item['chartId'];
-  var publishedUrl = item.publishedUrl || item['publishedUrl'];
-
-  if (chartId && publishedUrl) {
-    df.push({
-      Field: chartId,
-      Value: publishedUrl,
-      Placeholder: `{{${chartId}}}`
-    });
-  }
-}
-
-
-// Call the function with parameters and the existing dataframe-like structure
-callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df);
+callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
 
 
 
