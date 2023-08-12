@@ -439,6 +439,11 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
+    // Convert the array of objects to a JSON string
+    var jsonData = JSON.stringify(data);
+
+    console.log('JSON Data:', jsonData);
+
     // Process the data received from the web app, if necessary
     // ...
   } catch (error) {
@@ -447,6 +452,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
