@@ -449,6 +449,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     data.response.result.forEach(function(item) {
       var chartId = item.chartId;
       var publishedUrl = item.publishedUrl;
+      var chartName = item.chartName;
 
       df.push({
         'Field': chartName,
