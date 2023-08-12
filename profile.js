@@ -439,19 +439,33 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Status:', response.status);
     console.log('Response Data:', data);
 
-    // Convert the array of objects to a JSON string
-    var jsonData = JSON.stringify(data);
-
-    console.log('JSON Data:', jsonData);
-
     // Process the data received from the web app, if necessary
     // ...
+
+    // Create an array to hold the new structure
+    var newStructure = [];
+
+    // Iterate through the 'result' array and extract values
+    data.response.result.forEach(function(item) {
+      var chartId = item.chartId;
+      var publishedUrl = item.publishedUrl;
+
+      newStructure.push({
+        'Field': 'chartId',
+        'Value': 'publishedUrl',
+        'Placeholder': `{{${chartId}}}`
+      });
+    });
+
+    // Print the new structure to the console
+    console.log(newStructure);
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
 
 
 
