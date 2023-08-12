@@ -458,7 +458,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     });
 
     // Print the new structure to the console
-    console.log(newStructure);
+    console.log("New Structure:", newStructure);
   } catch (error) {
     console.error('Error:', error);
   }
