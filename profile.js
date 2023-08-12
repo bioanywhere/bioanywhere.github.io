@@ -411,7 +411,6 @@ console.log("******Access Token:*****", accessToken);
 
 
 
-
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df) {
   console.log("Calling Google Apps Script");
 
@@ -434,8 +433,7 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
       body: JSON.stringify(requestBody)
     });
 
-    var responseJson = await response.json();
-    var data = Array.isArray(responseJson) ? responseJson : [responseJson]; // Wrap it in an array if needed
+    var data = await response.json();
 
     // Log the response status and data
     console.log('Response Status:', response.status);
@@ -443,11 +441,17 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 
     // Process the data received from the web app and update the dataframe-like structure
     data.forEach(item => {
-      df.push({
-        Field: item.chartId,
-        Value: item.publishedUrl,
-        Placeholder: `{{${item.chartId}}}`
-      });
+      // Search for properties based on their names
+      var chartId = item.chartId || item['chartId'];
+      var publishedUrl = item.publishedUrl || item['publishedUrl'];
+
+      if (chartId && publishedUrl) {
+        df.push({
+          Field: chartId,
+          Value: publishedUrl,
+          Placeholder: `{{${chartId}}}`
+        });
+      }
     });
 
     // Log the updated dataframe
@@ -460,9 +464,9 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 
 
 
-
 // Call the function with parameters and the existing dataframe-like structure
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df);
+
 
 
 
