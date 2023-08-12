@@ -440,19 +440,13 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     console.log('Response Data:', data);
 
     // Process the data received from the web app and update the dataframe-like structure
-    data.forEach(item => {
-      // Search for properties based on their names
-      var chartId = item.chartId || item['chartId'];
-      var publishedUrl = item.publishedUrl || item['publishedUrl'];
-
-      if (chartId && publishedUrl) {
-        df.push({
-          Field: chartId,
-          Value: publishedUrl,
-          Placeholder: `{{${chartId}}}`
-        });
+    if (Array.isArray(data)) {
+      data.forEach(item => processItem(item, df));
+    } else if (typeof data === 'object') {
+      for (var key in data) {
+        processItem(data[key], df);
       }
-    });
+    }
 
     // Log the updated dataframe
     console.log('Updated DataFrame:', df);
@@ -462,10 +456,23 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
   }
 }
 
+function processItem(item, df) {
+  var chartId = item.chartId || item['chartId'];
+  var publishedUrl = item.publishedUrl || item['publishedUrl'];
+
+  if (chartId && publishedUrl) {
+    df.push({
+      Field: chartId,
+      Value: publishedUrl,
+      Placeholder: `{{${chartId}}}`
+    });
+  }
+}
 
 
 // Call the function with parameters and the existing dataframe-like structure
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId, df);
+
 
 
 
