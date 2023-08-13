@@ -414,7 +414,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
   
-  var scriptId = "AKfycbwsdt9BoVjaUlqcNBDL9aEtQwr2Wp4ljHt1fd-ZkbneX3d2I0AQegihETnFe42o5HneLw";
+  var scriptId = "AKfycbzQ_GifyC_L2ZEI4YPR57H2uUxLQv5oAvNd711F_1qIR1Ys-slL9a-4bsxxPjJgIBPk5g";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
