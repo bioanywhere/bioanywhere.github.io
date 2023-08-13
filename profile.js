@@ -414,7 +414,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
   
-  var scriptId = "182sniLfIKzKnVM4ITiWYcrRZ4eLCjjRlZDDqFkg5fEoorHsDo6YHmdRW";
+  var scriptId = "AKfycbwsdt9BoVjaUlqcNBDL9aEtQwr2Wp4ljHt1fd-ZkbneX3d2I0AQegihETnFe42o5HneLw";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -449,10 +449,10 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
     data.response.result.forEach(function(item) {
       var chartId = item.chartId;
       var publishedUrl = item.publishedUrl;
-      var chartRange = item.chartRange;
+      var chartName = item.chartName;
 
       df.push({
-        'Field': chartRange,
+        'Field': chartName,
         'Value': publishedUrl,
         'Placeholder': `{{${chartId}}}`
       });
