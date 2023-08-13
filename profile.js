@@ -414,7 +414,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script");
   
-  var scriptId = "AKfycbzQ_GifyC_L2ZEI4YPR57H2uUxLQv5oAvNd711F_1qIR1Ys-slL9a-4bsxxPjJgIBPk5g";
+  var scriptId = "AKfycby2tb_WXnPJ1S5Lixi2hytfn7P-14VxTODqFsYTHOigKtNRyZCRdI6sxkRBzFOE7S0ynQ";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -466,6 +466,31 @@ async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedShee
 }
 
 callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -740,7 +765,10 @@ console.log("Step 2: Finished listing and printing charts.");
 
     const duplicateData = await duplicateResponse.json();
     const documentUrl = `https://docs.google.com/document/d/${duplicateData.id}`;
-    console.log("Step 1: Duplicated document ID:", duplicateData.id);
+
+
+    const copiedDocumentId = duplicateData.id;
+    console.log("Step 1: Duplicated document ID:", copiedDocumentId);
 
     // Add URLs at the end of the DataFrames
     df.push({ 'Field': 'documentUrl', 'Value': documentUrl, 'Placeholder': '{{documentUrl}}' });
@@ -749,6 +777,48 @@ console.log("Step 2: Finished listing and printing charts.");
     
 
  
+
+
+async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId) {
+  console.log("Calling Google Apps Script");
+  
+  var scriptId = "AKfycby2tb_WXnPJ1S5Lixi2hytfn7P-14VxTODqFsYTHOigKtNRyZCRdI6sxkRBzFOE7S0ynQ"; // Replace with your actual script ID
+  var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
+  
+  // Construct the request body
+  var requestBody = {
+    function: "callGetAllImageUrlsAndIds", 
+    parameters: [accessToken, copiedDocumentId, copiedSheetId]
+  };
+  
+  try {
+    var response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    var data = await response.json();
+
+    // Log the response status and data
+    console.log('Response Status:', response.status);
+    console.log('Response Data:', data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+
+
+callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId);
+
+
+
+
+
 
 
 
