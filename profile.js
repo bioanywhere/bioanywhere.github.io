@@ -414,7 +414,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script (1)");
   
-  var scriptId = "AKfycby2tb_WXnPJ1S5Lixi2hytfn7P-14VxTODqFsYTHOigKtNRyZCRdI6sxkRBzFOE7S0ynQ";
+  var scriptId = "AKfycbwq7LaBqlyancJTD8YhbXQa4Au6UmXYRmF2EqtT_yIqRyVwcYhRRaTNuWaSJDWGhPhBkA";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -782,7 +782,7 @@ console.log("Step 2: Finished listing and printing charts.");
 async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId) {
   console.log("Calling Google Apps Script (2)");
   
-  var scriptId = "AKfycby2tb_WXnPJ1S5Lixi2hytfn7P-14VxTODqFsYTHOigKtNRyZCRdI6sxkRBzFOE7S0ynQ"; // Replace with your actual script ID
+  var scriptId = "AKfycbwq7LaBqlyancJTD8YhbXQa4Au6UmXYRmF2EqtT_yIqRyVwcYhRRaTNuWaSJDWGhPhBkA"; // Replace with your actual script ID
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
