@@ -412,7 +412,7 @@ console.log("******Access Token:*****", accessToken);
 
 
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
-  console.log("Calling Google Apps Script");
+  console.log("Calling Google Apps Script (1)");
   
   var scriptId = "AKfycby2tb_WXnPJ1S5Lixi2hytfn7P-14VxTODqFsYTHOigKtNRyZCRdI6sxkRBzFOE7S0ynQ";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
@@ -780,7 +780,7 @@ console.log("Step 2: Finished listing and printing charts.");
 
 
 async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId) {
-  console.log("Calling Google Apps Script");
+  console.log("Calling Google Apps Script (2)");
   
   var scriptId = "AKfycby2tb_WXnPJ1S5Lixi2hytfn7P-14VxTODqFsYTHOigKtNRyZCRdI6sxkRBzFOE7S0ynQ"; // Replace with your actual script ID
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
@@ -801,16 +801,15 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
       body: JSON.stringify(requestBody)
     });
     
-    var data = await response.json();
+    var chartUrls = await response.json();
 
     // Log the response status and data
     console.log('Response Status:', response.status);
-    console.log('Response Data:', data);
+    console.log('Response Data:', chartUrls);
   } catch (error) {
     console.error('Error:', error);
   }
 }
-
 
 
 callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId);
