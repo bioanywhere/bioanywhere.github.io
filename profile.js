@@ -796,7 +796,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
   };
 
   // Log the request body
-  console.log('Request Body:', requestBody);
+  console.log('Request Body Apps Script (2):', requestBody);
   
   try {
     var response = await fetch(apiUrl, {
