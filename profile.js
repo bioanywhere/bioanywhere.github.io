@@ -414,7 +414,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script (1)");
   
-  var scriptId = "AKfycbxbBA9GfYV2ZBcQyJ7XWYSa0xCiDSiO75TdW5V0BlOjoWpTZ1tN55TZOaKE-1bu0SAgYw";
+  var scriptId = "AKfycbwKZ2A0b1DTDa5l93zBoEx309ZAmXhB62ratI8JtzphMADY62NoeYhQszsEsrTloqKwTA";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -786,7 +786,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
   console.log("Copied Document Id",copiedDocumentId);
   console.log("Copied Sheet Id",copiedSheetId);
   
-  var scriptId = "AKfycbxbBA9GfYV2ZBcQyJ7XWYSa0xCiDSiO75TdW5V0BlOjoWpTZ1tN55TZOaKE-1bu0SAgYw"; // Replace with your actual script ID
+  var scriptId = "AKfycbwKZ2A0b1DTDa5l93zBoEx309ZAmXhB62ratI8JtzphMADY62NoeYhQszsEsrTloqKwTA"; // Replace with your actual script ID
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -819,8 +819,52 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
 }
 
 
-callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId);
+//callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId);
 
+
+async function callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId) {
+  console.log("Calling Google Apps Script (2)");
+  console.log("Accces Token",accessToken);
+  console.log("Copied Document Id",copiedDocumentId);
+  
+  var scriptId = "AKfycbwKZ2A0b1DTDa5l93zBoEx309ZAmXhB62ratI8JtzphMADY62NoeYhQszsEsrTloqKwTA";
+  var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
+  
+  // Construct the request body
+  var requestBody = {
+    function: "callReplaceImagesInGoogleDoc",  // Use the correct function name
+    parameters: [accessToken, copiedDocumentId]
+  };
+  
+  try {
+    var response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    var data = await response.json();
+
+    // Log the response status and data
+    console.log('Response Status:', response.status);
+    console.log('Response Data:', data);
+
+    // Handle the confirmation message from the response
+    if (data && data.response && data.response.result) {
+      var confirmation = data.response.result;
+      console.log('Confirmation:', confirmation);
+    } else {
+      console.log('Error:', data.error);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
 
 
 
