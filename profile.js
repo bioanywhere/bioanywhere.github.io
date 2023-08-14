@@ -819,7 +819,6 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
 }
 
 
-
 //callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId);
 
 
@@ -866,6 +865,8 @@ async function callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedD
 }
 
 callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
+
+
 
 
 
@@ -983,6 +984,8 @@ callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
       alert('Failed to replace placeholders in Doc. Please try again later.');
     }
 
+
+
       // Step 3: Set sharing settings to make the document publicly accessible
       console.log("Step 3: Setting sharing settings for Doc...");
 
@@ -1015,9 +1018,4 @@ callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
     console.error('Error creating the report:', error);
     alert('Failed to create the report. Please try again later.');
   }
-
-
-
-
-
 });
