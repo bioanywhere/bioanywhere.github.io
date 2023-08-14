@@ -781,6 +781,10 @@ console.log("Step 2: Finished listing and printing charts.");
 
 async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId) {
   console.log("Calling Google Apps Script (2)");
+
+  console.log("Accces Token",accessToken);
+  console.log("Accces Token",copiedDocumentId);
+  console.log("Accces Token",copiedSheetId);
   
   var scriptId = "AKfycbzG57RJtnH6lL6UtQwNk_JLFYBXDqIxZVyTSzfodWRc6U34PDoSZ2vMblqjdwBT2uv_Tg"; // Replace with your actual script ID
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
@@ -790,6 +794,9 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
     function: "callGetAllImageUrlsAndIds", 
     parameters: [accessToken, copiedDocumentId, copiedSheetId]
   };
+
+  // Log the request body
+  console.log('Request Body:', requestBody);
   
   try {
     var response = await fetch(apiUrl, {
