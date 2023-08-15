@@ -338,6 +338,8 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 // Now loop through each chart and update its sharing settings
 for (const chart of charts) {
   const chartImageURL = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}/gviz/${chart.chartId}`;
+  console.log("Step 2: Chart URL:***", chartImageURL);
+
   
   // Use the Google Drive API to update sharing settings for the chart image
   // You will need to make API requests to update sharing settings for the image
