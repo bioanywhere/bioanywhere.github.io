@@ -315,7 +315,7 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 
 
-const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=false&fields=sheets%2Fcharts`, {
+const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=true&fields=sheets%2Fcharts`, {
   method: 'GET',
   headers: {
     Authorization: `Bearer ${access_token}`,
