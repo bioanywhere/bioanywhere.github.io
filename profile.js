@@ -314,42 +314,31 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
   console.log("Step 2: Retrieving Charts from Duplicated Sheet...");
 
 
-  const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=false&fields=sheets%2Fcharts`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    },
-  });
 
-  const sheetsData = await sheetsResponse.json();
-  const sheets = sheetsData.sheets;
+const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=false&fields=sheets%2Fcharts`, {
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${access_token}`,
+    'Content-Type': 'application/json',
+  },
+});
 
-  const charts = [];
+const sheetsData = await sheetsResponse.json();
+const sheets = sheetsData.sheets;
 
-  sheets.forEach(sheet => {
-    if (sheet.charts) {
-      charts.push(...sheet.charts);
-    }
-  });
+const charts = [];
 
-  console.log("Step 2: Retrieved charts:", charts);
+sheets.forEach(sheet => {
+  if (sheet.charts) {
+    charts.push(...sheet.charts);
+  }
+});
 
-  // Generate chart URLs using Google Charts API
-  const chartUrls = [];
+console.log("Step 2: Retrieved charts:", charts);
 
-  charts.forEach(chart => {
-    const { chartId, spec } = chart;
-
-    if (spec) {
-      const chartType = spec.chartType.toLowerCase();
-      const dataSourceRange = spec.dataSourceRange;
-      const chartUrl = `https://chart.googleapis.com/chart?cht=${chartType}&chs=400x300&chd=t:${dataSourceRange}&chxt=x,y&chds=a&chxr=0,0,100&chco=FF0000`;
-      chartUrls.push(chartUrl);
-    }
-  });
-
-  console.log("Step 3: Generated chart URLs:", chartUrls);
+// Print charts in a nicely formatted JSON
+console.log("Step 3: Printing Charts in JSON Format:");
+console.log(JSON.stringify(charts, null, 2));
 
 
 
