@@ -310,31 +310,40 @@ const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
 console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 
-console.log("Step 2: Retrieving charts from the duplicated Google Sheets template...");
+  // Continue with the code to retrieve charts and SVGs using the REST API
+  const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?fields=sheets(charts)`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
-// Make a request to retrieve the sheet's charts
-const chartsResponse = await sheets.spreadsheets.get({
-  spreadsheetId: duplicateSheet.id, // Use the duplicated sheet's ID
-  fields: "sheets(charts)",
-});
+  const chartsData = [];
+  const charts = chartsResponse.sheets[0].charts || [];
 
-const chartsData = chartsResponse.data.sheets.flatMap(sheet => {
-  if (sheet.charts) {
-    return sheet.charts.map(chart => ({
+  for (const chart of charts) {
+    const chartResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}/charts/${chart.chartId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    chartsData.push({
       chartId: chart.chartId,
       position: chart.position,
-      chartType: chart.chartType,
-    }));
+      chartType: chartResponse.chartType,
+      svgUrl: chartResponse.image.url,
+    });
   }
-  return [];
-});
 
+  console.log("Number of charts found****:", chartsData.length);
+  console.log("Chart data:****", chartsData);
 
-console.log("Number of charts found***:", chartsData.length);
-console.log("Chart data***:", chartsData);
-
-console.log("Step 2: Retrieved and processed charts from the duplicated template.");
-
+  console.log("Step 2: Retrieved charts and SVGs from the duplicated template.");
+}
 
 
 
