@@ -309,6 +309,39 @@ const duplicateSheet = await duplicateSheetResponse.json();
 const sheetUrl = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}`;
 console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
+
+console.log("Step 2: Retrieving charts from the duplicated Google Sheets template...");
+
+// Make a request to retrieve the sheet's charts
+const chartsResponse = await sheets.spreadsheets.get({
+  spreadsheetId: duplicateSheet.id, // Use the duplicated sheet's ID
+  fields: "sheets(charts)",
+});
+
+const chartsData = chartsResponse.data.sheets.flatMap(sheet => {
+  if (sheet.charts) {
+    return sheet.charts.map(chart => ({
+      chartId: chart.chartId,
+      position: chart.position,
+      chartType: chart.chartType,
+    }));
+  }
+  return [];
+});
+
+
+console.log("Number of charts found***:", chartsData.length);
+console.log("Chart data***:", chartsData);
+
+console.log("Step 2: Retrieved and processed charts from the duplicated template.");
+
+
+
+
+
+
+
+
 // Step 2: Call Google Apps Script
 
 console.log("Step 2: Calling Google Apps Script...");
