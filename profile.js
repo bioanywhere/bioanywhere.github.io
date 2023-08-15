@@ -314,37 +314,31 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
   console.log("Step 2: Retrieving Charts from Duplicated Sheet...");
 
 
-  const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=false&fields=sheets%2Fcharts`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-    },
-  });
 
-  const sheetsData = await sheetsResponse.json();
-  const sheets = sheetsData.sheets;
+const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=true&fields=sheets%2Fcharts`, {
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${access_token}`,
+    'Content-Type': 'application/json',
+  },
+});
 
-  const charts = [];
+const sheetsData = await sheetsResponse.json();
+const sheets = sheetsData.sheets;
 
-  sheets.forEach(sheet => {
-    if (sheet.charts) {
-      sheet.charts.forEach(chart => {
-        const chartData = {
-          type: chart.chartType,
-          data: chart.spec
-        };
-        charts.push(chartData);
-      });
-    }
-  });
+const charts = [];
 
-  console.log("Step 2: Retrieved charts:", charts);
+sheets.forEach(sheet => {
+  if (sheet.charts) {
+    charts.push(...sheet.charts);
+  }
+});
 
-  // Print charts in a nicely formatted JSON
-  console.log("Step 3: Printing Charts in JSON Format:");
-  console.log(JSON.stringify(charts, null, 2));
+console.log("Step 2: Retrieved charts:", charts);
 
+// Print charts in a nicely formatted JSON
+console.log("Step 3: Printing Charts in JSON Format:");
+console.log(JSON.stringify(charts, null, 2));
 
 
 
@@ -1029,8 +1023,17 @@ callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
     }
 
 
+        // Step 3: Search and replace URLs with inline images
+      const documentText = batchUpdateResponseData.replies[0].createNamedRange.namedRangeName;
+      const imageUrlPattern = /(https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view\?usp=drivesdk)/g;
 
-      // Step 3: Set sharing settings to make the document publicly accessible
+      const documentTextWithImages = documentText.replace(imageUrlPattern, (match) => {
+        return `<img src="${match.replace('/view?usp=drivesdk', '/uc?export=view')}" alt="Inline Image" />`;
+      });
+
+
+
+      // Step 4: Set sharing settings to make the document publicly accessible
       console.log("Step 3: Setting sharing settings for Doc...");
 
       const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
