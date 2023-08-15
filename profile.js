@@ -311,7 +311,7 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
 
 
   // Continue with the code to retrieve charts and SVGs using the REST API
-  const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?fields=sheets(charts)`, {
+  const chartsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?fields=sheets(properties(sheetId,charts))`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${access_token}`,
@@ -319,30 +319,35 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
     },
   });
 
+  const sheetsData = chartsResponse.sheets || [];
   const chartsData = [];
-  const charts = chartsResponse.sheets[0].charts || [];
 
-  for (const chart of charts) {
-    const chartResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}/charts/${chart.chartId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  for (const sheet of sheetsData) {
+    const charts = sheet.charts || [];
+    for (const chart of charts) {
+      const chartResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}/charts/${chart.chartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    chartsData.push({
-      chartId: chart.chartId,
-      position: chart.position,
-      chartType: chartResponse.chartType,
-      svgUrl: chartResponse.image.url,
-    });
+      chartsData.push({
+        chartId: chart.chartId,
+        sheetId: sheet.properties.sheetId,
+        chartType: chartResponse.chartType,
+        svgUrl: chartResponse.image.url,
+      });
+    }
   }
 
-  console.log("Number of charts found****:", chartsData.length);
-  console.log("Chart data:****", chartsData);
+  // Now you can work with the chart data, including SVG URLs
+  console.log("Number of charts found:", chartsData.length);
+  console.log("Chart data:", chartsData);
 
   console.log("Step 2: Retrieved charts and SVGs from the duplicated template.");
+
 
 
 
