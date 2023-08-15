@@ -313,7 +313,7 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
   // Continue with the code to retrieve charts and SVGs using the REST API
   console.log("Step 2: Retrieving Charts from Duplicated Sheet...");
 
-  const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?includeGridData=false&fields=sheets%2Fcharts`, {
+  const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=false&fields=sheets%2Fcharts`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${access_token}`,
