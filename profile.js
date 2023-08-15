@@ -332,21 +332,27 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
     }
   });
 
-  console.log("Step 2: Retrieved charts:***", charts);
+  console.log("Step 2: Retrieved charts:", charts);
 
+  // Make the entire spreadsheet publicly accessible
+  await makeFetchRequest(`https://www.googleapis.com/drive/v3/files/${duplicateSheet.id}/permissions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      role: 'reader',
+      type: 'anyone',
+    }),
+  });
 
-// Now loop through each chart and update its sharing settings
-for (const chart of charts) {
-  const chartImageURL = `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}/gviz/${chart.chartId}`;
-  console.log("Step 2: Chart URL:***", chartImageURL);
+  console.log("Step 3: Spreadsheet made publicly accessible.");
 
-  
-  // Use the Google Drive API to update sharing settings for the chart image
-  // You will need to make API requests to update sharing settings for the image
-  // Refer to Google Drive API documentation for details on how to update sharing settings
-}
+  // Construct URLs for publicly accessible charts
+  const chartImageURLs = charts.map(chart => `https://docs.google.com/spreadsheets/d/${duplicateSheet.id}/gviz/chartId=${chart.chartId}`);
 
-console.log("Step 3: Charts made public.");
+  console.log("Publicly accessible chart URLs:", chartImageURLs);
 
 
 
