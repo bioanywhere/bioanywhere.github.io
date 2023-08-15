@@ -343,7 +343,7 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
   console.log("Chart data:****", chartsData);
 
   console.log("Step 2: Retrieved charts and SVGs from the duplicated template.");
-}
+
 
 
 
