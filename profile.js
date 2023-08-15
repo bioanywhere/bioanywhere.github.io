@@ -452,7 +452,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script (1)");
   
-  var scriptId = "AKfycbzhiGIum38Rc0baWS9d_GJd5rDXkAU7Ge0X0j3oXp_0dHWKymeXrG0P_ZoDr_rMASKNyg";
+  var scriptId = "AKfycbwLSqmDiC4fB7wZAM4t5i1oAMCfpsSZ6A6Qic_5XlUp";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -824,7 +824,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
   console.log("Copied Document Id",copiedDocumentId);
   console.log("Copied Sheet Id",copiedSheetId);
   
-  var scriptId = "AKfycbzhiGIum38Rc0baWS9d_GJd5rDXkAU7Ge0X0j3oXp_0dHWKymeXrG0P_ZoDr_rMASKNyg"; // Replace with your actual script ID
+  var scriptId = "AKfycbwLSqmDiC4fB7wZAM4t5i1oAMCfpsSZ6A6Qic_5XlUp"; // Replace with your actual script ID
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -978,6 +978,27 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
     }
 
 
+
+      // Step 3: Set sharing settings to make the document publicly accessible
+      console.log("Step 3: Setting sharing settings for Doc...");
+
+      const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          role: 'reader',
+          type: 'anyone',
+        }),
+      });
+
+      const setSharingData = await setSharingResponse.json();
+      console.log("Step 3: Sharing of Document settings updated:", setSharingData);
+
+
+
         // Step 3: Search and replace URLs with inline images
 
 
@@ -986,7 +1007,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
       console.log("Accces Token",accessToken);
       console.log("Copied Document Id",copiedDocumentId);
       
-      var scriptId = "AKfycbzhiGIum38Rc0baWS9d_GJd5rDXkAU7Ge0X0j3oXp_0dHWKymeXrG0P_ZoDr_rMASKNyg";
+      var scriptId = "AKfycbwLSqmDiC4fB7wZAM4t5i1oAMCfpsSZ6A6Qic_5XlUp";
       var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
       
       // Construct the request body
@@ -1024,25 +1045,6 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
     }
 
     callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
-
-
-      // Step 4: Set sharing settings to make the document publicly accessible
-      console.log("Step 3: Setting sharing settings for Doc...");
-
-      const setSharingResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${duplicateData.id}/permissions`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          role: 'reader',
-          type: 'anyone',
-        }),
-      });
-
-      const setSharingData = await setSharingResponse.json();
-      console.log("Step 3: Sharing of Document settings updated:", setSharingData);
 
 
 
