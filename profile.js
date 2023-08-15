@@ -314,31 +314,37 @@ console.log("Step 1: Duplicated sheet ID:", duplicateSheet.id);
   console.log("Step 2: Retrieving Charts from Duplicated Sheet...");
 
 
+  const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=false&fields=sheets%2Fcharts`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
-const sheetsResponse = await makeFetchRequest(`https://sheets.googleapis.com/v4/spreadsheets/${duplicateSheet.id}?includeGridData=true&fields=sheets%2Fcharts`, {
-  method: 'GET',
-  headers: {
-    Authorization: `Bearer ${access_token}`,
-    'Content-Type': 'application/json',
-  },
-});
+  const sheetsData = await sheetsResponse.json();
+  const sheets = sheetsData.sheets;
 
-const sheetsData = await sheetsResponse.json();
-const sheets = sheetsData.sheets;
+  const charts = [];
 
-const charts = [];
+  sheets.forEach(sheet => {
+    if (sheet.charts) {
+      sheet.charts.forEach(chart => {
+        const chartData = {
+          type: chart.chartType,
+          data: chart.spec
+        };
+        charts.push(chartData);
+      });
+    }
+  });
 
-sheets.forEach(sheet => {
-  if (sheet.charts) {
-    charts.push(...sheet.charts);
-  }
-});
+  console.log("Step 2: Retrieved charts:", charts);
 
-console.log("Step 2: Retrieved charts:", charts);
+  // Print charts in a nicely formatted JSON
+  console.log("Step 3: Printing Charts in JSON Format:");
+  console.log(JSON.stringify(charts, null, 2));
 
-// Print charts in a nicely formatted JSON
-console.log("Step 3: Printing Charts in JSON Format:");
-console.log(JSON.stringify(charts, null, 2));
 
 
 
