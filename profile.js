@@ -452,7 +452,7 @@ console.log("******Access Token:*****", accessToken);
 async function callWebAppWithAccessTokenAndSpreadsheetId(accessToken, copiedSheetId) {
   console.log("Calling Google Apps Script (1)");
   
-  var scriptId = "AKfycbwcsuIhgRAnXLw1VZ8Zedqhyq1th9kqUx4I3Pkif89b4mUnquBIkUQqycxAJ4AzxkseVQ";
+  var scriptId = "AKfycbyoLB5lr3ycPnDRb0KE6klwlMcsTwfCvgd557dubYljFvMqxz79YOi5teaasGJZElpYLQ";
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -824,7 +824,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
   console.log("Copied Document Id",copiedDocumentId);
   console.log("Copied Sheet Id",copiedSheetId);
   
-  var scriptId = "AKfycbwcsuIhgRAnXLw1VZ8Zedqhyq1th9kqUx4I3Pkif89b4mUnquBIkUQqycxAJ4AzxkseVQ"; // Replace with your actual script ID
+  var scriptId = "AKfycbyoLB5lr3ycPnDRb0KE6klwlMcsTwfCvgd557dubYljFvMqxz79YOi5teaasGJZElpYLQ"; // Replace with your actual script ID
   var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
   
   // Construct the request body
@@ -986,7 +986,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
       console.log("Accces Token",accessToken);
       console.log("Copied Document Id",copiedDocumentId);
       
-      var scriptId = "AKfycbwcsuIhgRAnXLw1VZ8Zedqhyq1th9kqUx4I3Pkif89b4mUnquBIkUQqycxAJ4AzxkseVQ";
+      var scriptId = "AKfycbyoLB5lr3ycPnDRb0KE6klwlMcsTwfCvgd557dubYljFvMqxz79YOi5teaasGJZElpYLQ";
       var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
       
       // Construct the request body
