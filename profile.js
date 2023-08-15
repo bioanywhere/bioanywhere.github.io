@@ -1024,12 +1024,12 @@ callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
 
 
         // Step 3: Search and replace URLs with inline images
-      const documentText = batchUpdateResponseData.replies[0].createNamedRange.namedRangeName;
-      const imageUrlPattern = /(https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view\?usp=drivesdk)/g;
+        const documentText = batchUpdateResponseData.data.replies[0].createNamedRange.namedRangeName; // Adjust this line based on your actual response structure
+        const imageUrlPattern = /(https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view\?usp=drivesdk)/g;
 
-      const documentTextWithImages = documentText.replace(imageUrlPattern, (match) => {
-        return `<img src="${match.replace('/view?usp=drivesdk', '/uc?export=view')}" alt="Inline Image" />`;
-      });
+        const documentTextWithImages = documentText.replace(imageUrlPattern, (match) => {
+          return `<img src="${match.replace('/view?usp=drivesdk', '/uc?export=view')}" alt="Inline Image" />`;
+        });
 
 
 
