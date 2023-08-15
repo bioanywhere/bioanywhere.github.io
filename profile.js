@@ -857,52 +857,7 @@ async function callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copi
 }
 
 
-//callWebAppWithAccessTokenAndDocumentAndSheetIds(accessToken, copiedDocumentId, copiedSheetId);
 
-
-async function callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId) {
-  console.log("Calling Google Apps Script (2)");
-  console.log("Accces Token",accessToken);
-  console.log("Copied Document Id",copiedDocumentId);
-  
-  var scriptId = "AKfycbw6w5R6HNIT1Ok2rImBx5VjpQe7ZgTCaww5IQD5_vqqInWFS892pFEJVVmM0t6Io-1Q6g";
-  var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
-  
-  // Construct the request body
-  var requestBody = {
-    function: "callReplaceImagesInGoogleDoc",  // Use the correct function name
-    parameters: [accessToken, copiedDocumentId]
-  };
-  
-  try {
-    var response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody)
-    });
-    
-    var data = await response.json();
-
-    // Log the response status and data
-    console.log('Response Status:', response.status);
-    console.log('Response Data:', data);
-
-    // Handle the confirmation message from the response
-    if (data && data.response && data.response.result) {
-      var confirmation = data.response.result;
-      console.log('Confirmation:', confirmation);
-    } else {
-      console.log('Error:', data.error);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
 
 
 
@@ -1024,13 +979,51 @@ callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
 
 
         // Step 3: Search and replace URLs with inline images
-        const documentText = batchUpdateResponseData.data.replies[0].createNamedRange.namedRangeName; // Adjust this line based on your actual response structure
-        const imageUrlPattern = /(https:\/\/drive\.google\.com\/file\/d\/[a-zA-Z0-9_-]+\/view\?usp=drivesdk)/g;
 
-        const documentTextWithImages = documentText.replace(imageUrlPattern, (match) => {
-          return `<img src="${match.replace('/view?usp=drivesdk', '/uc?export=view')}" alt="Inline Image" />`;
+
+    async function callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId) {
+      console.log("Calling Google Apps Script (2)");
+      console.log("Accces Token",accessToken);
+      console.log("Copied Document Id",copiedDocumentId);
+      
+      var scriptId = "AKfycbw6w5R6HNIT1Ok2rImBx5VjpQe7ZgTCaww5IQD5_vqqInWFS892pFEJVVmM0t6Io-1Q6g";
+      var apiUrl = `https://script.googleapis.com/v1/scripts/${scriptId}:run`;
+      
+      // Construct the request body
+      var requestBody = {
+        function: "callReplaceImagesInGoogleDoc",  // Use the correct function name
+        parameters: [accessToken, copiedDocumentId]
+      };
+      
+      try {
+        var response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(requestBody)
         });
+        
+        var data = await response.json();
 
+        // Log the response status and data
+        console.log('Response Status:', response.status);
+        console.log('Response Data:', data);
+
+        // Handle the confirmation message from the response
+        if (data && data.response && data.response.result) {
+          var confirmation = data.response.result;
+          console.log('Confirmation:', confirmation);
+        } else {
+          console.log('Error:', data.error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    callWebAppWithAccessTokenAndcopiedDocumentId(accessToken, copiedDocumentId);
 
 
       // Step 4: Set sharing settings to make the document publicly accessible
